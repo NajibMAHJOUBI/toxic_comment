@@ -8,7 +8,7 @@ import org.apache.spark.sql.SparkSession
   * Created by mahjoubi on 11/06/18.
   */
 
-class LoadDateTest extends AssertionsForJUnit {
+class LoadDataTest extends AssertionsForJUnit {
 
   private var spark: SparkSession = _
 
