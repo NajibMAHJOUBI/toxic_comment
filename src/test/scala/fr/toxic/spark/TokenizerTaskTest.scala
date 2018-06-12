@@ -21,13 +21,14 @@ class TokenizerTaskTest extends AssertionsForJUnit  {
       .getOrCreate()
   }
 
-  @Test def tesTokenizer(): Unit = {
-  val data = new LoadDataSet().run(spark, "train")
-  val tokens = new TokenizerTask().run(data)
+  @Test def testTokenizer(): Unit = {
+    val data = new LoadDataSet("/home/mahjoubi/Documents/github/toxic_comment/src/test/ressources/data")
+      .run(spark, "train")
+    val tokens = new TokenizerTask().run(data)
 
-  assert(tokens.isInstanceOf[DataFrame])
-  assert(tokens.columns.contains("words"))
-  assert(tokens.schema.fields(tokens.schema.fieldIndex("words")).dataType ==  ArrayType(StringType))
+    assert(tokens.isInstanceOf[DataFrame])
+    assert(tokens.columns.contains("words"))
+    assert(tokens.schema.fields(tokens.schema.fieldIndex("words")).dataType ==  ArrayType(StringType))
   }
 
   @After def afterAll() {
