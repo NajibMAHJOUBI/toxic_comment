@@ -30,8 +30,8 @@ class TfIdfTaskTest extends AssertionsForJUnit {
     val tfIdf = new TfIdfTask().run(tf)
 
     assert(tfIdf.isInstanceOf[DataFrame])
-    assert(tfIdf.columns.contains("tf"))
-    val idf = tfIdf.rdd.map(x => x.getAs[Vector](x.fieldIndex("tf"))).collect()(0)
+    assert(tfIdf.columns.contains("tf_idf"))
+    val idf = tfIdf.rdd.map(x => x.getAs[Vector](x.fieldIndex("tf_idf"))).collect()(0)
     assert(idf.size == vocabSize)
     }
 
