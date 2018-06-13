@@ -6,13 +6,27 @@ import org.apache.spark.sql.DataFrame
 /**
   * Created by mahjoubi on 12/06/18.
   */
-class LogisticRegressionTask(val labelColumn: String = "label", val featureColumn: String = "features") {
+class LogisticRegressionTask(val labelColumn: String = "label",
+                             val featureColumn: String = "features",
+                             val predictionColumn: String = "prediction") {
 
   var model: LogisticRegressionModel = _
   var prediction: DataFrame = _
 
+  def getPrediction(): DataFrame = {
+    prediction
+  }
+
+  def getModel(): LogisticRegressionModel = {
+    model
+  }
+
   def fitModel(data: DataFrame): LogisticRegressionTask = {
-    model = new LogisticRegression().setFeaturesCol(featureColumn).setLabelCol(labelColumn).fit(data)
+    model = new LogisticRegression()
+      .setFeaturesCol(featureColumn)
+      .setLabelCol(labelColumn)
+      .setPredictionCol(predictionColumn)
+      .fit(data)
     this
   }
 
@@ -21,8 +35,8 @@ class LogisticRegressionTask(val labelColumn: String = "label", val featureColum
     this
   }
 
-  def getPrediction(): DataFrame = {
-    prediction
+  def saveModel(path: String): LogisticRegressionTask = {
+    model.save(path)
+    this
   }
-
 }
