@@ -24,7 +24,7 @@ class StopWordsRemoverTaskTest extends AssertionsForJUnit  {
   }
 
   @Test def testStopWordsRemover(): Unit = {
-    val data = new LoadDataSetTask("/home/mahjoubi/Documents/github/toxic_comment/src/test/ressources/data")
+    val data = new LoadDataSetTask("src/test/ressources/data")
       .run(spark, "train")
     val tokens = new TokenizerTask().run(data)
     val removed = new StopWordsRemoverTask().run(tokens)
