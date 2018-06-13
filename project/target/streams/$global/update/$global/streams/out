@@ -1,4 +1,4 @@
-[info] Updating {file:/home/mahjoubi/Documents/github/toxic_comment/project/}toxic_comment-build...
+[info] Updating {file:/home/ubuntu/Documents/toxic_comment/project/}toxic_comment-build...
 [debug] :: resolving dependencies :: default#toxic_comment-build;0.1-SNAPSHOT
 [debug] 	confs: [compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom, scala-tool]
 [debug] 	validate = true
@@ -6009,19 +6009,19 @@
 [debug] 	[NOT REQUIRED] org.scala-sbt#template-resolver;0.1!template-resolver.jar
 [debug] 	[NOT REQUIRED] org.scala-lang#jline;2.10.7!jline.jar
 [debug] 	[NOT REQUIRED] org.fusesource.jansi#jansi;1.4!jansi.jar
-[debug] :: resolution report :: resolve 965ms :: artifacts dl 22ms
-[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT compile produced in /home/mahjoubi/Documents/github/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-compile.xml
-[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT runtime produced in /home/mahjoubi/Documents/github/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-runtime.xml
-[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT test produced in /home/mahjoubi/Documents/github/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-test.xml
-[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT provided produced in /home/mahjoubi/Documents/github/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-provided.xml
-[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT optional produced in /home/mahjoubi/Documents/github/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-optional.xml
-[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT compile-internal produced in /home/mahjoubi/Documents/github/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-compile-internal.xml
-[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT runtime-internal produced in /home/mahjoubi/Documents/github/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-runtime-internal.xml
-[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT test-internal produced in /home/mahjoubi/Documents/github/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-test-internal.xml
-[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT plugin produced in /home/mahjoubi/Documents/github/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-plugin.xml
-[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT sources produced in /home/mahjoubi/Documents/github/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-sources.xml
-[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT docs produced in /home/mahjoubi/Documents/github/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-docs.xml
-[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT pom produced in /home/mahjoubi/Documents/github/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-pom.xml
-[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT scala-tool produced in /home/mahjoubi/Documents/github/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-scala-tool.xml
-[debug] 	resolve done (965ms resolve - 22ms download)
+[debug] :: resolution report :: resolve 15509ms :: artifacts dl 342ms
+[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT compile produced in /home/ubuntu/Documents/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-compile.xml
+[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT runtime produced in /home/ubuntu/Documents/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-runtime.xml
+[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT test produced in /home/ubuntu/Documents/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-test.xml
+[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT provided produced in /home/ubuntu/Documents/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-provided.xml
+[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT optional produced in /home/ubuntu/Documents/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-optional.xml
+[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT compile-internal produced in /home/ubuntu/Documents/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-compile-internal.xml
+[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT runtime-internal produced in /home/ubuntu/Documents/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-runtime-internal.xml
+[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT test-internal produced in /home/ubuntu/Documents/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-test-internal.xml
+[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT plugin produced in /home/ubuntu/Documents/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-plugin.xml
+[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT sources produced in /home/ubuntu/Documents/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-sources.xml
+[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT docs produced in /home/ubuntu/Documents/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-docs.xml
+[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT pom produced in /home/ubuntu/Documents/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-pom.xml
+[debug] 	report for default#toxic_comment-build;0.1-SNAPSHOT scala-tool produced in /home/ubuntu/Documents/toxic_comment/project/target/scala-2.10/sbt-0.13/resolution-cache/reports/default-toxic_comment-build-scala-tool.xml
+[debug] 	resolve done (15509ms resolve - 342ms download)
 [info] Done updating.
