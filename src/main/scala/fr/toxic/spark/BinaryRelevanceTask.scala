@@ -35,17 +35,15 @@ class BinaryRelevanceTask(val columns: Array[String], val savePath: String, val 
   }
 
   def savePrediction(data: DataFrame): Unit = {
-//    val columnsToKeep: Set[Column] = (data.columns.toSet
-//      -- Set(columns: _*)
-//      -- Set("comment_text", "clean_tokens", "words", "tf", "features")).map(name => col(name))
+    val columnsToKeep: Set[Column] = (Set("id")
+      ++ columns.map(name => s"label_${name}").toSet
+      ++ columns.map(name => s"prediction_${name}").toSet)
+      .map(name => col(name))
 
-    val columnsToKeep: Set[String] = (Set("id")
-      ++ Set(columns).map(name => s"label_${name.toString()}")
-      ++ Set(columns).map(name => s"prediction_${name}"))
-//      .map(name => col(name))
-
-    print(columnsToKeep)
-//    data.select(columnsToKeep.toSeq: _*).write.option("header", "true").mode("overwrite").csv(s"${savePath}/prediction")
+    data
+      .select(columnsToKeep.toSeq: _*)
+      .write.option("header", "true").mode("overwrite")
+      .csv(s"${savePath}/prediction")
   }
 
 }
