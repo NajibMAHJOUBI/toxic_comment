@@ -9,7 +9,7 @@ import org.scalatest.junit.AssertionsForJUnit
   * Created by mahjoubi on 11/06/18.
   */
 
-class LoadDataTest extends AssertionsForJUnit {
+class LoadDataTaskTest extends AssertionsForJUnit {
 
   private var spark: SparkSession = _
 
@@ -22,7 +22,7 @@ class LoadDataTest extends AssertionsForJUnit {
   }
 
   @Test def testLoadTrainSet(): Unit = {
-    val data = new LoadDataSetTask().run(spark, "train")
+    val data = new LoadDataSetTask(sourcePath = "src/test/resources/data").run(spark, "train")
     val columns = data.columns
     assert(columns.contains("id"))
     assert(columns.contains("comment_text"))
@@ -43,8 +43,8 @@ class LoadDataTest extends AssertionsForJUnit {
     assert(dataSchema.fields(dataSchema.fieldIndex("identity_hate")).dataType ==  LongType)
   }
 
-  @Test def testLoadTesSet(): Unit = {
-    val data = new LoadDataSetTask().run(spark, "test")
+  @Test def testLoadTestSet(): Unit = {
+    val data = new LoadDataSetTask(sourcePath = "src/test/resources/data").run(spark, "test")
     val columns = data.columns
     assert(columns.contains("id"))
     assert(columns.contains("comment_text"))
