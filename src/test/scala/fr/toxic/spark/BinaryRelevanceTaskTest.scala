@@ -20,15 +20,10 @@ class BinaryRelevanceTaskTest extends AssertionsForJUnit {
   }
 
   @Test def testBrOneColumnTest(): Unit = {
-    val data = new LoadDataSetTask(sourcePath = "src/test/resources/data").run(spark, "train")
-    val tokens = new TokenizerTask().run(data)
-    val removed = new StopWordsRemoverTask().run(tokens)
-    val vocabSize = 10
-    val tf = new CountVectorizerTask(minDF = 1, vocabSize = vocabSize).run(removed)
-    val tfIdf = new TfIdfTask().run(tf)
+    val data = new LoadDataSetTask(sourcePath = "src/test/resources/data").run(spark, "binaryRelevance")
     val columns = Array("toxic")
     val savePath = "target/model/binaryRelevance/OneColumn"
-    new BinaryRelevanceTask(columns = columns, savePath = savePath).run(tfIdf)
+    new BinaryRelevanceTask(columns = columns, savePath = savePath).run(data)
     val prediction = spark.read.option("header", "true").csv(s"${savePath}/prediction")
     assert(prediction.isInstanceOf[DataFrame])
     columns.map(column => assert(prediction.columns.contains(s"label_${column}")))
@@ -36,15 +31,10 @@ class BinaryRelevanceTaskTest extends AssertionsForJUnit {
     }
 
   @Test def testBrTwoColumnTest(): Unit = {
-    val data = new LoadDataSetTask(sourcePath = "src/test/resources/data").run(spark, "train")
-    val tokens = new TokenizerTask().run(data)
-    val removed = new StopWordsRemoverTask().run(tokens)
-    val vocabSize = 10
-    val tf = new CountVectorizerTask(minDF = 1, vocabSize = vocabSize).run(removed)
-    val tfIdf = new TfIdfTask().run(tf)
+    val data = new LoadDataSetTask(sourcePath = "src/test/resources/data").run(spark, "binaryRelevance")
     val columns = Array("toxic", "severe_toxic")
     val savePath = "target/model/binaryRelevance/twoColumn"
-    new BinaryRelevanceTask(columns = columns, savePath = savePath).run(tfIdf)
+    new BinaryRelevanceTask(columns = columns, savePath = savePath).run(data)
     val prediction = spark.read.option("header", "true").csv(s"${savePath}/prediction")
     assert(prediction.isInstanceOf[DataFrame])
     columns.map(column => assert(prediction.columns.contains(s"label_${column}")))
