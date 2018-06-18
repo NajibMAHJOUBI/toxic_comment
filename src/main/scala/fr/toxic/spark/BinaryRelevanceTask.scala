@@ -11,7 +11,6 @@ class BinaryRelevanceTask(val columns: Array[String], val savePath: String, val 
   def run(data: DataFrame): Unit = {
     var prediction: DataFrame = createFeatures(data)
     columns.map(column => {
-      println(s"column: ${column}")
       val labelFeatures = createLabel(prediction, column)
       prediction = computeModel(labelFeatures, column)
     })
