@@ -5,7 +5,10 @@ import org.apache.spark.ml.param.ParamMap
 import org.apache.spark.ml.tuning.{CrossValidator, CrossValidatorModel, ParamGridBuilder}
 import org.apache.spark.sql.DataFrame
 
-class CrossValidationTask(val data: DataFrame, val labelColumn: String, val predictionColumn: String,
+class CrossValidationTask(val data: DataFrame,
+                          val labelColumn: String,
+                          val featureColumn: String,
+                          val predictionColumn: String,
                           val modelClassifier: String) {
 
   var paramGrid: Array[ParamMap] = _
