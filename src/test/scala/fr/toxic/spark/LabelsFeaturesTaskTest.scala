@@ -21,7 +21,7 @@ class LabelsFeaturesTaskTest extends AssertionsForJUnit  {
   }
 
   @Test def testLabelsFeatures(): Unit = {
-    val data = new LoadDataSetTask("src/test/ressources/data").run(spark, "train")
+    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "train")
     val tokens = new TokenizerTask().run(data)
     val removed = new StopWordsRemoverTask().run(tokens)
     val vocabSize = 10

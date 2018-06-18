@@ -1,7 +1,7 @@
 package fr.toxic.spark
 
-import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.ml.linalg.Vector
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.junit.{After, Before, Test}
 import org.scalatest.junit.AssertionsForJUnit
 
@@ -21,13 +21,9 @@ class TfIdfTaskTest extends AssertionsForJUnit {
   }
 
   @Test def testTfIdfTest(): Unit = {
-    val data = new LoadDataSetTask("src/test/ressources/data")
-      .run(spark, "train")
-    val tokens = new TokenizerTask().run(data)
-    val removed = new StopWordsRemoverTask().run(tokens)
+    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
     val vocabSize = 10
-    val tf = new CountVectorizerTask(minDF = 1, vocabSize = vocabSize).run(removed)
-    val tfIdf = new TfIdfTask().run(tf)
+    val tfIdf = new TfIdfTask().run(data)
 
     assert(tfIdf.isInstanceOf[DataFrame])
     assert(tfIdf.columns.contains("tf_idf"))

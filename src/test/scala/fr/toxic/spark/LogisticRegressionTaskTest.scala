@@ -1,6 +1,5 @@
 package fr.toxic.spark
 
-import org.apache.spark.ml.linalg.Vector
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.junit.{After, Before, Test}
 import org.scalatest.junit.AssertionsForJUnit
@@ -21,8 +20,7 @@ class LogisticRegressionTaskTest extends AssertionsForJUnit  {
   }
 
   @Test def testLogisticRegression(): Unit = {
-    val data = new LoadDataSetTask("src/test/ressources/data")
-      .run(spark, "logisticRegression")
+    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "logisticRegression")
     val logisticRegression = new LogisticRegressionTask()
     logisticRegression.fitModel(data)
     logisticRegression.transformModel(data)

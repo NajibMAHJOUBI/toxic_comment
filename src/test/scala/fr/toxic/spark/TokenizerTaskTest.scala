@@ -1,10 +1,9 @@
 package fr.toxic.spark
 
-import org.apache.spark.sql.types.ArrayType
+import org.apache.spark.sql.types.{ArrayType, StringType}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.junit.{After, Before, Test}
 import org.scalatest.junit.AssertionsForJUnit
-import org.apache.spark.sql.types.StringType
 
 /**
   * Created by mahjoubi on 12/06/18.
@@ -22,8 +21,7 @@ class TokenizerTaskTest extends AssertionsForJUnit  {
   }
 
   @Test def testTokenizer(): Unit = {
-    val data = new LoadDataSetTask("src/test/ressources/data")
-      .run(spark, "train")
+    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "train")
     val tokens = new TokenizerTask().run(data)
 
     assert(tokens.isInstanceOf[DataFrame])

@@ -1,13 +1,9 @@
 package fr.toxic.spark
 
-import org.apache.spark.ml.feature.StopWordsRemover
-import org.apache.spark.sql.types.{ArrayType, StringType}
+import org.apache.spark.ml.linalg.Vector
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.junit.{After, Before, Test}
 import org.scalatest.junit.AssertionsForJUnit
-import org.apache.spark.ml.linalg.Vector
-
-import scala.collection.mutable.WrappedArray
 
 /**
   * Created by mahjoubi on 12/06/18.
@@ -25,12 +21,9 @@ class CountVectorizerTaskTest extends AssertionsForJUnit  {
   }
 
   @Test def testCountVectoizer(): Unit = {
-    val data = new LoadDataSetTask("src/test/ressources/data")
-      .run(spark, "train")
-    val tokens = new TokenizerTask().run(data)
-    val removed = new StopWordsRemoverTask().run(tokens)
+    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "stopWordsRemover")
     val vocabSize = 10
-    val count = new CountVectorizerTask(minDF = 1, vocabSize = vocabSize).run(removed)
+    val count = new CountVectorizerTask(minDF = 1, vocabSize = vocabSize).run(data)
 
     assert(count.isInstanceOf[DataFrame])
     assert(count.columns.contains("tf"))

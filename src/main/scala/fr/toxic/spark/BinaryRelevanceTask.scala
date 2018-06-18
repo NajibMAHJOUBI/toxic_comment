@@ -6,7 +6,10 @@ import org.apache.spark.sql.functions.col
 /**
   * Created by mahjoubi on 13/06/18.
   */
-class BinaryRelevanceTask(val columns: Array[String], val savePath: String, val featureColumn: String = "tf_idf") {
+class BinaryRelevanceTask(val columns: Array[String], val savePath: String, val featureColumn: String = "tf_idf",
+                          val modelClassifier: String = "logistic_regression") {
+
+  var prediction: DataFrame = _
 
   def run(data: DataFrame): Unit = {
     var prediction: DataFrame = createFeatures(data)
@@ -26,11 +29,14 @@ class BinaryRelevanceTask(val columns: Array[String], val savePath: String, val 
   }
 
   def computeModel(data: DataFrame, column: String): DataFrame = {
-    val logisticRegression = new LogisticRegressionTask(labelColumn = s"label_${column}",
-      predictionColumn = s"prediction_${column}")
-    logisticRegression.fitModel(data)
-    logisticRegression.transformModel(data)
-    logisticRegression.getPrediction().drop("probability").drop("rawPrediction")
+    if (modelClassifier == "logistic_regression"){
+      val logisticRegression = new LogisticRegressionTask(labelColumn = s"label_${column}",
+        predictionColumn = s"prediction_${column}")
+      logisticRegression.fitModel(data)
+      logisticRegression.transformModel(data)
+      prediction = logisticRegression.getPrediction().drop("probability").drop("rawPrediction")
+    }
+    prediction
   }
 
   def savePrediction(data: DataFrame): Unit = {

@@ -10,6 +10,7 @@ class LogisticRegressionTask(val labelColumn: String = "label",
                              val featureColumn: String = "features",
                              val predictionColumn: String = "prediction") {
 
+
   var model: LogisticRegressionModel = _
   var prediction: DataFrame = _
 
@@ -17,16 +18,15 @@ class LogisticRegressionTask(val labelColumn: String = "label",
     prediction
   }
 
-  def getModel(): LogisticRegressionModel = {
-    model
-  }
-
-  def fitModel(data: DataFrame): LogisticRegressionTask = {
-    model = new LogisticRegression()
+  def getModel(): LogisticRegression = {
+    new LogisticRegression()
       .setFeaturesCol(featureColumn)
       .setLabelCol(labelColumn)
       .setPredictionCol(predictionColumn)
-      .fit(data)
+  }
+
+  def fitModel(data: DataFrame): LogisticRegressionTask = {
+    model = getModel().fit(data)
     this
   }
 

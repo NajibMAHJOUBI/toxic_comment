@@ -24,10 +24,8 @@ class StopWordsRemoverTaskTest extends AssertionsForJUnit  {
   }
 
   @Test def testStopWordsRemover(): Unit = {
-    val data = new LoadDataSetTask("src/test/ressources/data")
-      .run(spark, "train")
-    val tokens = new TokenizerTask().run(data)
-    val removed = new StopWordsRemoverTask().run(tokens)
+    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "stopWordsRemover")
+    val removed = new StopWordsRemoverTask().run(data)
 
     assert(removed.isInstanceOf[DataFrame])
     assert(removed.columns.contains("words"))

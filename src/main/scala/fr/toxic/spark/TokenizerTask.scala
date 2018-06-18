@@ -1,10 +1,12 @@
 package fr.toxic.spark
 
-import org.apache.spark.sql.{DataFrame}
+
+import org.apache.spark.sql.DataFrame
 import org.apache.spark.ml.feature.Tokenizer
 import org.apache.spark.sql.functions.{col, regexp_replace, udf}
 
 import scala.collection.mutable.WrappedArray
+
 
 /**
   * Created by mahjoubi on 12/06/18.
@@ -29,7 +31,7 @@ class TokenizerTask(val inputColumn: String = "comment_text", val outputColumn: 
   }
 
   def removeDigit(data: DataFrame, inputColumn: String, outputColumn: String): DataFrame = {
-    def udfRemoveDigit = udf((x: WrappedArray[String]) => x.filter(!_.head.isDigit))
+    val udfRemoveDigit =  udf((x: WrappedArray[String]) => x.filter(!_.head.isDigit))
     data.withColumn(outputColumn, udfRemoveDigit(data(inputColumn))).drop(inputColumn)
   }
 
