@@ -32,8 +32,8 @@ class BinaryRelevanceTask(val columns: Array[String], val savePath: String, val 
     if (modelClassifier == "logistic_regression"){
       val logisticRegression = new LogisticRegressionTask(labelColumn = s"label_${column}",
         predictionColumn = s"prediction_${column}")
-      logisticRegression.fitModel(data)
-      logisticRegression.transformModel(data)
+      logisticRegression.fit(data)
+      logisticRegression.transform(data)
       prediction = logisticRegression.getPrediction().drop("probability").drop("rawPrediction")
     }
     prediction

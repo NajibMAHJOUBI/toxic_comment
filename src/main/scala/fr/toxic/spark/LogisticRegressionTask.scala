@@ -25,12 +25,12 @@ class LogisticRegressionTask(val labelColumn: String = "label",
       .setPredictionCol(predictionColumn)
   }
 
-  def fitModel(data: DataFrame): LogisticRegressionTask = {
+  def fit(data: DataFrame): LogisticRegressionTask = {
     model = getModel().fit(data)
     this
   }
 
-  def transformModel(data: DataFrame): LogisticRegressionTask = {
+  def transform(data: DataFrame): LogisticRegressionTask = {
     prediction = model.transform(data)
     this
   }
