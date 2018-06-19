@@ -17,17 +17,27 @@ class CrossValidationTaskTest extends AssertionsForJUnit {
       .master("local")
       .appName("test load dataset")
       .getOrCreate()
+    spark.sparkContext.setLogLevel("WARN")
   }
 
   @Test def crossValidationTest(): Unit = {
-    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "binaryRelevance")
-    val columns = Array("toxic")
-    val savePath = "target/model/binaryRelevance/OneColumn"
-    new BinaryRelevanceTask(columns = columns, savePath = savePath).run(data)
-    val prediction = spark.read.option("header", "true").csv(s"${savePath}/prediction")
-    assert(prediction.isInstanceOf[DataFrame])
-    columns.map(column => assert(prediction.columns.contains(s"label_${column}")))
-    columns.map(column => assert(prediction.columns.contains(s"prediction_${column}")))
+    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
+    val label = "toxic"
+    val feature = "tf"
+    val prediction = "prediction"
+    val model = "logistic_regression"
+    val cv = new CrossValidationTask(data = data,
+      labelColumn = label,
+      featureColumn = feature,
+      predictionColumn = prediction,
+      modelClassifier = model,
+      pathModel = "", pathPrediction = "")
+    cv.run()
+
+    assert(cv.getLabelColumn() == label)
+    assert(cv.getFeatureColumn() == feature)
+    assert(cv.getPredictionColumn() == prediction)
+    assert(cv.getModelClassifier() == model)
     }
 
   @After def afterAll() {

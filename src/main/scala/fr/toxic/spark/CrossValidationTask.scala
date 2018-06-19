@@ -1,21 +1,24 @@
 package fr.toxic.spark
 
+import org.apache.spark.ml.Estimator
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
 import org.apache.spark.ml.param.ParamMap
 import org.apache.spark.ml.tuning.{CrossValidator, CrossValidatorModel, ParamGridBuilder}
 import org.apache.spark.sql.DataFrame
 
+
 class CrossValidationTask(val data: DataFrame,
                           val labelColumn: String,
                           val featureColumn: String,
                           val predictionColumn: String,
-                          val modelClassifier: String) {
+                          val modelClassifier: String,
+                          val pathModel: String,
+                          val pathPrediction: String) {
 
   var paramGrid: Array[ParamMap] = _
   var evaluator: BinaryClassificationEvaluator = _
   var crossValidator: CrossValidator = _
   var crossValidatorModel: CrossValidatorModel = _
-
 
   def run(): CrossValidationTask = {
     defineGridParameters()
@@ -23,6 +26,16 @@ class CrossValidationTask(val data: DataFrame,
     defineCrossValidatorModel()
     fitModel()
   }
+
+  def getLabelColumn(): String = {labelColumn}
+
+  def getFeatureColumn(): String = {featureColumn}
+
+  def getPredictionColumn(): String = {predictionColumn}
+
+  def getModelClassifier(): String = {modelClassifier}
+
+  def getEstimator(): Estimator[_] = {crossValidator.getEstimator}
 
   def defineGridParameters(): CrossValidationTask = {
     if (modelClassifier == "logistic_regression") {
@@ -36,23 +49,26 @@ class CrossValidationTask(val data: DataFrame,
 
   def defineEvaluator(): CrossValidationTask = {
       evaluator = new BinaryClassificationEvaluator()
-        .setRawPredictionCol("prediction")
-        .setLabelCol("label")
+        .setRawPredictionCol(predictionColumn)
+        .setLabelCol(labelColumn)
         .setMetricName("areaUnderROC")
     this}
 
-
-
   def defineCrossValidatorModel(): CrossValidationTask = {
-    crossValidator = new CrossValidator().setEvaluator(evaluator).setEstimatorParamMaps(paramGrid)
-
+    crossValidator = new CrossValidator()
+      .setEvaluator(evaluator)
+      .setEstimatorParamMaps(paramGrid)
     if (modelClassifier == "logistic_regression") {
-      crossValidator = crossValidator.setEstimator(new LogisticRegressionTask().getModel())
+      val estimator = new LogisticRegressionTask(labelColumn=labelColumn,
+                                                 featureColumn=featureColumn,
+                                                 predictionColumn=predictionColumn)
+        .getModel()
+      crossValidator = crossValidator.setEstimator(estimator)
     }
-
     this}
 
   def fitModel(): CrossValidationTask = {
     crossValidatorModel = crossValidator.fit(data)
-    this}
+    this
+  }
 }
