@@ -23,6 +23,7 @@ class LoadDataTaskTest extends AssertionsForJUnit {
 
   @Test def testLoadTrainSet(): Unit = {
     val data = new LoadDataSetTask(sourcePath = "src/test/resources/data").run(spark, "train")
+    assert(data.count() == 6)
     val columns = data.columns
     assert(columns.contains("id"))
     assert(columns.contains("comment_text"))
@@ -45,6 +46,7 @@ class LoadDataTaskTest extends AssertionsForJUnit {
 
   @Test def testLoadTestSet(): Unit = {
     val data = new LoadDataSetTask(sourcePath = "src/test/resources/data").run(spark, "test")
+    assert(data.count() == 6)
     val columns = data.columns
     assert(columns.contains("id"))
     assert(columns.contains("comment_text"))
