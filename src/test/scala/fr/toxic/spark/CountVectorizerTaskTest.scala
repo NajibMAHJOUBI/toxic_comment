@@ -21,11 +21,13 @@ class CountVectorizerTaskTest extends AssertionsForJUnit  {
   }
 
   @Test def testCountVectoizer(): Unit = {
-    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "stopWordsRemover")
+    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "countVectorizer")
     val vocabSize = 10
     val count = new CountVectorizerTask(minDF = 1, vocabSize = vocabSize).run(data)
+//    count.write.parquet("src/test/resources/data/tfIdf")
 
     assert(count.isInstanceOf[DataFrame])
+    assert(count.count() == data.count())
     assert(count.columns.contains("tf"))
     val tf = count.rdd.map(x => x.getAs[Vector](x.fieldIndex("tf"))).collect()(0)
     assert(tf.size == vocabSize)
