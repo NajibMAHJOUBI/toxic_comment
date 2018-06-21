@@ -8,7 +8,7 @@ import org.scalatest.junit.AssertionsForJUnit
 /**
   * Created by mahjoubi on 12/06/18.
   */
-class LabelsFeaturesTaskTest extends AssertionsForJUnit  {
+class LabelFeaturesTaskTest extends AssertionsForJUnit  {
 
   private var spark: SparkSession = _
 
@@ -27,7 +27,7 @@ class LabelsFeaturesTaskTest extends AssertionsForJUnit  {
     val vocabSize = 10
     val count = new CountVectorizerTask(minDF = 1, vocabSize = vocabSize).run(removed)
     val tfIdf = new TfIdfTask().run(count)
-    val labelFeatures = new LabelsFeaturesTask().run(tfIdf)
+    val labelFeatures = new LabelFeaturesTask().run(tfIdf)
 
     assert(labelFeatures.isInstanceOf[DataFrame])
     assert(labelFeatures.columns.contains("label"))
