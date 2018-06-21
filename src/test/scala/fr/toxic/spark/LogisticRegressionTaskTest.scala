@@ -20,8 +20,10 @@ class LogisticRegressionTaskTest extends AssertionsForJUnit  {
   }
 
   @Test def testLogisticRegression(): Unit = {
-    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "logisticRegression")
-    val logisticRegression = new LogisticRegressionTask()
+    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
+    val logisticRegression = new LogisticRegressionTask(labelColumn = "toxic",
+                                                        featureColumn = "tf_idf",
+                                                        predictionColumn = "prediction")
     logisticRegression.fit(data)
     logisticRegression.transform(data)
     val prediction = logisticRegression.getPrediction()
