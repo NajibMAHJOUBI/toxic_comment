@@ -20,11 +20,11 @@ class CountVectorizerTaskTest extends AssertionsForJUnit  {
       .getOrCreate()
   }
 
-  @Test def testCountVectoizer(): Unit = {
-    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "countVectorizer")
+  @Test def testCountVectorizer(): Unit = {
+    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "stopWordsRemover")
     val vocabSize = 10
     val count = new CountVectorizerTask(minDF = 1, vocabSize = vocabSize).run(data)
-//    count.write.parquet("src/test/resources/data/tfIdf")
+    // count.write.parquet("src/test/resources/data/countVectorizer")
 
     assert(count.isInstanceOf[DataFrame])
     assert(count.count() == data.count())
