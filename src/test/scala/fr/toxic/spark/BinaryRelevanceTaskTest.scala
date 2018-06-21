@@ -20,7 +20,7 @@ class BinaryRelevanceTaskTest extends AssertionsForJUnit {
   }
 
   @Test def testBrOneColumnTest(): Unit = {
-    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "binaryRelevance")
+    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
     val columns = Array("toxic")
     val savePath = "target/model/binaryRelevance/OneColumn"
     new BinaryRelevanceTask(columns = columns, savePath = savePath).run(data)
@@ -31,7 +31,7 @@ class BinaryRelevanceTaskTest extends AssertionsForJUnit {
     }
 
   @Test def testBrTwoColumnTest(): Unit = {
-    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "binaryRelevance")
+    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
     val columns = Array("toxic", "severe_toxic")
     val savePath = "target/model/binaryRelevance/twoColumn"
     new BinaryRelevanceTask(columns = columns, savePath = savePath).run(data)
