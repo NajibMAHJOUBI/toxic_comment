@@ -1,9 +1,6 @@
 package fr.toxic.spark
 
 import org.apache.spark.sql.DataFrame
-import org.apache.spark.ml.linalg.Vectors
-import org.apache.spark.sql.functions.udf
-import org.apache.spark.sql.functions.col
 
 /**
   * Created by mahjoubi on 12/06/18.
