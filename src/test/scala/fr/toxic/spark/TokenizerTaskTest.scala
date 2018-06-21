@@ -23,7 +23,7 @@ class TokenizerTaskTest extends AssertionsForJUnit  {
   @Test def testTokenizer(): Unit = {
     val data = new LoadDataSetTask("src/test/resources/data").run(spark, "train")
     val tokens = new TokenizerTask().run(data)
-//    tokens.write.parquet("src/test/resources/data/stopWordsRemover")
+    // tokens.write.parquet("src/test/resources/data/tokenizer")
 
     assert(tokens.isInstanceOf[DataFrame])
     assert(tokens.count() == data.count())
