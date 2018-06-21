@@ -24,9 +24,9 @@ class StopWordsRemoverTaskTest extends AssertionsForJUnit  {
   }
 
   @Test def testStopWordsRemover(): Unit = {
-    val data = new LoadDataSetTask(sourcePath = "src/test/resources/data").run(spark, "stopWordsRemover")
+    val data = new LoadDataSetTask(sourcePath = "src/test/resources/data").run(spark, "tokenizer")
     val removed = new StopWordsRemoverTask().run(data)
-    removed.write.parquet("src/test/resources/data/countVectorizer")
+    // removed.write.parquet("src/test/resources/data/stopWordsRemover")
 
     assert(removed.isInstanceOf[DataFrame])
     assert(removed.count() == data.count())
