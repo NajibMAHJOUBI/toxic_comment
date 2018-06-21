@@ -25,9 +25,8 @@ class CrossValidationLogisticRegressionTask(val data: DataFrame,
     defineGridParameters()
     defineEvaluator()
     defineCrossValidatorModel()
-//    fit()
+    fit()
   }
-
 
   def defineEstimator(): CrossValidationLogisticRegressionTask = {
     estimator = new LogisticRegressionTask(labelColumn=labelColumn,
@@ -64,22 +63,44 @@ class CrossValidationLogisticRegressionTask(val data: DataFrame,
     this
   }
 
-  def getLabelColumn(): String = {labelColumn}
+  def transform(data: DataFrame): DataFrame = {
+    crossValidatorModel.transform(data)
+  }
 
-  def getFeatureColumn(): String = {featureColumn}
+  def getLabelColumn(): String = {
+    labelColumn
+  }
 
-  def getPredictionColumn(): String = {predictionColumn}
+  def getFeatureColumn(): String = {
+    featureColumn
+  }
 
-  def getGridParameters(): Array[ParamMap] = {paramGrid}
+  def getPredictionColumn(): String = {
+    predictionColumn
+  }
 
-  def getEstimator(): LogisticRegression = {estimator}
+  def getGridParameters(): Array[ParamMap] = {
+    paramGrid
+  }
 
-  def getEvaluator(): Evaluator = {evaluator}
+  def getEstimator(): LogisticRegression = {
+    estimator
+  }
 
-  def getCrossValidator(): CrossValidator = {crossValidator}
+  def getEvaluator(): Evaluator = {
+    evaluator
+  }
 
-//  def getCrossValidator(): CrossValidator = {crossValidator}
-//
+  def getCrossValidator(): CrossValidator = {
+    crossValidator
+  }
 
+  def getCrossValidatorModel(): CrossValidatorModel = {
+    crossValidatorModel
+  }
 
+   def setGridParameters(grid: Array[ParamMap]): CrossValidationLogisticRegressionTask = {
+     paramGrid = grid
+     this
+   }
 }
