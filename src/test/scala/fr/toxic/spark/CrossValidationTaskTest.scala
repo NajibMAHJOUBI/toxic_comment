@@ -47,39 +47,41 @@ class CrossValidationTaskTest extends AssertionsForJUnit {
     assert(cv.getEstimator().isInstanceOf[LogisticRegression])
     assert(cv.getEvaluator().isInstanceOf[Evaluator])
     assert(cv.getCrossValidator().isInstanceOf[CrossValidator])
+
+    val transform = cv.transform(data)
+    assert(transform.isInstanceOf[DataFrame])
+    assert(transform.count() == data.count())
+    assert(transform.columns.contains(prediction))
     }
 
-  @Test def estimatorEvaluatorTest(): Unit = {
-    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
-
-    val cv = new CrossValidationLogisticRegressionTask(data = data,
-      labelColumn = label,
-      featureColumn = feature,
-      predictionColumn = prediction,
-      pathModel = "", pathPrediction = "")
-    cv.run()
-
-    val transform = cv.getEstimator().fit(data).transform(data)
-    assert(transform.isInstanceOf[DataFrame])
-    assert(transform.columns.contains(prediction))
-
-    assert(cv.getEvaluator().evaluate(transform).isInstanceOf[Double])
-
-  }
-
-  @Test def crossValidatorTest(): Unit = {
-    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
-    val cv = new CrossValidationLogisticRegressionTask(data = data,
-      labelColumn = label,
-      featureColumn = feature,
-      predictionColumn = prediction,
-      pathModel = "", pathPrediction = "")
-    cv.run()
-
-    val crossValidator = cv.getCrossValidator()
-    crossValidator.fit(data)
-
-  }
+//  @Test def estimatorEvaluatorTest(): Unit = {
+//    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
+//
+//    val cv = new CrossValidationLogisticRegressionTask(data = data,
+//      labelColumn = label,
+//      featureColumn = feature,
+//      predictionColumn = prediction,
+//      pathModel = "", pathPrediction = "")
+//    cv.run()
+//
+//    val transform = cv.getEstimator().fit(data).transform(data)
+//    assert(transform.isInstanceOf[DataFrame])
+//    assert(transform.columns.contains(prediction))
+//    assert(cv.getEvaluator().evaluate(transform).isInstanceOf[Double])
+//  }
+//
+//  @Test def crossValidatorTest(): Unit = {
+//    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
+//    val cv = new CrossValidationLogisticRegressionTask(data = data,
+//      labelColumn = label,
+//      featureColumn = feature,
+//      predictionColumn = prediction,
+//      pathModel = "", pathPrediction = "")
+//    cv.run()
+//
+//    val crossValidator = cv.getCrossValidator()
+//    crossValidator.fit(data)
+//  }
 
   @After def afterAll() {
     spark.stop()
