@@ -15,7 +15,7 @@ class LabelFeaturesTask(val oldLabelColumn: String, val newLabelColumn: String,
     defineFeatures(defineLabel(data))
   }
 
-  def defineLabel(data: DataFrame) = {
+  def defineLabel(data: DataFrame)= {
     data.withColumnRenamed(oldLabelColumn, newLabelColumn)
   }
 

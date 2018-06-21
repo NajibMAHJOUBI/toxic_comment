@@ -21,21 +21,22 @@ class LabelFeaturesTaskTest extends AssertionsForJUnit  {
   }
 
   @Test def testLabelsFeatures(): Unit = {
-    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "train")
-    val tokens = new TokenizerTask().run(data)
-    val removed = new StopWordsRemoverTask().run(tokens)
-    val vocabSize = 10
-    val count = new CountVectorizerTask(minDF = 1, vocabSize = vocabSize).run(removed)
-    val tfIdf = new TfIdfTask().run(count)
-    val labelFeatures = new LabelFeaturesTask().run(tfIdf)
+    val newLabelColumn="label_toxic"
+    val newFeatureColumn="features"
+    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
+    val labelFeatures = new LabelFeaturesTask(oldLabelColumn = "toxic", newLabelColumn = newLabelColumn,
+                                              oldFeatureColumn = "tf_idf", newFeatureColumn = newFeatureColumn).run(data)
 
     assert(labelFeatures.isInstanceOf[DataFrame])
-    assert(labelFeatures.columns.contains("label"))
-    assert(labelFeatures.columns.contains("features"))
-    val labels = labelFeatures.rdd.map(x => x.getAs[Vector](x.fieldIndex("label"))).collect()(0)
-    assert(labels.size == 6)
-    val features = labelFeatures.rdd.map(x => x.getAs[Vector](x.fieldIndex("features"))).collect()(0)
-    assert(features.size == vocabSize)
+    assert(labelFeatures.count() == data.count())
+    assert(labelFeatures.columns.contains(newLabelColumn))
+    assert(labelFeatures.columns.contains(newFeatureColumn))
+    labelFeatures.select(newLabelColumn, newFeatureColumn).show()
+    val labels = labelFeatures.rdd.map(x => x.getAs[Vector](x.fieldIndex(newLabelColumn)))//.collect()(0)
+    print(labels.collect())
+//    assert(labels.size == 6)
+//    val features = labelFeatures.rdd.map(x => x.getAs[Vector](x.fieldIndex(newFeatureColumn))).collect()(0)
+//    assert(features.size == 10)
   }
 
   @After def afterAll() {
