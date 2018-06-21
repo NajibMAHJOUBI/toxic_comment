@@ -26,17 +26,12 @@ class LabelFeaturesTaskTest extends AssertionsForJUnit  {
     val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
     val labelFeatures = new LabelFeaturesTask(oldLabelColumn = "toxic", newLabelColumn = newLabelColumn,
                                               oldFeatureColumn = "tf_idf", newFeatureColumn = newFeatureColumn).run(data)
-
     assert(labelFeatures.isInstanceOf[DataFrame])
     assert(labelFeatures.count() == data.count())
     assert(labelFeatures.columns.contains(newLabelColumn))
     assert(labelFeatures.columns.contains(newFeatureColumn))
-    labelFeatures.select(newLabelColumn, newFeatureColumn).show()
-    val labels = labelFeatures.rdd.map(x => x.getAs[Vector](x.fieldIndex(newLabelColumn)))//.collect()(0)
-    print(labels.collect())
-//    assert(labels.size == 6)
-//    val features = labelFeatures.rdd.map(x => x.getAs[Vector](x.fieldIndex(newFeatureColumn))).collect()(0)
-//    assert(features.size == 10)
+    val features = labelFeatures.rdd.map(x => x.getAs[Vector](x.fieldIndex(newFeatureColumn))).collect()(0)
+    assert(features.size == 10)
   }
 
   @After def afterAll() {
