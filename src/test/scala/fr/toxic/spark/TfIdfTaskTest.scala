@@ -21,10 +21,10 @@ class TfIdfTaskTest extends AssertionsForJUnit {
   }
 
   @Test def testTfIdfTest(): Unit = {
-    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
+    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "countVectorizer")
     val vocabSize = 10
     val tfIdf = new TfIdfTask().run(data)
-    tfIdf.write.parquet("src/test/resources/data/labelsFeatures")
+    // tfIdf.write.parquet("src/test/resources/data/tfIdf")
 
     assert(tfIdf.isInstanceOf[DataFrame])
     assert(tfIdf.count() == data.count())
