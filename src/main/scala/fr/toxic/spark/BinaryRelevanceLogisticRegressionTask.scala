@@ -30,7 +30,9 @@ class BinaryRelevanceLogisticRegressionTask(val columns: Array[String], val save
   def computeModel(data: DataFrame, column: String): LogisticRegressionModel = {
     var model: LogisticRegressionModel = _
     if (methodValidation == "cross_validation") {
-      columns.map()
+      columns.map(column => {
+        println(column)
+      })
     } else{
       val logisticRegression = new LogisticRegressionTask(labelColumn = s"label_${column}", featureColumn=featureColumn,
         predictionColumn = s"prediction_${column}")
