@@ -23,6 +23,10 @@ class LogisticRegressionTask(val labelColumn: String = "label",
     model
   }
 
+  def getModelFit(): LogisticRegressionModel = {
+    modelFit
+  }
+
   def defineModel(): LogisticRegressionTask= {
     model = new LogisticRegression()
       .setFeaturesCol(featureColumn)
