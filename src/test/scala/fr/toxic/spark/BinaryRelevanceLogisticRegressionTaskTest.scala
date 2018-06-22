@@ -7,7 +7,7 @@ import org.scalatest.junit.AssertionsForJUnit
 /**
   * Created by mahjoubi on 12/06/18.
   */
-class BinaryRelevanceTaskTest extends AssertionsForJUnit {
+class BinaryRelevanceLogisticRegressionTaskTest extends AssertionsForJUnit {
 
   private var spark: SparkSession = _
 
@@ -23,7 +23,7 @@ class BinaryRelevanceTaskTest extends AssertionsForJUnit {
     val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
     val columns = Array("toxic")
     val savePath = "target/model/binaryRelevance/OneColumn"
-    new BinaryRelevanceTask(columns = columns, savePath = savePath).run(data)
+    new BinaryRelevanceLogisticRegressionTask(columns = columns, savePath = savePath).run(data)
     val prediction = spark.read.option("header", "true").csv(s"${savePath}/prediction")
     assert(prediction.isInstanceOf[DataFrame])
     columns.map(column => assert(prediction.columns.contains(s"label_${column}")))
@@ -34,7 +34,7 @@ class BinaryRelevanceTaskTest extends AssertionsForJUnit {
     val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
     val columns = Array("toxic", "severe_toxic")
     val savePath = "target/model/binaryRelevance/twoColumn"
-    new BinaryRelevanceTask(columns = columns, savePath = savePath).run(data)
+    new BinaryRelevanceLogisticRegressionTask(columns = columns, savePath = savePath).run(data)
     val prediction = spark.read.option("header", "true").csv(s"${savePath}/prediction")
     assert(prediction.isInstanceOf[DataFrame])
     columns.map(column => assert(prediction.columns.contains(s"prediction_${column}")))
