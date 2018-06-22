@@ -1,5 +1,6 @@
 package fr.toxic.spark
 
+import org.apache.spark.ml.classification.LogisticRegressionModel
 import org.apache.spark.sql.{Column, DataFrame}
 import org.apache.spark.sql.functions.col
 
@@ -16,26 +17,28 @@ class BinaryRelevanceLogisticRegressionTask(val columns: Array[String], val save
     var prediction: DataFrame = data
     columns.map(column => {
       val labelFeatures = createLabel(prediction, column)
-      prediction = computeModel(labelFeatures, column)
+      val model = computeModel(labelFeatures, column)
+      prediction = model.transform(labelFeatures)
     })
     savePrediction(prediction)
   }
-
-//  def createFeatures(data: DataFrame): DataFrame = {
-//    data.withColumnRenamed(featureColumn, "features")
-//  }
 
   def createLabel(data: DataFrame, column: String): DataFrame = {
     data.withColumnRenamed(column, s"label_${column}")
   }
 
-  def computeModel(data: DataFrame, column: String): DataFrame = {
-    val logisticRegression = new LogisticRegressionTask(labelColumn = s"label_${column}", featureColumn=featureColumn,
-      predictionColumn = s"prediction_${column}")
-    logisticRegression.defineModel()
-    logisticRegression.fit(data)
-    logisticRegression.transform(data)
-    logisticRegression.getPrediction().drop("probability").drop("rawPrediction")
+  def computeModel(data: DataFrame, column: String): LogisticRegressionModel = {
+    var model: LogisticRegressionModel = _
+    if (methodValidation == "cross_validation") {
+      columns.map()
+    } else{
+      val logisticRegression = new LogisticRegressionTask(labelColumn = s"label_${column}", featureColumn=featureColumn,
+        predictionColumn = s"prediction_${column}")
+      logisticRegression.defineModel()
+      logisticRegression.fit(data)
+      model = logisticRegression.getModelFit()
+    }
+    model
   }
 
 //  def computeModelValidation(dataFrame: DataFrame): Dataframe = {
