@@ -32,6 +32,7 @@ class BinaryRelevanceLogisticRegressionTask(val columns: Array[String], val save
   def computeModel(data: DataFrame, column: String): DataFrame = {
     val logisticRegression = new LogisticRegressionTask(labelColumn = s"label_${column}", featureColumn=featureColumn,
       predictionColumn = s"prediction_${column}")
+    logisticRegression.defineModel()
     logisticRegression.fit(data)
     logisticRegression.transform(data)
     logisticRegression.getPrediction().drop("probability").drop("rawPrediction")
