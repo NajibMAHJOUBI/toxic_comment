@@ -1,6 +1,6 @@
 package fr.toxic.spark
 
-import org.apache.spark.ml.classification.LogisticRegression
+import org.apache.spark.ml.classification.{LogisticRegression, LogisticRegressionModel}
 import org.apache.spark.ml.evaluation.{BinaryClassificationEvaluator, Evaluator}
 import org.apache.spark.ml.param.ParamMap
 import org.apache.spark.ml.tuning.{CrossValidator, CrossValidatorModel, ParamGridBuilder}
@@ -99,7 +99,11 @@ class CrossValidationLogisticRegressionTask(val data: DataFrame,
     crossValidatorModel
   }
 
-   def setGridParameters(grid: Array[ParamMap]): CrossValidationLogisticRegressionTask = {
+  def getBestModel(): LogisticRegressionModel = {
+    crossValidatorModel.bestModel.asInstanceOf[LogisticRegressionModel]
+  }
+
+  def setGridParameters(grid: Array[ParamMap]): CrossValidationLogisticRegressionTask = {
      paramGrid = grid
      this
    }
