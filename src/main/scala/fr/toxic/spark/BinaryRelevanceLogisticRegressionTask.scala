@@ -25,7 +25,6 @@ class BinaryRelevanceLogisticRegressionTask(val columns: Array[String], val save
       prediction = computePrediction(labelFeatures, model)
     })
     savePrediction(prediction)
-    prediction.printSchema()
     multiLabelPrecision(prediction)
   }
 
@@ -86,6 +85,10 @@ class BinaryRelevanceLogisticRegressionTask(val columns: Array[String], val save
 
   def saveModel(column: String): Unit = {
     model.write.overwrite().save(s"$savePath/model/$column")
+  }
+
+  def getPrediction(): DataFrame = {
+    prediction
   }
 
 }
