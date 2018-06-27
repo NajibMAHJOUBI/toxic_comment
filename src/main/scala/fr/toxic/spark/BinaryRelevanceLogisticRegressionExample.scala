@@ -2,7 +2,7 @@
 package fr.toxic.spark
 
 import org.apache.log4j.{Level, LogManager}
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object BinaryRelevanceLogisticRegressionExample {
 
@@ -26,8 +26,10 @@ object BinaryRelevanceLogisticRegressionExample {
 
     val columns = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
     val savePath = "target/kaggle/binaryRelevance/twoColumn/simpleValidation"
-    new BinaryRelevanceLogisticRegressionTask(columns = columns, savePath = savePath,
-                                              featureColumn = "tf_idf", methodValidation = "simple").run(tfIdf)
+    val binaryRelevance = new BinaryRelevanceLogisticRegressionTask(columns = columns, savePath = savePath,
+                                              featureColumn = "tf_idf", methodValidation = "simple")
+    binaryRelevance.run(tfIdf)
+    new WriteKaggleFormat().run(binaryRelevance.getPrediction(), savePath)
   }
 }
 
