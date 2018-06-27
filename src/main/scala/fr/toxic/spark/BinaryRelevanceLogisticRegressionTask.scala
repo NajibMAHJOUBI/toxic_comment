@@ -1,8 +1,8 @@
 package fr.toxic.spark
 
 import org.apache.spark.ml.classification.LogisticRegressionModel
-import org.apache.spark.sql.{Column, DataFrame}
 import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.{Column, DataFrame}
 
 /**
   * Created by mahjoubi on 13/06/18.
@@ -12,13 +12,14 @@ class BinaryRelevanceLogisticRegressionTask(val columns: Array[String], val save
                                             val methodValidation: String = "simple") {
 
   var prediction: DataFrame = _
+  var model: LogisticRegressionModel = _
 
   def run(data: DataFrame): Unit = {
     var prediction: DataFrame = data
     columns.map(column => {
       val labelFeatures = createLabel(prediction, column)
       val model = computeModel(labelFeatures, column)
-      prediction = model.transform(labelFeatures)
+      prediction = model.transform(labelFeatures).drop("rawPrediction").drop("probability")
     })
     savePrediction(prediction)
   }
@@ -28,10 +29,13 @@ class BinaryRelevanceLogisticRegressionTask(val columns: Array[String], val save
   }
 
   def computeModel(data: DataFrame, column: String): LogisticRegressionModel = {
-    var model: LogisticRegressionModel = _
     if (methodValidation == "cross_validation") {
       columns.map(column => {
-        println(column)
+        val cv = new CrossValidationLogisticRegressionTask(data = data, labelColumn = s"label_${column}",
+          featureColumn = featureColumn, predictionColumn = s"prediction_${column}", pathModel = "",
+          pathPrediction = "")
+        cv.run()
+        model = cv.getBestModel()
       })
     } else{
       val logisticRegression = new LogisticRegressionTask(labelColumn = s"label_${column}", featureColumn=featureColumn,
@@ -42,12 +46,6 @@ class BinaryRelevanceLogisticRegressionTask(val columns: Array[String], val save
     }
     model
   }
-
-//  def computeModelValidation(dataFrame: DataFrame): Dataframe = {
-//    if (methodValidation == "simple") {
-//
-//    }
-//  }
 
   def savePrediction(data: DataFrame): Unit = {
     val columnsToKeep: Set[Column] = (Set("id")
