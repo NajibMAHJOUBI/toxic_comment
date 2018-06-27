@@ -13,13 +13,12 @@ import org.scalatest.junit.AssertionsForJUnit
   */
 
 
-class CrossValidationTaskTest extends AssertionsForJUnit {
+class CrossValidationLogisticRegressionTaskTest extends AssertionsForJUnit {
 
-  private var spark: SparkSession = _
   private val label = "toxic"
   private val feature = "tf"
-  private val prediction = "prediction"
-  private val model = "logistic_regression"
+  private val prediction = s"prediction_${label}"
+  private var spark: SparkSession = _
 
   @Before def beforeAll() {
     spark = SparkSession
@@ -48,40 +47,17 @@ class CrossValidationTaskTest extends AssertionsForJUnit {
     assert(cv.getEvaluator().isInstanceOf[Evaluator])
     assert(cv.getCrossValidator().isInstanceOf[CrossValidator])
 
+    val bestModel = cv.getBestModel()
+    assert(bestModel.getLabelCol == label)
+    assert(bestModel.getFeaturesCol == feature)
+    assert(bestModel.getPredictionCol == prediction)
+
     val transform = cv.transform(data)
+    transform.printSchema()
     assert(transform.isInstanceOf[DataFrame])
     assert(transform.count() == data.count())
     assert(transform.columns.contains(prediction))
     }
-
-//  @Test def estimatorEvaluatorTest(): Unit = {
-//    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
-//
-//    val cv = new CrossValidationLogisticRegressionTask(data = data,
-//      labelColumn = label,
-//      featureColumn = feature,
-//      predictionColumn = prediction,
-//      pathModel = "", pathPrediction = "")
-//    cv.run()
-//
-//    val transform = cv.getEstimator().fit(data).transform(data)
-//    assert(transform.isInstanceOf[DataFrame])
-//    assert(transform.columns.contains(prediction))
-//    assert(cv.getEvaluator().evaluate(transform).isInstanceOf[Double])
-//  }
-//
-//  @Test def crossValidatorTest(): Unit = {
-//    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
-//    val cv = new CrossValidationLogisticRegressionTask(data = data,
-//      labelColumn = label,
-//      featureColumn = feature,
-//      predictionColumn = prediction,
-//      pathModel = "", pathPrediction = "")
-//    cv.run()
-//
-//    val crossValidator = cv.getCrossValidator()
-//    crossValidator.fit(data)
-//  }
 
   @After def afterAll() {
     spark.stop()
