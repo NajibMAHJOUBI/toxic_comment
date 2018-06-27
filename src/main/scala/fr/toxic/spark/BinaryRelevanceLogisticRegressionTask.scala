@@ -25,21 +25,21 @@ class BinaryRelevanceLogisticRegressionTask(val columns: Array[String], val save
   }
 
   def createLabel(data: DataFrame, column: String): DataFrame = {
-    data.withColumnRenamed(column, s"label_${column}")
+    data.withColumnRenamed(column, s"label_$column")
   }
 
   def computeModel(data: DataFrame, column: String): LogisticRegressionModel = {
     if (methodValidation == "cross_validation") {
       columns.map(column => {
-        val cv = new CrossValidationLogisticRegressionTask(data = data, labelColumn = s"label_${column}",
-          featureColumn = featureColumn, predictionColumn = s"prediction_${column}", pathModel = "",
+        val cv = new CrossValidationLogisticRegressionTask(data = data, labelColumn = s"label_$column",
+          featureColumn = featureColumn, predictionColumn = s"prediction_$column", pathModel = "",
           pathPrediction = "")
         cv.run()
         model = cv.getBestModel()
       })
     } else{
-      val logisticRegression = new LogisticRegressionTask(labelColumn = s"label_${column}", featureColumn=featureColumn,
-        predictionColumn = s"prediction_${column}")
+      val logisticRegression = new LogisticRegressionTask(labelColumn = s"label_$column", featureColumn=featureColumn,
+        predictionColumn = s"prediction_$column")
       logisticRegression.defineModel()
       logisticRegression.fit(data)
       model = logisticRegression.getModelFit()
@@ -49,15 +49,15 @@ class BinaryRelevanceLogisticRegressionTask(val columns: Array[String], val save
 
   def savePrediction(data: DataFrame): Unit = {
     val columnsToKeep: Set[Column] = (Set("id")
-      ++ columns.map(name => s"label_${name}").toSet
-      ++ columns.map(name => s"prediction_${name}").toSet
+      ++ columns.map(name => s"label_$name").toSet
+      ++ columns.map(name => s"prediction_$name").toSet
       )
       .map(name => col(name))
 
     data
       .select(columnsToKeep.toSeq: _*)
       .write.option("header", "true").mode("overwrite")
-      .csv(s"${savePath}/prediction")
+      .csv(s"$savePath/prediction")
   }
 
 }
