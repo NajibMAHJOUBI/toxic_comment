@@ -2,10 +2,9 @@
 package fr.toxic.spark
 
 import org.apache.log4j.{Level, LogManager}
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.SparkSession
 
 object BinaryRelevanceLogisticRegressionExample {
-
 
   def main(arguments: Array[String]): Unit = {
     val spark = SparkSession
