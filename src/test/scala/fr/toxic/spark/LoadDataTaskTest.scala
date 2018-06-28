@@ -55,6 +55,17 @@ class LoadDataTaskTest extends AssertionsForJUnit {
     assert(dataSchema.fields(dataSchema.fieldIndex("comment_text")).dataType == StringType)
   }
 
+  @Test def testLoadCompleteSet(): Unit = {
+    val data = new LoadDataSetTask(sourcePath = "data/parquet", format = "parquet").run(spark, "test")
+    assert(data.count() == 153164)
+    assert(data.columns.length == 2)
+    assert(data.columns.contains("id"))
+    assert(data.columns.contains("comment_text"))
+    val dataSchema = data.schema
+    assert(dataSchema.fields(dataSchema.fieldIndex("id")).dataType == StringType)
+    assert(dataSchema.fields(dataSchema.fieldIndex("comment_text")).dataType == StringType)
+  }
+
   @After def afterAll() {
     spark.stop()
   }
