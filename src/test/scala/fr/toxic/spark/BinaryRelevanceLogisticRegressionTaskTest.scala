@@ -26,8 +26,8 @@ class BinaryRelevanceLogisticRegressionTaskTest extends AssertionsForJUnit {
     val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
     val columns = Array("toxic")
     val savePath = "target/model/binaryRelevance/oneColumn/simpleValidation"
-    new BinaryRelevanceLogisticRegressionTask(columns = columns, savePath = savePath,
-                                              featureColumn = "tf_idf", methodValidation = "simple").run(data)
+    new BinaryRelevanceLogisticRegressionTask(data = data, columns = columns, savePath = savePath,
+                                              featureColumn = "tf_idf", methodValidation = "simple").run()
     val prediction = spark.read.option("header", "true").csv(s"${savePath}/prediction")
     assert(prediction.isInstanceOf[DataFrame])
     columns.map(column => assert(prediction.columns.contains(s"label_${column}")))
@@ -38,8 +38,8 @@ class BinaryRelevanceLogisticRegressionTaskTest extends AssertionsForJUnit {
     val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
     val columns = Array("toxic")
     val savePath = "target/model/binaryRelevance/oneColumn/crossValidation"
-    new BinaryRelevanceLogisticRegressionTask(columns = columns, savePath = savePath,
-      featureColumn = "tf_idf", methodValidation = "cross_validation").run(data)
+    new BinaryRelevanceLogisticRegressionTask(data= data, columns = columns, savePath = savePath,
+      featureColumn = "tf_idf", methodValidation = "cross_validation").run()
     val prediction = spark.read.option("header", "true").csv(s"${savePath}/prediction")
     assert(prediction.isInstanceOf[DataFrame])
     columns.map(column => assert(prediction.columns.contains(s"label_${column}")))
@@ -50,8 +50,8 @@ class BinaryRelevanceLogisticRegressionTaskTest extends AssertionsForJUnit {
     val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
     val columns = Array("toxic", "severe_toxic")
     val savePath = "target/model/binaryRelevance/twoColumn/simpleValidation"
-    new BinaryRelevanceLogisticRegressionTask(columns = columns, savePath = savePath,
-                                              featureColumn = "tf_idf", methodValidation = "simple").run(data)
+    new BinaryRelevanceLogisticRegressionTask(data= data, columns = columns, savePath = savePath,
+                                              featureColumn = "tf_idf", methodValidation = "simple").run()
     val prediction = spark.read.option("header", "true").csv(s"${savePath}/prediction")
     assert(prediction.isInstanceOf[DataFrame])
     columns.map(column => assert(prediction.columns.contains(s"prediction_${column}")))
@@ -62,8 +62,8 @@ class BinaryRelevanceLogisticRegressionTaskTest extends AssertionsForJUnit {
     val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
     val columns =  Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
     val savePath = "target/model/binaryRelevance/twoColumn/simpleValidation"
-    new BinaryRelevanceLogisticRegressionTask(columns = columns, savePath = savePath,
-                                              featureColumn = "tf_idf", methodValidation = "simple").run(data)
+    new BinaryRelevanceLogisticRegressionTask(data= data, columns = columns, savePath = savePath,
+                                              featureColumn = "tf_idf", methodValidation = "simple").run()
     val prediction = spark.read.option("header", "true").csv(s"${savePath}/prediction")
     // prediction.write.parquet("src/test/resources/data/binaryRelevance")
     assert(prediction.isInstanceOf[DataFrame])
