@@ -65,7 +65,6 @@ class BinaryRelevanceLogisticRegressionTaskTest extends AssertionsForJUnit {
     new BinaryRelevanceLogisticRegressionTask(data= data, columns = columns, savePath = savePath,
                                               featureColumn = "tf_idf", methodValidation = "simple").run()
     val prediction = spark.read.option("header", "true").csv(s"${savePath}/prediction")
-    // prediction.write.parquet("src/test/resources/data/binaryRelevance")
     assert(prediction.isInstanceOf[DataFrame])
     columns.map(column => assert(prediction.columns.contains(s"prediction_${column}")))
     columns.map(column => assert(prediction.columns.contains(s"prediction_${column}")))
