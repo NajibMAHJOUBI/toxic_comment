@@ -15,7 +15,6 @@ class CountVectorizerTask(val inputColumn: String = "words", val outputColumn: S
   private var transform: DataFrame = _
 
   def run(data: DataFrame): Unit = {
-    countVectorizer(data, inputColumn, outputColumn, minDF, vocabSize)
     defineModel()
     fit(data)
     transform(data)
