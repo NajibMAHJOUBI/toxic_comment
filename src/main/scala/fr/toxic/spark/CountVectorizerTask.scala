@@ -1,7 +1,8 @@
 package fr.toxic.spark
 
-import org.apache.spark.ml.feature.CountVectorizer
-import org.apache.spark.sql.DataFrame
+import org.apache.spark
+import org.apache.spark.ml.feature.{CountVectorizer, CountVectorizerModel}
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
 /**
   * Created by mahjoubi on 12/06/18.
@@ -9,17 +10,43 @@ import org.apache.spark.sql.DataFrame
 class CountVectorizerTask(val inputColumn: String = "words", val outputColumn: String = "tf",
                           val minDF: Int = 2, val vocabSize: Int = 3) {
 
-  def run(data: DataFrame): DataFrame = {
+  private var countVectorizer: CountVectorizer = _
+  private var countVectorizerModel: CountVectorizerModel = _
+  private var transform: DataFrame = _
+
+  def run(data: DataFrame): Unit = {
     countVectorizer(data, inputColumn, outputColumn, minDF, vocabSize)
+    defineModel()
+    fit(data)
+    transform(data)
   }
 
-  def countVectorizer(data: DataFrame, inputColumn: String, outputColumn: String, minDF: Int, vocabSize: Int): DataFrame = {
-    new CountVectorizer()
+  def defineModel(): CountVectorizerTask = {
+    countVectorizer =  new CountVectorizer()
       .setInputCol(inputColumn)
       .setOutputCol(outputColumn)
       .setVocabSize(vocabSize)
       .setMinDF(minDF)
-      .fit(data)
-      .transform(data)
+    this
   }
+
+  def fit(data: DataFrame): CountVectorizerTask = {
+    countVectorizerModel = countVectorizer.fit(data)
+    this
+  }
+
+  def transform(data: DataFrame): CountVectorizerTask = {
+    transform = countVectorizerModel.transform(data)
+    this
+  }
+
+  def getTransform(): DataFrame = {
+    transform
+  }
+
+  def loadCountVectorizerModel(spark: SparkSession, path: String): CountVectorizerTask = {
+    countVectorizerModel = CountVectorizerModel.load(path)
+    this
+  }
+
 }
