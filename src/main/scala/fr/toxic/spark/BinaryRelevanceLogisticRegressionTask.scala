@@ -55,7 +55,7 @@ class BinaryRelevanceLogisticRegressionTask(val data: DataFrame,
     model.transform(data).drop(Seq("rawPrediction", "probability"): _*)
   }
 
-  def multiLabelPrecision(data: DataFrame) = {
+  def multiLabelPrecision(data: DataFrame): Unit= {
     val predictionColumns = columns.map(column => s"prediction_$column")
     val labelColumns = columns.map(column => s"label_$column")
     val predictionAndLabels: RDD[(Array[Double], Array[Double])] =
@@ -67,7 +67,6 @@ class BinaryRelevanceLogisticRegressionTask(val data: DataFrame,
     println(s"Precision = ${metrics.precision}")
     println(s"F1 measure = ${metrics.f1Measure}")
     println(s"Accuracy = ${metrics.accuracy}")
-    metrics
   }
 
   def savePrediction(data: DataFrame): Unit = {
