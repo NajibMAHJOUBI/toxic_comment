@@ -18,7 +18,7 @@ class TfIdfTask(val inputColumn: String = "tf", val outputColumn: String = "tf_i
     transform(data)
   }
 
-  def defineModel(): Unit = {
+  def defineModel(): TfIdfTask = {
     idf = new IDF().setInputCol(inputColumn).setOutputCol(outputColumn)
     this
   }
