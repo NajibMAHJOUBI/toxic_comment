@@ -22,28 +22,35 @@ object KaggleSubmissionExample {
     val trainStopWordsRemoved = new StopWordsRemoverTask().run(trainTokens)
     val countVectorizerModel = new CountVectorizerTask(minDF = 5, vocabSize = 1000)
     countVectorizerModel.run(trainStopWordsRemoved)
-    val tfIdfModel = new TfIdfTask()
-    tfIdf.run(countVectorizerModel.getTransform())
 
-//    val columns = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
-//    val savePath = "target/kaggle/binaryRelevance/twoColumn/simpleValidation"
-//    val binaryRelevance = new BinaryRelevanceLogisticRegressionTask(data= trainTfIdf, columns = columns, savePath = savePath,
-//                                              featureColumn = "tf_idf", methodValidation = "simple")
-//    binaryRelevance.run()
+    val tfIdfModel = new TfIdfTask()
+    tfIdfModel.run(countVectorizerModel.getTransform())
+
+    val trainTfIdf = tfIdfModel.getTransform()
+
+    val columns = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
+    val savePath = "target/kaggle/binaryRelevance/twoColumn/simpleValidation"
+    val binaryRelevance = new BinaryRelevanceLogisticRegressionTask(data= trainTfIdf, columns = columns, savePath = savePath,
+                                              featureColumn = "tf_idf", methodValidation = "simple")
+    binaryRelevance.run()
 //     new WriteKaggleSubmission().run(binaryRelevance.getPrediction(), savePath)
 
     // Test
     val test = new LoadDataSetTask(sourcePath = "data/parquet").run(spark, "test")
     val testTokens = new TokenizerTask().run(test)
     val testStopWordsRemoved = new StopWordsRemoverTask().run(testTokens)
+    val testTf = countVectorizerModel.transform(testStopWordsRemoved).getTransform()
+    var testTfIdf = tfIdfModel.transform(testTf).getTransform()
 
-    countVectorizerModel.transform(testStopWordsRemoved)
-    val testTf = countVectorizer.getTransform()
-    val testTfIdf = new TfIdfTask().run(testTf)
+    val logisticRegression = new LogisticRegressionTask(featureColumn = "tf_idf")
+    columns.map(column => {
+      testTfIdf = logisticRegression.loadModel(s"$savePath/model/$column").transform(testTfIdf).getTransform()
+    })
 
-
-
+    //    trainTfIdf.show(5)
+    testTfIdf.show(5)
 
   }
 }
 
+//kaggle competitions submit -c jigsaw-toxic-comment-classification-challenge -f part-00000-bdff9beb-52cf-4ff7-bf26-de79cbf100fc-c000.csv -m "simple validation + logistic regression"
