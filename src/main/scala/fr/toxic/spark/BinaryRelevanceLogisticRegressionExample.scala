@@ -28,7 +28,7 @@ object BinaryRelevanceLogisticRegressionExample {
     val binaryRelevance = new BinaryRelevanceLogisticRegressionTask(columns = columns, savePath = savePath,
                                               featureColumn = "tf_idf", methodValidation = "simple")
     binaryRelevance.run(tfIdf)
-    new WriteKaggleFormat().run(binaryRelevance.getPrediction(), savePath)
+    new WriteKaggleSubmission().run(binaryRelevance.getPrediction(), savePath)
   }
 }
 
