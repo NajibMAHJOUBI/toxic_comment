@@ -13,15 +13,7 @@ class LogisticRegressionTask(val labelColumn: String = "label",
 
   var model: LogisticRegression = _
   var modelFit: LogisticRegressionModel = _
-  var prediction: DataFrame = _
-
-  def getPrediction(): DataFrame = {
-    prediction
-  }
-
-  def getModel(): LogisticRegression = {
-    model
-  }
+  var transform: DataFrame = _
 
   def getModelFit(): LogisticRegressionModel = {
     modelFit
@@ -40,8 +32,12 @@ class LogisticRegressionTask(val labelColumn: String = "label",
     this
   }
 
+  def getModel(): LogisticRegression = {
+    model
+  }
+
   def transform(data: DataFrame): LogisticRegressionTask = {
-    prediction = modelFit.transform(data)
+    transform = modelFit.transform(data)
     this
   }
 
@@ -57,5 +53,14 @@ class LogisticRegressionTask(val labelColumn: String = "label",
 
   def getRegParam(): Double = {
     model.getRegParam
+  }
+
+  def loadModel(path: String): LogisticRegressionTask = {
+    LogisticRegression.load(path)
+    this
+  }
+
+  def getTransform(): DataFrame = {
+    transform
   }
 }
