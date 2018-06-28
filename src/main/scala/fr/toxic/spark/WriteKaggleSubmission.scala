@@ -3,7 +3,7 @@ package fr.toxic.spark
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.col
 
-class WriteKaggleFormat {
+class WriteKaggleSubmission {
 
   val predictionColumns = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
 
@@ -20,6 +20,10 @@ class WriteKaggleFormat {
       .write.option("header", "true")
       .mode("overwrite")
       .csv(s"$savePath/submission")
+  }
+
+  def getPredictionsColumns(): Array[String] = {
+    predictionColumns
   }
 
 }
