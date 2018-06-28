@@ -9,15 +9,15 @@ import org.apache.spark.sql.{Column, DataFrame}
 /**
   * Created by mahjoubi on 13/06/18.
   */
-class BinaryRelevanceLogisticRegressionTask(val columns: Array[String], val savePath: String,
+class BinaryRelevanceLogisticRegressionTask(val data: DataFrame,
+                                            val columns: Array[String], val savePath: String,
                                             val featureColumn: String = "tf_idf",
                                             val methodValidation: String = "simple") {
 
-  var prediction: DataFrame = _
+  var prediction: DataFrame = data
   var model: LogisticRegressionModel = _
 
-  def run(data: DataFrame): Unit = {
-    var prediction: DataFrame = data
+  def run(): Unit = {
     columns.map(column => {
       val labelFeatures = createLabel(prediction, column)
       val model = computeModel(labelFeatures, column)
