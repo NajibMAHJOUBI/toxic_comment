@@ -20,12 +20,12 @@ class WriteKaggleSubmissionTest extends AssertionsForJUnit  {
   }
 
   @Test def testWriteKaggleSubmission(): Unit = {
-    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "binaryRelevance")
+    val data = new LoadDataSetTask("src/test/resources/data", format = "parquet")
+      .run(spark, "binaryRelevance")
     val writeKaggle = new WriteKaggleSubmission()
     writeKaggle.run(data, savePath)
 
     val submission = spark.read.option("header", "true").csv(s"$savePath/submission")
-    submission.show(5)
     assert(submission.isInstanceOf[DataFrame])
     assert(submission.count() == data.count())
     assert(submission.columns.length == writeKaggle.getPredictionsColumns().length + 1)
