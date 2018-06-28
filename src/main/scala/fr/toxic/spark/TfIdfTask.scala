@@ -1,6 +1,6 @@
 package fr.toxic.spark
 
-import org.apache.spark.ml.feature.IDF
+import org.apache.spark.ml.feature.{IDF, IDFModel}
 import org.apache.spark.sql.DataFrame
 
 /**
@@ -8,11 +8,32 @@ import org.apache.spark.sql.DataFrame
   */
 class TfIdfTask(val inputColumn: String = "tf", val outputColumn: String = "tf_idf") {
 
-  def run(data: DataFrame): DataFrame = {
-    computeTfIdf(data, inputColumn, outputColumn)
+  private var idf: IDF = _
+  private var idfModel: IDFModel = _
+  private var transform: DataFrame = _
+
+  def run(data: DataFrame): Unit = {
+    defineModel()
+    fit(data)
+    transform(data)
   }
 
-  def computeTfIdf(data: DataFrame, inputColumn: String, outputColumn: String): DataFrame = {
-    new IDF().setInputCol(inputColumn).setOutputCol(outputColumn).fit(data).transform(data)
+  def defineModel(): Unit = {
+    idf = new IDF().setInputCol(inputColumn).setOutputCol(outputColumn)
+    this
+  }
+
+  def fit(data: DataFrame): TfIdfTask = {
+    idfModel = idf.fit(data)
+    this
+  }
+
+  def transform(data: DataFrame): TfIdfTask = {
+    transform = idfModel.transform(data)
+    this
+  }
+
+  def getTransform(): DataFrame = {
+    transform
   }
 }
