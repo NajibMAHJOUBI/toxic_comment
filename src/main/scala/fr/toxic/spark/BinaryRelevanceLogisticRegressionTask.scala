@@ -34,13 +34,12 @@ class BinaryRelevanceLogisticRegressionTask(val data: DataFrame,
 
   def computeModel(data: DataFrame, column: String): LogisticRegressionModel = {
     if (methodValidation == "cross_validation") {
-      columns.map(column => {
-        val cv = new CrossValidationLogisticRegressionTask(data = data, labelColumn = s"label_$column",
-          featureColumn = featureColumn, predictionColumn = s"prediction_$column", pathModel = "",
-          pathPrediction = "")
-        cv.run()
-        model = cv.getBestModel()
-      })
+      val cv = new CrossValidationLogisticRegressionTask(data = data, labelColumn = s"label_$column",
+                                                         featureColumn = featureColumn,
+                                                         predictionColumn = s"prediction_$column", pathModel = "",
+                                                         pathPrediction = "")
+      cv.run()
+      model = cv.getBestModel()
     } else{
       val logisticRegression = new LogisticRegressionTask(labelColumn = s"label_$column", featureColumn=featureColumn,
         predictionColumn = s"prediction_$column")
@@ -63,9 +62,9 @@ class BinaryRelevanceLogisticRegressionTask(val data: DataFrame,
                          labelColumns.map(column => p.getLong(p.fieldIndex(column)).toDouble)))
 
     val metrics = new MultilabelMetrics(predictionAndLabels)
-    println(s"Recall = ${metrics.recall}")
-    println(s"Precision = ${metrics.precision}")
-    println(s"F1 measure = ${metrics.f1Measure}")
+//    println(s"Recall = ${metrics.recall}")
+//    println(s"Precision = ${metrics.precision}")
+//    println(s"F1 measure = ${metrics.f1Measure}")
     println(s"Accuracy = ${metrics.accuracy}")
   }
 
