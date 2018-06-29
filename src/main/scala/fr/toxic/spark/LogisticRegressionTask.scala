@@ -8,7 +8,7 @@ import org.apache.spark.sql.DataFrame
   */
 class LogisticRegressionTask(val labelColumn: String = "label",
                              val featureColumn: String = "features",
-                             val predictionColumn: String = "prediction") {
+                             val predictionColumn: String = "prediction") extends ClassificationModelFactory {
 
 
   var model: LogisticRegression = _
@@ -19,7 +19,7 @@ class LogisticRegressionTask(val labelColumn: String = "label",
     modelFit
   }
 
-  def defineModel(): LogisticRegressionTask= {
+  override def defineModel(): LogisticRegressionTask= {
     model = new LogisticRegression()
       .setFeaturesCol(featureColumn)
       .setLabelCol(labelColumn)
@@ -27,7 +27,7 @@ class LogisticRegressionTask(val labelColumn: String = "label",
     this
   }
 
-  def fit(data: DataFrame): LogisticRegressionTask = {
+  override def fit(data: DataFrame): LogisticRegressionTask = {
     modelFit = getModel().fit(data)
     this
   }
@@ -36,7 +36,7 @@ class LogisticRegressionTask(val labelColumn: String = "label",
     model
   }
 
-  def transform(data: DataFrame): LogisticRegressionTask = {
+  override def transform(data: DataFrame): LogisticRegressionTask = {
     transform = modelFit.transform(data)
     this
   }
