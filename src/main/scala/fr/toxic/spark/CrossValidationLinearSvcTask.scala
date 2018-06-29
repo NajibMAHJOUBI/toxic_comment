@@ -1,6 +1,6 @@
 package fr.toxic.spark
 
-import org.apache.spark.ml.classification.{LinearSVC, LinearSVCModel, LogisticRegression, LogisticRegressionModel}
+import org.apache.spark.ml.classification.{LinearSVC, LinearSVCModel}
 import org.apache.spark.ml.evaluation.{BinaryClassificationEvaluator, Evaluator}
 import org.apache.spark.ml.param.ParamMap
 import org.apache.spark.ml.tuning.{CrossValidator, CrossValidatorModel, ParamGridBuilder}
