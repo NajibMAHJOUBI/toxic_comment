@@ -29,7 +29,6 @@ object KaggleSubmissionExample {
     tfIdfModel.run(countVectorizerModel.getTransform())
 
     val trainTfIdf = tfIdfModel.getTransform()
-    trainTfIdf.show(5)
 
     val columns = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
     val savePath = "target/kaggle/binaryRelevance/simpleValidation"
