@@ -11,7 +11,7 @@ import org.apache.spark.sql.DataFrame
   */
 class LinearSvcTask(val labelColumn: String = "label",
                     val featureColumn: String = "features",
-                    val predictionColumn: String = "prediction") {
+                    val predictionColumn: String = "prediction") extends ClassificationModelFactory {
 
 
   var model: LinearSVC = _
@@ -22,7 +22,7 @@ class LinearSvcTask(val labelColumn: String = "label",
     modelFit
   }
 
-  def defineModel(): LinearSvcTask= {
+  override def defineModel(): LinearSvcTask= {
     model = new LinearSVC()
       .setFeaturesCol(featureColumn)
       .setLabelCol(labelColumn)
@@ -30,7 +30,7 @@ class LinearSvcTask(val labelColumn: String = "label",
     this
   }
 
-  def fit(data: DataFrame): LinearSvcTask = {
+  override def fit(data: DataFrame): LinearSvcTask = {
     modelFit = getModel().fit(data)
     this
   }
@@ -39,7 +39,7 @@ class LinearSvcTask(val labelColumn: String = "label",
     model
   }
 
-  def transform(data: DataFrame): LinearSvcTask = {
+  override def transform(data: DataFrame): LinearSvcTask = {
     transform = modelFit.transform(data)
     this
   }
