@@ -16,6 +16,8 @@ object KaggleSubmissionExample {
     val log = LogManager.getRootLogger
     log.setLevel(Level.WARN)
 
+    val classifierMethod = "linear_svc"
+
     // Train
     val train = new LoadDataSetTask(sourcePath = "data/parquet").run(spark, "train")
     val trainTokens = new TokenizerTask().run(train)
@@ -31,9 +33,16 @@ object KaggleSubmissionExample {
 
     val columns = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
     val savePath = "target/kaggle/binaryRelevance/simpleValidation"
-    val binaryRelevance = new BinaryRelevanceLogisticRegressionTask(data= trainTfIdf, columns = columns, savePath = savePath,
-                                              featureColumn = "tf_idf", methodValidation = "cross_validation")
-    binaryRelevance.run()
+    if (classifierMethod == "linear_svc") {
+      val binaryRelevance = new BinaryRelevanceLinearSvcTask(data= trainTfIdf, columns = columns, savePath = savePath,
+        featureColumn = "tf_idf", methodValidation = "cross_validation")
+      binaryRelevance.run()
+    } else {
+      val binaryRelevance = new BinaryRelevanceLogisticRegressionTask(data= trainTfIdf, columns = columns, savePath = savePath,
+        featureColumn = "tf_idf", methodValidation = "cross_validation")
+      binaryRelevance.run()
+    }
+
 
     // Test
     val test = new LoadDataSetTask(sourcePath = "data/parquet").run(spark, "test")
