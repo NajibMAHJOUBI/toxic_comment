@@ -27,13 +27,13 @@ object KaggleSubmissionExample {
     tfIdfModel.run(countVectorizerModel.getTransform())
 
     val trainTfIdf = tfIdfModel.getTransform()
+    trainTfIdf.show(5)
 
     val columns = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
-    val savePath = "target/kaggle/binaryRelevance/twoColumn/simpleValidation"
+    val savePath = "target/kaggle/binaryRelevance/simpleValidation"
     val binaryRelevance = new BinaryRelevanceLogisticRegressionTask(data= trainTfIdf, columns = columns, savePath = savePath,
-                                              featureColumn = "tf_idf", methodValidation = "simple")
+                                              featureColumn = "tf_idf", methodValidation = "cross_validation")
     binaryRelevance.run()
-//     new WriteKaggleSubmission().run(binaryRelevance.getPrediction(), savePath)
 
     // Test
     val test = new LoadDataSetTask(sourcePath = "data/parquet").run(spark, "test")
@@ -44,11 +44,16 @@ object KaggleSubmissionExample {
 
     val logisticRegression = new LogisticRegressionTask(featureColumn = "tf_idf")
     columns.map(column => {
-      testTfIdf = logisticRegression.loadModel(s"$savePath/model/$column").transform(testTfIdf).getTransform()
+      testTfIdf = logisticRegression
+        .loadModel(s"$savePath/model/$column")
+        .transform(testTfIdf)
+        .getTransform()
+        .drop(Seq("rawPrediction", "probability"): _*)
     })
 
-    //    trainTfIdf.show(5)
-    testTfIdf.show(5)
+    // testTfIdf.show(5)
+    new WriteKaggleSubmission().run(testTfIdf, savePath)
+
 
   }
 }
