@@ -56,7 +56,7 @@ class LogisticRegressionTask(val labelColumn: String = "label",
   }
 
   def loadModel(path: String): LogisticRegressionTask = {
-    LogisticRegression.load(path)
+    modelFit = LogisticRegressionModel.load(path)
     this
   }
 
