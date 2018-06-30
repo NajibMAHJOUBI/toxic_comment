@@ -1,5 +1,7 @@
 package fr.toxic.spark
 
+import fr.toxic.spark.utils.LoadDataSetTask
+import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.sql.types.{ArrayType, StringType}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.junit.{After, Before, Test}
@@ -9,7 +11,7 @@ import org.scalatest.junit.AssertionsForJUnit
 class WriteKaggleSubmissionTest extends AssertionsForJUnit  {
 
   private var spark: SparkSession = _
-  private val savePath = "src/test/resources/data"
+  private val savePath = "target/model/writeKaggleSubmission"
 
   @Before def beforeAll() {
     spark = SparkSession
@@ -17,6 +19,8 @@ class WriteKaggleSubmissionTest extends AssertionsForJUnit  {
       .master("local")
       .appName("test load dataset")
       .getOrCreate()
+    val log = LogManager.getRootLogger
+    log.setLevel(Level.WARN)
   }
 
   @Test def testWriteKaggleSubmission(): Unit = {

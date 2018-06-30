@@ -1,5 +1,8 @@
 package fr.toxic.spark
 
+import fr.toxic.spark.text.featurization.TokenizerTask
+import fr.toxic.spark.utils.LoadDataSetTask
+import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.sql.types.{ArrayType, StringType}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.junit.{After, Before, Test}
@@ -18,6 +21,8 @@ class TokenizerTaskTest extends AssertionsForJUnit  {
       .master("local")
       .appName("test load dataset")
       .getOrCreate()
+    val log = LogManager.getRootLogger
+    log.setLevel(Level.WARN)
   }
 
   @Test def testTokenizer(): Unit = {

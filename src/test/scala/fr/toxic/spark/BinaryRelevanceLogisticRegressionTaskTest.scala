@@ -1,5 +1,7 @@
 package fr.toxic.spark
 
+import fr.toxic.spark.classification.task.binaryRelevance.BinaryRelevanceLogisticRegressionTask
+import fr.toxic.spark.utils.LoadDataSetTask
 import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.junit.{After, Before, Test}

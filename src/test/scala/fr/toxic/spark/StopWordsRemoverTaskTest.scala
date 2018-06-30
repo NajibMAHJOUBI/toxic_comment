@@ -1,5 +1,8 @@
 package fr.toxic.spark
 
+import fr.toxic.spark.text.featurization.StopWordsRemoverTask
+import fr.toxic.spark.utils.LoadDataSetTask
+import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.ml.feature.StopWordsRemover
 import org.apache.spark.sql.types.{ArrayType, StringType}
 import org.apache.spark.sql.{DataFrame, SparkSession}
@@ -21,6 +24,8 @@ class StopWordsRemoverTaskTest extends AssertionsForJUnit  {
       .master("local")
       .appName("test load dataset")
       .getOrCreate()
+    val log = LogManager.getRootLogger
+    log.setLevel(Level.WARN)
   }
 
   @Test def testStopWordsRemover(): Unit = {

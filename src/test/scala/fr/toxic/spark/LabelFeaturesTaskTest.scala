@@ -1,5 +1,7 @@
 package fr.toxic.spark
 
+import fr.toxic.spark.utils.{LabelFeaturesTask, LoadDataSetTask}
+import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.ml.linalg.Vector
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.junit.{After, Before, Test}
@@ -18,6 +20,8 @@ class LabelFeaturesTaskTest extends AssertionsForJUnit  {
       .master("local")
       .appName("test load dataset")
       .getOrCreate()
+    val log = LogManager.getRootLogger
+    log.setLevel(Level.WARN)
   }
 
   @Test def testLabelsFeatures(): Unit = {

@@ -1,5 +1,8 @@
 package fr.toxic.spark
 
+import fr.toxic.spark.classification.task.LogisticRegressionTask
+import fr.toxic.spark.utils.LoadDataSetTask
+import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.junit.{After, Before, Test}
 import org.scalatest.junit.AssertionsForJUnit
@@ -17,6 +20,8 @@ class LogisticRegressionTaskTest extends AssertionsForJUnit  {
       .master("local")
       .appName("test load dataset")
       .getOrCreate()
+    val log = LogManager.getRootLogger
+    log.setLevel(Level.WARN)
   }
 
   @Test def testLogisticRegression(): Unit = {
@@ -27,7 +32,7 @@ class LogisticRegressionTaskTest extends AssertionsForJUnit  {
     logisticRegression.defineModel()
     logisticRegression.fit(data)
     logisticRegression.transform(data)
-    val prediction = logisticRegression.getPrediction()
+    val prediction = logisticRegression.getTransform
 
     assert(prediction.isInstanceOf[DataFrame])
     assert(prediction.columns.contains("prediction"))
@@ -40,7 +45,7 @@ class LogisticRegressionTaskTest extends AssertionsForJUnit  {
     val logisticRegression = new LogisticRegressionTask()
     logisticRegression.defineModel()
     logisticRegression.setRegParam(regParam)
-    assert(logisticRegression.getRegParam() == regParam)
+    assert(logisticRegression.getRegParam == regParam)
   }
 
   @After def afterAll() {

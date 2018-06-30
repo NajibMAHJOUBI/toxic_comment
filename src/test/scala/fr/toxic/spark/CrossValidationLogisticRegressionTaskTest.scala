@@ -1,5 +1,8 @@
 package fr.toxic.spark
 
+import fr.toxic.spark.classification.crossValidation.CrossValidationLogisticRegressionTask
+import fr.toxic.spark.utils.LoadDataSetTask
+import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.ml.classification.LogisticRegression
 import org.apache.spark.ml.evaluation.Evaluator
 import org.apache.spark.ml.param.ParamMap
@@ -26,7 +29,8 @@ class CrossValidationLogisticRegressionTaskTest extends AssertionsForJUnit {
       .master("local")
       .appName("test load dataset")
       .getOrCreate()
-    spark.sparkContext.setLogLevel("WARN")
+    val log = LogManager.getRootLogger
+    log.setLevel(Level.WARN)
   }
 
   @Test def crossValidationTest(): Unit = {
