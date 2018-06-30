@@ -1,4 +1,4 @@
-package fr.toxic.spark
+package fr.toxic.spark.utils
 
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.col

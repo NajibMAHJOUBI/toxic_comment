@@ -1,4 +1,4 @@
-package fr.toxic.spark
+package fr.toxic.spark.classification.binaryRelevance
 
 import fr.toxic.spark.classification.task.binaryRelevance.BinaryRelevanceLogisticRegressionTask
 import fr.toxic.spark.utils.LoadDataSetTask

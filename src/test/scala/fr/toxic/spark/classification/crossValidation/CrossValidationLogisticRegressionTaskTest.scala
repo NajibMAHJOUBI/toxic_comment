@@ -1,6 +1,5 @@
-package fr.toxic.spark
+package fr.toxic.spark.classification.crossValidation
 
-import fr.toxic.spark.classification.crossValidation.CrossValidationLogisticRegressionTask
 import fr.toxic.spark.utils.LoadDataSetTask
 import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.ml.classification.LogisticRegression

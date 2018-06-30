@@ -1,6 +1,5 @@
-package fr.toxic.spark
+package fr.toxic.spark.utils
 
-import fr.toxic.spark.utils.{LabelFeaturesTask, LoadDataSetTask}
 import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.ml.linalg.Vector
 import org.apache.spark.sql.{DataFrame, SparkSession}

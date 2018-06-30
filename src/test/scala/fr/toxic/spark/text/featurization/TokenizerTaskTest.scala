@@ -1,6 +1,5 @@
-package fr.toxic.spark
+package fr.toxic.spark.text.featurization
 
-import fr.toxic.spark.text.featurization.TokenizerTask
 import fr.toxic.spark.utils.LoadDataSetTask
 import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.sql.types.{ArrayType, StringType}

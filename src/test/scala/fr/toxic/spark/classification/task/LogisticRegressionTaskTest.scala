@@ -1,6 +1,5 @@
-package fr.toxic.spark
+package fr.toxic.spark.classification.task
 
-import fr.toxic.spark.classification.task.LogisticRegressionTask
 import fr.toxic.spark.utils.LoadDataSetTask
 import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.sql.{DataFrame, SparkSession}

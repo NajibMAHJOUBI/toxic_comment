@@ -1,6 +1,5 @@
-package fr.toxic.spark
+package fr.toxic.spark.utils
 
-import fr.toxic.spark.utils.LoadDataSetTask
 import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.{LongType, StringType}
