@@ -1,6 +1,10 @@
 
 package fr.toxic.spark
 
+import fr.toxic.spark.classification.task.LogisticRegressionTask
+import fr.toxic.spark.classification.task.binaryRelevance.{BinaryRelevanceLinearSvcTask, BinaryRelevanceLogisticRegressionTask}
+import fr.toxic.spark.text.featurization.{CountVectorizerTask, StopWordsRemoverTask, TfIdfTask, TokenizerTask}
+import fr.toxic.spark.utils.LoadDataSetTask
 import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.sql.SparkSession
 
@@ -52,10 +56,9 @@ object KaggleSubmissionExample {
 
     val logisticRegression = new LogisticRegressionTask(featureColumn = "tf_idf")
     columns.map(column => {
-      testTfIdf = logisticRegression
-        .loadModel(s"$savePath/model/$column")
+      testTfIdf = logisticRegression.loadModel(s"$savePath/model/$column")
         .transform(testTfIdf)
-        .getTransform()
+        .getTransform
         .drop(Seq("rawPrediction", "probability"): _*)
     })
 
