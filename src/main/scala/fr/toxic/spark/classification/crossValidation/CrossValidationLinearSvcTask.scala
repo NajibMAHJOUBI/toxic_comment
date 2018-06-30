@@ -1,5 +1,6 @@
-package fr.toxic.spark
+package fr.toxic.spark.classification.crossValidation
 
+import fr.toxic.spark.classification.task.LinearSvcTask
 import org.apache.spark.ml.classification.{LinearSVC, LinearSVCModel}
 import org.apache.spark.ml.evaluation.{BinaryClassificationEvaluator, Evaluator}
 import org.apache.spark.ml.param.ParamMap

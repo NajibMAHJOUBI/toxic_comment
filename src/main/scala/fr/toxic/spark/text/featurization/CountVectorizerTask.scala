@@ -1,6 +1,5 @@
-package fr.toxic.spark
+package fr.toxic.spark.text.featurization
 
-import org.apache.spark
 import org.apache.spark.ml.feature.{CountVectorizer, CountVectorizerModel}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 

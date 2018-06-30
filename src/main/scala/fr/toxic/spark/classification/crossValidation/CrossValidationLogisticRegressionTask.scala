@@ -1,5 +1,6 @@
-package fr.toxic.spark
+package fr.toxic.spark.classification.crossValidation
 
+import fr.toxic.spark.classification.task.LogisticRegressionTask
 import org.apache.spark.ml.classification.{LogisticRegression, LogisticRegressionModel}
 import org.apache.spark.ml.evaluation.{BinaryClassificationEvaluator, Evaluator}
 import org.apache.spark.ml.param.ParamMap
@@ -31,7 +32,7 @@ class CrossValidationLogisticRegressionTask(val data: DataFrame,
   def defineEstimator(): CrossValidationLogisticRegressionTask = {
     estimator = new LogisticRegressionTask(labelColumn=labelColumn,
                                            featureColumn=featureColumn,
-                                           predictionColumn=predictionColumn).defineModel().getModel()
+                                           predictionColumn=predictionColumn).defineModel().getModel
     this
   }
 

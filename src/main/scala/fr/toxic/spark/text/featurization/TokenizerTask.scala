@@ -1,8 +1,7 @@
-package fr.toxic.spark
+package fr.toxic.spark.text.featurization
 
-
-import org.apache.spark.sql.DataFrame
 import org.apache.spark.ml.feature.Tokenizer
+import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.{col, regexp_replace, udf}
 
 import scala.collection.mutable.WrappedArray

@@ -1,4 +1,4 @@
-package fr.toxic.spark
+package fr.toxic.spark.classification.task
 
 import org.apache.spark.ml.classification.{LogisticRegression, LogisticRegressionModel}
 import org.apache.spark.sql.DataFrame
@@ -15,7 +15,7 @@ class LogisticRegressionTask(val labelColumn: String = "label",
   var modelFit: LogisticRegressionModel = _
   var transform: DataFrame = _
 
-  def getModelFit(): LogisticRegressionModel = {
+  def getModelFit: LogisticRegressionModel = {
     modelFit
   }
 
@@ -28,11 +28,11 @@ class LogisticRegressionTask(val labelColumn: String = "label",
   }
 
   override def fit(data: DataFrame): LogisticRegressionTask = {
-    modelFit = getModel().fit(data)
+    modelFit = getModel.fit(data)
     this
   }
 
-  def getModel(): LogisticRegression = {
+  def getModel: LogisticRegression = {
     model
   }
 
@@ -41,7 +41,7 @@ class LogisticRegressionTask(val labelColumn: String = "label",
     this
   }
 
-  def saveModel(path: String): LogisticRegressionTask = {
+  override def saveModel(path: String): LogisticRegressionTask = {
     model.save(path)
     this
   }
@@ -51,16 +51,16 @@ class LogisticRegressionTask(val labelColumn: String = "label",
     this
   }
 
-  def getRegParam(): Double = {
+  def getRegParam: Double = {
     model.getRegParam
   }
 
-  def loadModel(path: String): LogisticRegressionTask = {
+  override def loadModel(path: String): LogisticRegressionTask = {
     modelFit = LogisticRegressionModel.load(path)
     this
   }
 
-  def getTransform(): DataFrame = {
+  def getTransform: DataFrame = {
     transform
   }
 }

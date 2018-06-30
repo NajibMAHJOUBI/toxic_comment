@@ -1,4 +1,4 @@
-package fr.toxic.spark
+package fr.toxic.spark.text.featurization
 
 import org.apache.spark.ml.feature.StopWordsRemover
 import org.apache.spark.sql.DataFrame

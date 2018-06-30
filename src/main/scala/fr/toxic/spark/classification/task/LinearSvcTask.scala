@@ -1,4 +1,4 @@
-package fr.toxic.spark
+package fr.toxic.spark.classification.task
 
 import org.apache.spark.ml.classification.{LinearSVC, LinearSVCModel}
 import org.apache.spark.sql.DataFrame
