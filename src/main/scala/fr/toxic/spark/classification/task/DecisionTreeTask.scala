@@ -51,4 +51,21 @@ class DecisionTreeTask (val labelColumn: String = "label",
     transform
   }
 
+  def setMaxDepth(value: Int): DecisionTreeTask = {
+    model.setMaxDepth(value)
+    this
+  }
+
+  def setMaxBins(value: Int): DecisionTreeTask = {
+    model.setMaxBins(value)
+    this
+  }
+
+  def getMaxBins: Int = {
+    model.getMaxBins
+  }
+
+  def getMaxDepth: Int = {
+    model.getMaxDepth
+  }
 }
