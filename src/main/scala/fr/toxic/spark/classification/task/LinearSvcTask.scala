@@ -13,14 +13,9 @@ class LinearSvcTask(val labelColumn: String = "label",
                     val featureColumn: String = "features",
                     val predictionColumn: String = "prediction") extends ClassificationModelFactory {
 
-
   var model: LinearSVC = _
   var modelFit: LinearSVCModel = _
   var transform: DataFrame = _
-
-  def getModelFit(): LinearSVCModel = {
-    modelFit
-  }
 
   override def defineModel(): LinearSvcTask= {
     model = new LinearSVC()
@@ -31,11 +26,11 @@ class LinearSvcTask(val labelColumn: String = "label",
   }
 
   override def fit(data: DataFrame): LinearSvcTask = {
-    modelFit = getModel().fit(data)
+    modelFit = getModel.fit(data)
     this
   }
 
-  def getModel(): LinearSVC = {
+  def getModel: LinearSVC = {
     model
   }
 
@@ -44,26 +39,30 @@ class LinearSvcTask(val labelColumn: String = "label",
     this
   }
 
-  def saveModel(path: String): LinearSvcTask = {
+  override def loadModel(path: String): LinearSvcTask = {
+    modelFit = LinearSVCModel.load(path)
+    this
+  }
+
+  override def saveModel(path: String): LinearSvcTask = {
     model.save(path)
     this
+  }
+
+  def getModelFit: LinearSVCModel = {
+    modelFit
+  }
+
+  def getRegParam: Double = {
+    model.getRegParam
+  }
+
+  def getTransform: DataFrame = {
+    transform
   }
 
   def setRegParam(value: Double): LinearSvcTask = {
     model.setRegParam(value)
     this
-  }
-
-  def getRegParam(): Double = {
-    model.getRegParam
-  }
-
-  def loadModel(path: String): LinearSvcTask = {
-    modelFit = LinearSVCModel.load(path)
-    this
-  }
-
-  def getTransform(): DataFrame = {
-    transform
   }
 }
