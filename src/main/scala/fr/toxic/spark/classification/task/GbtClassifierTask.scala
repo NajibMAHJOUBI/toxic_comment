@@ -10,7 +10,6 @@ class GbtClassifierTask(val labelColumn: String = "label",
                         val featureColumn: String = "features",
                         val predictionColumn: String = "prediction") extends ClassificationModelFactory {
 
-
   var model: GBTClassifier = _
   var modelFit: GBTClassificationModel = _
   var transform: DataFrame = _
