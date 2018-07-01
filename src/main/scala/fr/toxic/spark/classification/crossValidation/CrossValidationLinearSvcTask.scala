@@ -32,7 +32,7 @@ class CrossValidationLinearSvcTask(val data: DataFrame,
   def defineEstimator(): CrossValidationLinearSvcTask = {
     estimator = new LinearSvcTask(labelColumn=labelColumn,
                                   featureColumn=featureColumn,
-                                  predictionColumn=predictionColumn).defineModel().getModel()
+                                  predictionColumn=predictionColumn).defineModel().getModel
     this
   }
 
