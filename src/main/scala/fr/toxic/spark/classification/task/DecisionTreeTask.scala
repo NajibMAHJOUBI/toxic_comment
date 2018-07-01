@@ -1,7 +1,6 @@
 package fr.toxic.spark.classification.task
 
-import org.apache.spark.ml.classification.DecisionTreeClassifier
-import org.apache.spark.ml.classification.DecisionTreeClassificationModel
+import org.apache.spark.ml.classification.{DecisionTreeClassificationModel, DecisionTreeClassifier}
 import org.apache.spark.sql.DataFrame
 
 class DecisionTreeTask (val labelColumn: String = "label",
@@ -20,7 +19,7 @@ class DecisionTreeTask (val labelColumn: String = "label",
     this
   }
 
-  override def fit(data: DataFrame): LinearSvcTask = {
+  override def fit(data: DataFrame): DecisionTreeTask = {
     modelFit = getModel.fit(data)
     this
   }
