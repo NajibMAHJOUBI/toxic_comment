@@ -1,12 +1,12 @@
 
-package fr.toxic.spark
+package fr.toxic.spark.classification.task
 
-import fr.toxic.spark.classification.task.LogisticRegressionTask
 import fr.toxic.spark.classification.task.binaryRelevance.{BinaryRelevanceLinearSvcTask, BinaryRelevanceLogisticRegressionTask}
 import fr.toxic.spark.text.featurization.{CountVectorizerTask, StopWordsRemoverTask, TfIdfTask, TokenizerTask}
 import fr.toxic.spark.utils.{LoadDataSetTask, WriteKaggleSubmission}
 import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.sql.SparkSession
+
 
 object KaggleSubmissionExample {
 
