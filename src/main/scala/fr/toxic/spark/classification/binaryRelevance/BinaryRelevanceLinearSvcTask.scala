@@ -47,7 +47,7 @@ class BinaryRelevanceLinearSvcTask(val data: DataFrame,
         predictionColumn = s"prediction_$column")
       linearSvc.defineModel()
       linearSvc.fit(data)
-      model = linearSvc.getModelFit()
+      model = linearSvc.getModelFit
     }
     model
   }
