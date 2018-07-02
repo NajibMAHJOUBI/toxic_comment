@@ -1,7 +1,7 @@
 package fr.toxic.spark.classification.binaryRelevance
 
 import fr.toxic.spark.classification.crossValidation.CrossValidationDecisionTreeTask
-import fr.toxic.spark.classification.task.{DecisionTreeTask, LogisticRegressionTask}
+import fr.toxic.spark.classification.task.DecisionTreeTask
 import org.apache.spark.ml.classification.DecisionTreeClassificationModel
 import org.apache.spark.mllib.evaluation.MultilabelMetrics
 import org.apache.spark.rdd.RDD
