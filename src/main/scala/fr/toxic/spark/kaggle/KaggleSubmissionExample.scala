@@ -2,7 +2,7 @@
 package fr.toxic.spark.kaggle
 
 import fr.toxic.spark.classification.binaryRelevance.BinaryRelevanceDecisionTreeTask
-import fr.toxic.spark.classification.task.LogisticRegressionTask
+import fr.toxic.spark.classification.task.{DecisionTreeTask, LinearSvcTask, LogisticRegressionTask}
 import fr.toxic.spark.classification.task.binaryRelevance.{BinaryRelevanceLinearSvcTask, BinaryRelevanceLogisticRegressionTask}
 import fr.toxic.spark.text.featurization.{CountVectorizerTask, StopWordsRemoverTask, TfIdfTask, TokenizerTask}
 import fr.toxic.spark.utils.{LoadDataSetTask, WriteKaggleSubmission}
@@ -24,6 +24,8 @@ object KaggleSubmissionExample {
 
     val classifierMethod = "decision_tree"
     val methodValidation = "cross_validation"
+    val columns = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
+    val savePath = s"target/kaggle/binaryRelevance/$methodValidation/$classifierMethod"
 
     // Train
     val train = new LoadDataSetTask(sourcePath = "data/parquet").run(spark, "train")
@@ -37,8 +39,6 @@ object KaggleSubmissionExample {
 
     val trainTfIdf = tfIdfModel.getTransform()
 
-    val columns = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
-    val savePath = s"target/kaggle/binaryRelevance/$methodValidation/$classifierMethod"
     if (classifierMethod == "linear_svc") {
       val binaryRelevance = new BinaryRelevanceLinearSvcTask(data= trainTfIdf, columns = columns,
                                                              savePath = savePath, featureColumn = "tf_idf",
@@ -65,11 +65,21 @@ object KaggleSubmissionExample {
     var testTfIdf = tfIdfModel.transform(testTf).getTransform()
 
     val logisticRegression = new LogisticRegressionTask(featureColumn = "tf_idf")
+    val linearSvc = new LinearSvcTask(featureColumn = "tf_idf")
+    val decisionTree = new DecisionTreeTask(featureColumn = "tf_idf")
+
     columns.map(column => {
-      testTfIdf = logisticRegression.loadModel(s"$savePath/model/$column")
-        .transform(testTfIdf)
-        .getTransform
-        .drop(Seq("rawPrediction", "probability"): _*)
+      if (classifierMethod == "linear_svc") {
+        testTfIdf = linearSvc.loadModel(s"$savePath/model/$column")
+                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
+      } else if (classifierMethod == "decision_tree"){
+
+        testTfIdf = decisionTree.loadModel(s"$savePath/model/$column")
+                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
+      } else{
+        testTfIdf = logisticRegression.loadModel(s"$savePath/model/$column")
+                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
+      }
     })
 
     // testTfIdf.show(5)
