@@ -3,7 +3,9 @@ package fr.toxic.spark.classification.classifierChains
 import org.apache.spark.sql.{DataFrame, Row}
 import org.apache.spark.ml.linalg.Vector
 
-class ClassifierChains(val newLabelColumns: Array[String], val outputColumn: String, featureColumn: String) {
+class ClassifierChains(val newLabelColumns: Array[String],
+                       val outputColumn: String,
+                       featureColumn: String) {
 
   def run(data: DataFrame): Unit = {
 
@@ -25,7 +27,7 @@ class ClassifierChains(val newLabelColumns: Array[String], val outputColumn: Str
 //    u.toSparse.values
 //  }
 
-  def addToIndices(uVector: Vector, ind: Int): Array[Int] = {
+  def addToIndices(uVector: Vector): Array[Int] = {
     uVector.toSparse.indices :+ (uVector.size + 1)
   }
 
@@ -33,15 +35,10 @@ class ClassifierChains(val newLabelColumns: Array[String], val outputColumn: Str
     uVector.toSparse.values :+ value
   }
 
-  def createNewFeatures(data: DataFrame): DataFrame = {
+  def createNewFeatures(uVector)
+
+  def createNewFeatures(data: DataFrame): Unit = {
     val vector = getFeaturesVector(data)
-    val size = sizeFeature(vector)
-
-
-
-
-
   }
-
 
 }
