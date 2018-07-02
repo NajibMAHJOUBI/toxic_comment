@@ -1,6 +1,8 @@
 
-package fr.toxic.spark.classification.task
+package fr.toxic.spark.kaggle
 
+import fr.toxic.spark.classification.binaryRelevance.BinaryRelevanceDecisionTreeTask
+import fr.toxic.spark.classification.task.LogisticRegressionTask
 import fr.toxic.spark.classification.task.binaryRelevance.{BinaryRelevanceLinearSvcTask, BinaryRelevanceLogisticRegressionTask}
 import fr.toxic.spark.text.featurization.{CountVectorizerTask, StopWordsRemoverTask, TfIdfTask, TokenizerTask}
 import fr.toxic.spark.utils.{LoadDataSetTask, WriteKaggleSubmission}
@@ -20,7 +22,8 @@ object KaggleSubmissionExample {
     val log = LogManager.getRootLogger
     log.setLevel(Level.WARN)
 
-    val classifierMethod = "linear_svc"
+    val classifierMethod = "decision_tree"
+    val methodValidation = "cross_validation"
 
     // Train
     val train = new LoadDataSetTask(sourcePath = "data/parquet").run(spark, "train")
@@ -35,14 +38,21 @@ object KaggleSubmissionExample {
     val trainTfIdf = tfIdfModel.getTransform()
 
     val columns = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
-    val savePath = "target/kaggle/binaryRelevance/simpleValidation"
+    val savePath = s"target/kaggle/binaryRelevance/$methodValidation/$classifierMethod"
     if (classifierMethod == "linear_svc") {
-      val binaryRelevance = new BinaryRelevanceLinearSvcTask(data= trainTfIdf, columns = columns, savePath = savePath,
-        featureColumn = "tf_idf", methodValidation = "cross_validation")
+      val binaryRelevance = new BinaryRelevanceLinearSvcTask(data= trainTfIdf, columns = columns,
+                                                             savePath = savePath, featureColumn = "tf_idf",
+                                                             methodValidation = methodValidation)
+      binaryRelevance.run()
+    } else if (classifierMethod == "decision_tree"){
+      val binaryRelevance = new BinaryRelevanceDecisionTreeTask(data= trainTfIdf, columns = columns,
+                                                                savePath = savePath, featureColumn = "tf_idf",
+                                                                methodValidation = methodValidation)
       binaryRelevance.run()
     } else {
-      val binaryRelevance = new BinaryRelevanceLogisticRegressionTask(data= trainTfIdf, columns = columns, savePath = savePath,
-        featureColumn = "tf_idf", methodValidation = "cross_validation")
+      val binaryRelevance = new BinaryRelevanceLogisticRegressionTask(data= trainTfIdf, columns = columns,
+                                                                      savePath = savePath, featureColumn = "tf_idf",
+                                                                      methodValidation = methodValidation)
       binaryRelevance.run()
     }
 
