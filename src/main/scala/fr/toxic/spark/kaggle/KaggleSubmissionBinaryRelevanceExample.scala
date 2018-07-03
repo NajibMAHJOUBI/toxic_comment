@@ -10,7 +10,7 @@ import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.sql.SparkSession
 
 
-object KaggleSubmissionExample {
+object KaggleSubmissionBinaryRelevanceExample {
 
   def main(arguments: Array[String]): Unit = {
     val spark = SparkSession
