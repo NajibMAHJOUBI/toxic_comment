@@ -21,11 +21,11 @@ class ClassifierChainsLogisticRegressionTask(val labelColumns: Array[String],
           predictionColumn = s"prediction_$label", pathModel = "",
           pathPrediction = "")
         cv.run()
-        cv.getBestModel
+        cv.getBestModel.write.overwrite().save(s"$savePath/$label")
       } else {
         val logisticRegression = new LogisticRegressionTask(labelColumn = label, featureColumn=featureColumn,
           predictionColumn = s"prediction_$label")
-        logisticRegression.defineModel()
+        logisticRegression.defineModel
         logisticRegression.fit(data)
         logisticRegression.saveModel(s"$savePath/$label")
       }
