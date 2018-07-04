@@ -68,39 +68,39 @@ class CrossValidationLogisticRegressionTask(val data: DataFrame,
     crossValidatorModel.transform(data)
   }
 
-  def getLabelColumn(): String = {
+  def getLabelColumn: String = {
     labelColumn
   }
 
-  def getFeatureColumn(): String = {
+  def getFeatureColumn: String = {
     featureColumn
   }
 
-  def getPredictionColumn(): String = {
+  def getPredictionColumn: String = {
     predictionColumn
   }
 
-  def getGridParameters(): Array[ParamMap] = {
+  def getGridParameters: Array[ParamMap] = {
     paramGrid
   }
 
-  def getEstimator(): LogisticRegression = {
+  def getEstimator: LogisticRegression = {
     estimator
   }
 
-  def getEvaluator(): Evaluator = {
+  def getEvaluator: Evaluator = {
     evaluator
   }
 
-  def getCrossValidator(): CrossValidator = {
+  def getCrossValidator: CrossValidator = {
     crossValidator
   }
 
-  def getCrossValidatorModel(): CrossValidatorModel = {
+  def getCrossValidatorModel: CrossValidatorModel = {
     crossValidatorModel
   }
 
-  def getBestModel(): LogisticRegressionModel = {
+  def getBestModel: LogisticRegressionModel = {
     crossValidatorModel.bestModel.asInstanceOf[LogisticRegressionModel]
   }
 
