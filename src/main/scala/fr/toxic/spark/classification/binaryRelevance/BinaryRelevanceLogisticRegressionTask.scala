@@ -45,7 +45,7 @@ class BinaryRelevanceLogisticRegressionTask(val data: DataFrame,
     } else{
       val logisticRegression = new LogisticRegressionTask(labelColumn = s"label_$column", featureColumn=featureColumn,
         predictionColumn = s"prediction_$column")
-      logisticRegression.defineModel()
+      logisticRegression.defineModel
       logisticRegression.fit(data)
       model = logisticRegression.getModelFit
     }

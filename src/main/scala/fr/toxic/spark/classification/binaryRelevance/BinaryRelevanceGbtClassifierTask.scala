@@ -45,7 +45,7 @@ class BinaryRelevanceGbtClassifierTask(val data: DataFrame,
     } else{
       val gbtClassifier = new GbtClassifierTask(labelColumn = s"label_$column", featureColumn=featureColumn,
                                                predictionColumn = s"prediction_$column")
-      gbtClassifier.defineModel()
+      gbtClassifier.defineModel
       gbtClassifier.fit(data)
       model = gbtClassifier.getModelFit
     }

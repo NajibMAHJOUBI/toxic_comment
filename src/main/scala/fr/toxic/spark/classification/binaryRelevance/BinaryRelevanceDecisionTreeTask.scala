@@ -45,7 +45,7 @@ class BinaryRelevanceDecisionTreeTask(val data: DataFrame,
     } else{
       val decisionTree = new DecisionTreeTask(labelColumn = s"label_$column", featureColumn=featureColumn,
         predictionColumn = s"prediction_$column")
-      decisionTree.defineModel()
+      decisionTree.defineModel
       decisionTree.fit(data)
       model = decisionTree.getModelFit
     }
