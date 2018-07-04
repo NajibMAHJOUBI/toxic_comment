@@ -41,7 +41,7 @@ class BinaryRelevanceLogisticRegressionTask(val data: DataFrame,
                                                          predictionColumn = s"prediction_$column", pathModel = "",
                                                          pathPrediction = "")
       cv.run()
-      model = cv.getBestModel()
+      model = cv.getBestModel
     } else{
       val logisticRegression = new LogisticRegressionTask(labelColumn = s"label_$column", featureColumn=featureColumn,
         predictionColumn = s"prediction_$column")
