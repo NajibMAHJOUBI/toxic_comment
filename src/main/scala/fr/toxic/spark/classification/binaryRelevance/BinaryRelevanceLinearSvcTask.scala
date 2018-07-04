@@ -41,7 +41,7 @@ class BinaryRelevanceLinearSvcTask(val data: DataFrame,
                                                          predictionColumn = s"prediction_$column", pathModel = "",
                                                          pathPrediction = "")
       cv.run()
-      model = cv.getBestModel()
+      model = cv.getBestModel
     } else{
       val linearSvc = new LinearSvcTask(labelColumn = s"label_$column", featureColumn=featureColumn,
         predictionColumn = s"prediction_$column")
