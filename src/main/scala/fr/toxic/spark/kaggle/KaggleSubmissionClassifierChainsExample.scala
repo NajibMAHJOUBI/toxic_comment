@@ -58,16 +58,16 @@ object KaggleSubmissionClassifierChainsExample {
 
     labelColumns.map(column => {
       if (classifierMethod == "linear_svc") {
-        testTfIdf = linearSvc.loadModel(s"$savePath/model/$column")
+        testTfIdf = linearSvc.loadModel(s"$savePath/$column")
                                       .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
       } else if (classifierMethod == "decision_tree"){
-        testTfIdf = decisionTree.loadModel(s"$savePath/model/$column")
+        testTfIdf = decisionTree.loadModel(s"$savePath/$column")
                                       .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
       } else if (classifierMethod == "random_forest") {
-        testTfIdf = randomForest.loadModel(s"$savePath/model/$column")
+        testTfIdf = randomForest.loadModel(s"$savePath/$column")
                                       .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
       } else {
-        testTfIdf = logisticRegression.loadModel(s"$savePath/model/$column")
+        testTfIdf = logisticRegression.loadModel(s"$savePath/$column")
                                       .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
       }
     })
