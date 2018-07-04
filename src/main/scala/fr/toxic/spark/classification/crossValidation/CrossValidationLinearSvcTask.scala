@@ -32,7 +32,7 @@ class CrossValidationLinearSvcTask(val data: DataFrame,
   def defineEstimator(): CrossValidationLinearSvcTask = {
     estimator = new LinearSvcTask(labelColumn=labelColumn,
                                   featureColumn=featureColumn,
-                                  predictionColumn=predictionColumn).defineModel().getModel
+                                  predictionColumn=predictionColumn).defineModel.getModel
     this
   }
 
@@ -69,39 +69,39 @@ class CrossValidationLinearSvcTask(val data: DataFrame,
     crossValidatorModel.transform(data)
   }
 
-  def getLabelColumn(): String = {
+  def getLabelColumn: String = {
     labelColumn
   }
 
-  def getFeatureColumn(): String = {
+  def getFeatureColumn: String = {
     featureColumn
   }
 
-  def getPredictionColumn(): String = {
+  def getPredictionColumn: String = {
     predictionColumn
   }
 
-  def getGridParameters(): Array[ParamMap] = {
+  def getGridParameters: Array[ParamMap] = {
     paramGrid
   }
 
-  def getEstimator(): LinearSVC = {
+  def getEstimator: LinearSVC = {
     estimator
   }
 
-  def getEvaluator(): Evaluator = {
+  def getEvaluator: Evaluator = {
     evaluator
   }
 
-  def getCrossValidator(): CrossValidator = {
+  def getCrossValidator: CrossValidator = {
     crossValidator
   }
 
-  def getCrossValidatorModel(): CrossValidatorModel = {
+  def getCrossValidatorModel: CrossValidatorModel = {
     crossValidatorModel
   }
 
-  def getBestModel(): LinearSVCModel = {
+  def getBestModel: LinearSVCModel = {
     crossValidatorModel.bestModel.asInstanceOf[LinearSVCModel]
   }
 

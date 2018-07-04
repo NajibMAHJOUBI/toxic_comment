@@ -32,7 +32,7 @@ class CrossValidationRandomForestTask(val data: DataFrame,
   def defineEstimator(): CrossValidationRandomForestTask = {
     estimator = new RandomForestTask(labelColumn=labelColumn,
                                      featureColumn=featureColumn,
-                                     predictionColumn=predictionColumn).defineModel().getModel
+                                     predictionColumn=predictionColumn).defineModel.getModel
     this
   }
 

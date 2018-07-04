@@ -32,7 +32,7 @@ class CrossValidationGbtClassifierTask(val data: DataFrame,
   def defineEstimator(): CrossValidationGbtClassifierTask = {
     estimator = new GbtClassifierTask(labelColumn=labelColumn,
                                       featureColumn=featureColumn,
-                                      predictionColumn=predictionColumn).defineModel().getModel
+                                      predictionColumn=predictionColumn).defineModel.getModel
     this
   }
 

@@ -32,7 +32,7 @@ class CrossValidationDecisionTreeTask(val data: DataFrame,
   def defineEstimator(): CrossValidationDecisionTreeTask = {
     estimator = new DecisionTreeTask(labelColumn=labelColumn,
                                      featureColumn=featureColumn,
-                                     predictionColumn=predictionColumn).defineModel().getModel
+                                     predictionColumn=predictionColumn).defineModel.getModel
     this
   }
 

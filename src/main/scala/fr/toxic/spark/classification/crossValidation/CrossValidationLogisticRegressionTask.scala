@@ -32,7 +32,7 @@ class CrossValidationLogisticRegressionTask(val data: DataFrame,
   def defineEstimator(): CrossValidationLogisticRegressionTask = {
     estimator = new LogisticRegressionTask(labelColumn=labelColumn,
                                            featureColumn=featureColumn,
-                                           predictionColumn=predictionColumn).defineModel().getModel
+                                           predictionColumn=predictionColumn).defineModel.getModel
     this
   }
 
