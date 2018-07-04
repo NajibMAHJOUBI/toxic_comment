@@ -11,7 +11,7 @@ class RandomForestTask(val labelColumn: String = "label",
   var modelFit: RandomForestClassificationModel = _
   var transform: DataFrame = _
 
-  override def defineModel(): RandomForestTask= {
+  override def defineModel: RandomForestTask= {
     model = new RandomForestClassifier()
       .setFeaturesCol(featureColumn)
       .setLabelCol(labelColumn)

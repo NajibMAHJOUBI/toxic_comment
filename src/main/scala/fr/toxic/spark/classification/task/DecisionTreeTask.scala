@@ -11,7 +11,7 @@ class DecisionTreeTask (val labelColumn: String = "label",
   var modelFit: DecisionTreeClassificationModel = _
   var transform: DataFrame = _
 
-  override def defineModel(): DecisionTreeTask= {
+  override def defineModel: DecisionTreeTask= {
     model = new DecisionTreeClassifier()
       .setFeaturesCol(featureColumn)
       .setLabelCol(labelColumn)

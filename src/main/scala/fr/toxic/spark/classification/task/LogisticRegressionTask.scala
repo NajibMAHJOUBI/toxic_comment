@@ -10,7 +10,6 @@ class LogisticRegressionTask(val labelColumn: String = "label",
                              val featureColumn: String = "features",
                              val predictionColumn: String = "prediction") extends ClassificationModelFactory {
 
-
   var model: LogisticRegression = _
   var modelFit: LogisticRegressionModel = _
   var transform: DataFrame = _
@@ -19,7 +18,7 @@ class LogisticRegressionTask(val labelColumn: String = "label",
     modelFit
   }
 
-  override def defineModel(): LogisticRegressionTask= {
+  override def defineModel: LogisticRegressionTask= {
     model = new LogisticRegression()
       .setFeaturesCol(featureColumn)
       .setLabelCol(labelColumn)

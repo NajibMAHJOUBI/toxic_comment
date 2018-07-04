@@ -18,7 +18,7 @@ class GbtClassifierTask(val labelColumn: String = "label",
     modelFit
   }
 
-  override def defineModel(): GbtClassifierTask= {
+  override def defineModel: GbtClassifierTask= {
     model = new GBTClassifier()
       .setFeaturesCol(featureColumn)
       .setLabelCol(labelColumn)

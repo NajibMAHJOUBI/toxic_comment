@@ -17,7 +17,7 @@ class LinearSvcTask(val labelColumn: String = "label",
   var modelFit: LinearSVCModel = _
   var transform: DataFrame = _
 
-  override def defineModel(): LinearSvcTask= {
+  override def defineModel: LinearSvcTask= {
     model = new LinearSVC()
       .setFeaturesCol(featureColumn)
       .setLabelCol(labelColumn)
