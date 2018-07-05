@@ -69,15 +69,15 @@ class CrossValidationGbtClassifierTask(val data: DataFrame,
     crossValidatorModel.transform(data)
   }
 
-  def getLabelColumn: String = {
+  override def getLabelColumn: String = {
     labelColumn
   }
 
-  def getFeatureColumn: String = {
+  override def getFeatureColumn: String = {
     featureColumn
   }
 
-  def getPredictionColumn: String = {
+  override def getPredictionColumn: String = {
     predictionColumn
   }
 

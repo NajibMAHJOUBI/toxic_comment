@@ -18,4 +18,10 @@ trait CrossValidationModelFactory {
 
   def transform(data: DataFrame): DataFrame
 
+  def getLabelColumn: String
+
+  def getFeatureColumn: String
+
+  def getPredictionColumn: String
+
 }

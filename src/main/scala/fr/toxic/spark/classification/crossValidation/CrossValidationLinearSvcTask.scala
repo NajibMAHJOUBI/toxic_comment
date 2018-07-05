@@ -21,7 +21,7 @@ class CrossValidationLinearSvcTask(val data: DataFrame,
   var crossValidator: CrossValidator = _
   var crossValidatorModel: CrossValidatorModel = _
 
-  def run(): CrossValidationLinearSvcTask = {
+  override def run(): CrossValidationLinearSvcTask = {
     defineEstimator()
     defineGridParameters()
     defineEvaluator()
@@ -29,14 +29,14 @@ class CrossValidationLinearSvcTask(val data: DataFrame,
     fit()
   }
 
-  def defineEstimator(): CrossValidationLinearSvcTask = {
+  override def defineEstimator(): CrossValidationLinearSvcTask = {
     estimator = new LinearSvcTask(labelColumn=labelColumn,
                                   featureColumn=featureColumn,
                                   predictionColumn=predictionColumn).defineModel.getModel
     this
   }
 
-  def defineGridParameters(): CrossValidationLinearSvcTask = {
+  override def defineGridParameters(): CrossValidationLinearSvcTask = {
       paramGrid = new ParamGridBuilder()
         .addGrid(estimator.regParam, Array(0.0, 0.001, 0.01, 0.1, 1.0, 10.0))
         .addGrid(estimator.fitIntercept, Array(true, false))
@@ -45,14 +45,14 @@ class CrossValidationLinearSvcTask(val data: DataFrame,
     this
   }
 
-  def defineEvaluator(): CrossValidationLinearSvcTask = {
+  override def defineEvaluator(): CrossValidationLinearSvcTask = {
       evaluator = new BinaryClassificationEvaluator()
         .setRawPredictionCol(predictionColumn)
         .setLabelCol(labelColumn)
         .setMetricName("areaUnderROC")
     this}
 
-  def defineCrossValidatorModel(): CrossValidationLinearSvcTask = {
+  override def defineCrossValidatorModel(): CrossValidationLinearSvcTask = {
     crossValidator = new CrossValidator()
       .setEvaluator(evaluator)
       .setEstimatorParamMaps(paramGrid)
@@ -60,24 +60,24 @@ class CrossValidationLinearSvcTask(val data: DataFrame,
     this
   }
 
-  def fit(): CrossValidationLinearSvcTask = {
+  override def fit(): CrossValidationLinearSvcTask = {
     crossValidatorModel = crossValidator.fit(data)
     this
   }
 
-  def transform(data: DataFrame): DataFrame = {
+  override def transform(data: DataFrame): DataFrame = {
     crossValidatorModel.transform(data)
   }
 
-  def getLabelColumn: String = {
+  override def getLabelColumn: String = {
     labelColumn
   }
 
-  def getFeatureColumn: String = {
+  override def getFeatureColumn: String = {
     featureColumn
   }
 
-  def getPredictionColumn: String = {
+  override def getPredictionColumn: String = {
     predictionColumn
   }
 

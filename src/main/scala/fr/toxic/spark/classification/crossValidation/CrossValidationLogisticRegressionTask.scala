@@ -68,16 +68,16 @@ class CrossValidationLogisticRegressionTask(val data: DataFrame,
     crossValidatorModel.transform(data)
   }
 
-  def getLabelColumn: String = {
-    labelColumn
+  override def getLabelColumn: String = {
+    estimator.getLabelCol
   }
 
-  def getFeatureColumn: String = {
-    featureColumn
+  override def getFeatureColumn: String = {
+    estimator.getFeaturesCol
   }
 
-  def getPredictionColumn: String = {
-    predictionColumn
+  override def getPredictionColumn: String = {
+    estimator.getPredictionCol
   }
 
   def getGridParameters: Array[ParamMap] = {
