@@ -1,6 +1,6 @@
 package fr.toxic.spark.classification.crossValidation
 
-import fr.toxic.spark.classification.task.DecisionTreeTask
+import fr.toxic.spark.classification.task.{CrossValidationModelFactory, DecisionTreeTask}
 import org.apache.spark.ml.classification.{DecisionTreeClassificationModel, DecisionTreeClassifier}
 import org.apache.spark.ml.evaluation.{BinaryClassificationEvaluator, Evaluator}
 import org.apache.spark.ml.param.ParamMap
@@ -13,7 +13,7 @@ class CrossValidationDecisionTreeTask(val data: DataFrame,
                                       val featureColumn: String,
                                       val predictionColumn: String,
                                       val pathModel: String,
-                                      val pathPrediction: String) {
+                                      val pathPrediction: String) extends CrossValidationModelFactory {
 
   var estimator: DecisionTreeClassifier = _
   var evaluator: BinaryClassificationEvaluator = _
