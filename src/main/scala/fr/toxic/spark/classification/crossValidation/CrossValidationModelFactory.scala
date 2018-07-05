@@ -16,6 +16,6 @@ trait CrossValidationModelFactory {
 
   def fit(): CrossValidationModelFactory
 
-  def transform(data: DataFrame): CrossValidationModelFactory
+  def transform(data: DataFrame): DataFrame
 
 }
