@@ -22,8 +22,9 @@ object KaggleSubmissionBinaryRelevanceExample {
     val log = LogManager.getRootLogger
     log.setLevel(Level.WARN)
 
-    val classifierMethod = "random_forest"
-    val methodValidation = "cross_validation"
+    val classifierMethod = "logistic_regression"
+    val methodValidation = "simple"
+    val probabilityPrediction: Boolean = true
     val columns = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
     val savePath = s"target/kaggle/binaryRelevance/$methodValidation/$classifierMethod"
 
@@ -55,10 +56,11 @@ object KaggleSubmissionBinaryRelevanceExample {
                                                                 methodValidation = methodValidation)
       binaryRelevance.run()
     } else {
-      val binaryRelevance = new BinaryRelevanceLogisticRegressionTask(data= trainTfIdf, columns = columns,
+      val binaryRelevance = new BinaryRelevanceLogisticRegressionTask(columns = columns,
                                                                       savePath = savePath, featureColumn = "tf_idf",
-                                                                      methodValidation = methodValidation)
-      binaryRelevance.run()
+                                                                      methodValidation = methodValidation,
+                                                                      probability = probabilityPrediction)
+      binaryRelevance.run(trainTfIdf)
     }
 
 
@@ -69,26 +71,43 @@ object KaggleSubmissionBinaryRelevanceExample {
     val testTf = countVectorizerModel.transform(testStopWordsRemoved).getTransform()
     var testTfIdf = tfIdfModel.transform(testTf).getTransform()
 
-    val logisticRegression = new LogisticRegressionTask(featureColumn = "tf_idf")
-    val linearSvc = new LinearSvcTask(featureColumn = "tf_idf")
-    val decisionTree = new DecisionTreeTask(featureColumn = "tf_idf")
-    val randomForest = new RandomForestTask(featureColumn = "tf_idf")
+//    val logisticRegression = new LogisticRegressionTask(featureColumn = "tf_idf")
+//    val linearSvc = new LinearSvcTask(featureColumn = "tf_idf")
+//    val decisionTree = new DecisionTreeTask(featureColumn = "tf_idf")
+//    val randomForest = new RandomForestTask(featureColumn = "tf_idf")
 
-    columns.map(column => {
+    for (column <- columns) {
       if (classifierMethod == "linear_svc") {
-        testTfIdf = linearSvc.loadModel(s"$savePath/model/$column")
-                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
+        // TODO
       } else if (classifierMethod == "decision_tree"){
-        testTfIdf = decisionTree.loadModel(s"$savePath/model/$column")
-                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
+        // TODO
       } else if (classifierMethod == "random_forest") {
-        testTfIdf = randomForest.loadModel(s"$savePath/model/$column")
-                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
+        // TODO
       } else {
-        testTfIdf = logisticRegression.loadModel(s"$savePath/model/$column")
-                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
+        val binaryRelevance = new BinaryRelevanceLogisticRegressionTask(columns = columns,
+                                                                        savePath = savePath, featureColumn = "tf_idf",
+                                                                        methodValidation = methodValidation,
+                                                                        probability = probabilityPrediction)
+        binaryRelevance.loadModel(s"$savePath/model/$column")
+        testTfIdf = binaryRelevance.computeProbability(testTfIdf, column)
       }
-    })
+    }
+
+//    columns.map(column => {
+//      if (classifierMethod == "linear_svc") {
+//        testTfIdf = linearSvc.loadModel(s"$savePath/model/$column")
+//                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
+//      } else if (classifierMethod == "decision_tree"){
+//        testTfIdf = decisionTree.loadModel(s"$savePath/model/$column")
+//                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
+//      } else if (classifierMethod == "random_forest") {
+//        testTfIdf = randomForest.loadModel(s"$savePath/model/$column")
+//                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
+//      } else {
+//        testTfIdf = logisticRegression.loadModel(s"$savePath/model/$column")
+//                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
+//      }
+//    })
 
     // testTfIdf.show(5)
     new WriteKaggleSubmission().run(testTfIdf, savePath)
