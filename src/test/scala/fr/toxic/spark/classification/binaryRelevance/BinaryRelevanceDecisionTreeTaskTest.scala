@@ -73,7 +73,6 @@ class BinaryRelevanceDecisionTreeTaskTest extends AssertionsForJUnit {
     columns.map(column => assert(prediction.columns.contains(s"prediction_$column")))
   }
 
-
   @After def afterAll() {
     spark.stop()
   }
