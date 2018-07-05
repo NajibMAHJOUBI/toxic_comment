@@ -13,19 +13,22 @@ import org.scalatest.junit.AssertionsForJUnit
 class BinaryRelevanceLogisticRegressionTaskTest extends AssertionsForJUnit {
 
   private var spark: SparkSession = _
+  private var data: DataFrame = _
 
   @Before def beforeAll() {
     spark = SparkSession
       .builder
       .master("local")
-      .appName("test load dataset")
+      .appName("test BR logistic regression")
       .getOrCreate()
+
     val log = LogManager.getRootLogger
     log.setLevel(Level.WARN)
+
+    data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
   }
 
   @Test def testBrOneColumnSimpleValidationTest(): Unit = {
-    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
     val columns = Array("toxic")
     val savePath = "target/model/binaryRelevance/oneColumn/simpleValidation"
     new BinaryRelevanceLogisticRegressionTask(data = data, columns = columns, savePath = savePath,
@@ -37,7 +40,6 @@ class BinaryRelevanceLogisticRegressionTaskTest extends AssertionsForJUnit {
     }
 
   @Test def testBrOneColumnCrossValidationTest(): Unit = {
-    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
     val columns = Array("toxic")
     val savePath = "target/model/binaryRelevance/oneColumn/crossValidation"
     new BinaryRelevanceLogisticRegressionTask(data= data, columns = columns, savePath = savePath,
@@ -49,7 +51,6 @@ class BinaryRelevanceLogisticRegressionTaskTest extends AssertionsForJUnit {
   }
 
   @Test def testBrTwoColumnSimpleValidationTest(): Unit = {
-    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
     val columns = Array("toxic", "severe_toxic")
     val savePath = "target/model/binaryRelevance/twoColumn/simpleValidation"
     new BinaryRelevanceLogisticRegressionTask(data= data, columns = columns, savePath = savePath,
@@ -61,7 +62,6 @@ class BinaryRelevanceLogisticRegressionTaskTest extends AssertionsForJUnit {
   }
 
   @Test def testBrSixColumnSimpleValidationTest(): Unit = {
-    val data = new LoadDataSetTask("src/test/resources/data").run(spark, "tfIdf")
     val columns =  Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
     val savePath = "target/model/binaryRelevance/twoColumn/simpleValidation"
     new BinaryRelevanceLogisticRegressionTask(data= data, columns = columns, savePath = savePath,
