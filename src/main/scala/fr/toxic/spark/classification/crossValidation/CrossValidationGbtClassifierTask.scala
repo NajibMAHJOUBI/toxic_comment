@@ -1,6 +1,6 @@
 package fr.toxic.spark.classification.crossValidation
 
-import fr.toxic.spark.classification.task.GbtClassifierTask
+import fr.toxic.spark.classification.task.{ClassificationModelFactory, GbtClassifierTask}
 import org.apache.spark.ml.classification.{GBTClassificationModel, GBTClassifier}
 import org.apache.spark.ml.evaluation.{BinaryClassificationEvaluator, Evaluator}
 import org.apache.spark.ml.param.ParamMap
@@ -13,7 +13,7 @@ class CrossValidationGbtClassifierTask(val data: DataFrame,
                                        val featureColumn: String,
                                        val predictionColumn: String,
                                        val pathModel: String,
-                                       val pathPrediction: String) {
+                                       val pathPrediction: String) extends ClassificationModelFactory {
 
   var estimator: GBTClassifier = _
   var evaluator: BinaryClassificationEvaluator = _
@@ -21,22 +21,23 @@ class CrossValidationGbtClassifierTask(val data: DataFrame,
   var crossValidator: CrossValidator = _
   var crossValidatorModel: CrossValidatorModel = _
 
-  def run(): CrossValidationGbtClassifierTask = {
+  override def run(): CrossValidationGbtClassifierTask = {
     defineEstimator()
     defineGridParameters()
     defineEvaluator()
     defineCrossValidatorModel()
     fit()
+    this
   }
 
-  def defineEstimator(): CrossValidationGbtClassifierTask = {
+  override def defineEstimator(): CrossValidationGbtClassifierTask = {
     estimator = new GbtClassifierTask(labelColumn=labelColumn,
                                       featureColumn=featureColumn,
                                       predictionColumn=predictionColumn).defineModel.getModel
     this
   }
 
-  def defineGridParameters(): CrossValidationGbtClassifierTask = {
+  override def defineGridParameters(): CrossValidationGbtClassifierTask = {
       paramGrid = new ParamGridBuilder()
         .addGrid(estimator.maxDepth, Array(4, 8, 16, 30))
         .addGrid(estimator.maxBins, Array(2, 4, 8, 16))
@@ -44,14 +45,14 @@ class CrossValidationGbtClassifierTask(val data: DataFrame,
     this
   }
 
-  def defineEvaluator(): CrossValidationGbtClassifierTask = {
+  override def defineEvaluator(): CrossValidationGbtClassifierTask = {
       evaluator = new BinaryClassificationEvaluator()
         .setRawPredictionCol(predictionColumn)
         .setLabelCol(labelColumn)
         .setMetricName("areaUnderROC")
     this}
 
-  def defineCrossValidatorModel(): CrossValidationGbtClassifierTask = {
+  override def defineCrossValidatorModel(): CrossValidationGbtClassifierTask = {
     crossValidator = new CrossValidator()
       .setEvaluator(evaluator)
       .setEstimatorParamMaps(paramGrid)
@@ -59,12 +60,12 @@ class CrossValidationGbtClassifierTask(val data: DataFrame,
     this
   }
 
-  def fit(): CrossValidationGbtClassifierTask = {
+  override def fit(): CrossValidationGbtClassifierTask = {
     crossValidatorModel = crossValidator.fit(data)
     this
   }
 
-  def transform(data: DataFrame): DataFrame = {
+  override def transform(data: DataFrame): DataFrame = {
     crossValidatorModel.transform(data)
   }
 

@@ -1,6 +1,6 @@
 package fr.toxic.spark.classification.crossValidation
 
-import fr.toxic.spark.classification.task.LinearSvcTask
+import fr.toxic.spark.classification.task.{ClassificationModelFactory, LinearSvcTask}
 import org.apache.spark.ml.classification.{LinearSVC, LinearSVCModel}
 import org.apache.spark.ml.evaluation.{BinaryClassificationEvaluator, Evaluator}
 import org.apache.spark.ml.param.ParamMap
@@ -13,7 +13,7 @@ class CrossValidationLinearSvcTask(val data: DataFrame,
                                    val featureColumn: String,
                                    val predictionColumn: String,
                                    val pathModel: String,
-                                   val pathPrediction: String) {
+                                   val pathPrediction: String) extends ClassificationModelFactory {
 
   var estimator: LinearSVC = _
   var evaluator: BinaryClassificationEvaluator = _

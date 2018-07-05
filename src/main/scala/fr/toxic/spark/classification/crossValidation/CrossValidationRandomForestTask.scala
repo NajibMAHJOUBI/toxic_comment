@@ -1,6 +1,6 @@
 package fr.toxic.spark.classification.crossValidation
 
-import fr.toxic.spark.classification.task.RandomForestTask
+import fr.toxic.spark.classification.task.{CrossValidationModelFactory, RandomForestTask}
 import org.apache.spark.ml.classification.{RandomForestClassificationModel, RandomForestClassifier}
 import org.apache.spark.ml.evaluation.{BinaryClassificationEvaluator, Evaluator}
 import org.apache.spark.ml.param.ParamMap
@@ -13,7 +13,7 @@ class CrossValidationRandomForestTask(val data: DataFrame,
                                       val featureColumn: String,
                                       val predictionColumn: String,
                                       val pathModel: String,
-                                      val pathPrediction: String) {
+                                      val pathPrediction: String) extends CrossValidationModelFactory {
 
   var estimator: RandomForestClassifier = _
   var evaluator: BinaryClassificationEvaluator = _
@@ -21,7 +21,7 @@ class CrossValidationRandomForestTask(val data: DataFrame,
   var crossValidator: CrossValidator = _
   var crossValidatorModel: CrossValidatorModel = _
 
-  def run(): CrossValidationRandomForestTask = {
+  override def run(): CrossValidationRandomForestTask = {
     defineEstimator()
     defineGridParameters()
     defineEvaluator()
@@ -29,14 +29,14 @@ class CrossValidationRandomForestTask(val data: DataFrame,
     fit()
   }
 
-  def defineEstimator(): CrossValidationRandomForestTask = {
+  override def defineEstimator(): CrossValidationRandomForestTask = {
     estimator = new RandomForestTask(labelColumn=labelColumn,
                                      featureColumn=featureColumn,
                                      predictionColumn=predictionColumn).defineModel.getModel
     this
   }
 
-  def defineGridParameters(): CrossValidationRandomForestTask = {
+  override def defineGridParameters(): CrossValidationRandomForestTask = {
       paramGrid = new ParamGridBuilder()
         .addGrid(estimator.maxDepth, Array(4, 8, 16, 30))
         .addGrid(estimator.maxBins, Array(2, 4, 8, 16))
@@ -44,14 +44,14 @@ class CrossValidationRandomForestTask(val data: DataFrame,
     this
   }
 
-  def defineEvaluator(): CrossValidationRandomForestTask = {
+  override def defineEvaluator(): CrossValidationRandomForestTask = {
       evaluator = new BinaryClassificationEvaluator()
         .setRawPredictionCol(predictionColumn)
         .setLabelCol(labelColumn)
         .setMetricName("areaUnderROC")
     this}
 
-  def defineCrossValidatorModel(): CrossValidationRandomForestTask = {
+  override def defineCrossValidatorModel(): CrossValidationRandomForestTask = {
     crossValidator = new CrossValidator()
       .setEvaluator(evaluator)
       .setEstimatorParamMaps(paramGrid)
@@ -59,12 +59,12 @@ class CrossValidationRandomForestTask(val data: DataFrame,
     this
   }
 
-  def fit(): CrossValidationRandomForestTask = {
+  override def fit(): CrossValidationRandomForestTask = {
     crossValidatorModel = crossValidator.fit(data)
     this
   }
 
-  def transform(data: DataFrame): DataFrame = {
+  override def transform(data: DataFrame): DataFrame = {
     crossValidatorModel.transform(data)
   }
 
