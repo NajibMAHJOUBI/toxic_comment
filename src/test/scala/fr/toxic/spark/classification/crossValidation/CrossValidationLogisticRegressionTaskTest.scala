@@ -42,15 +42,15 @@ class CrossValidationLogisticRegressionTaskTest extends AssertionsForJUnit {
       pathModel = "", pathPrediction = "")
     cv.run()
 
-    assert(cv.getLabelColumn() == label)
-    assert(cv.getFeatureColumn() == feature)
-    assert(cv.getPredictionColumn() == prediction)
-    assert(cv.getGridParameters().isInstanceOf[Array[ParamMap]])
-    assert(cv.getEstimator().isInstanceOf[LogisticRegression])
-    assert(cv.getEvaluator().isInstanceOf[Evaluator])
-    assert(cv.getCrossValidator().isInstanceOf[CrossValidator])
+    assert(cv.getLabelColumn == label)
+    assert(cv.getFeatureColumn == feature)
+    assert(cv.getPredictionColumn == prediction)
+    assert(cv.getGridParameters.isInstanceOf[Array[ParamMap]])
+    assert(cv.getEstimator.isInstanceOf[LogisticRegression])
+    assert(cv.getEvaluator.isInstanceOf[Evaluator])
+    assert(cv.getCrossValidator.isInstanceOf[CrossValidator])
 
-    val bestModel = cv.getBestModel()
+    val bestModel = cv.getBestModel
     assert(bestModel.getLabelCol == label)
     assert(bestModel.getFeaturesCol == feature)
     assert(bestModel.getPredictionCol == prediction)
