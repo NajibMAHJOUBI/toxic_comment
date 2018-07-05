@@ -1,7 +1,7 @@
 
 package fr.toxic.spark.kaggle
 
-import fr.toxic.spark.classification.classifierChains.ClassifierChainsLogisticRegressionTask
+import fr.toxic.spark.classification.classifierChains.{ClassifierChainsDecisionTreeTask, ClassifierChainsLogisticRegressionTask}
 import fr.toxic.spark.classification.task.{DecisionTreeTask, LinearSvcTask, LogisticRegressionTask, RandomForestTask}
 import fr.toxic.spark.text.featurization.{CountVectorizerTask, StopWordsRemoverTask, TfIdfTask, TokenizerTask}
 import fr.toxic.spark.utils.{LoadDataSetTask, WriteKaggleSubmission}
@@ -21,7 +21,7 @@ object KaggleSubmissionClassifierChainsExample {
     val log = LogManager.getRootLogger
     log.setLevel(Level.WARN)
 
-    val classifierMethod = "logistic_regression"
+    val classifierMethod = "decision_tree"
     val methodValidation = "cross_validation"
     val labelColumns = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
     val savePath = s"target/kaggle/classifierChains/$methodValidation/$classifierMethod"
@@ -38,11 +38,19 @@ object KaggleSubmissionClassifierChainsExample {
 
     val trainTfIdf = tfIdfModel.getTransform()
 
-    val classifierChains = new ClassifierChainsLogisticRegressionTask(labelColumns= labelColumns,
-                                                                      featureColumn= "tf_idf",
-                                                                      methodValidation= methodValidation,
-                                                                      savePath= savePath)
-    classifierChains.run(trainTfIdf)
+    if (classifierMethod == "decision_tree"){
+      val classifierChains = new ClassifierChainsDecisionTreeTask(labelColumns= labelColumns,
+        featureColumn= "tf_idf",
+        methodValidation= methodValidation,
+        savePath= savePath)
+      classifierChains.run(trainTfIdf)
+    } else {
+      val classifierChains = new ClassifierChainsLogisticRegressionTask(labelColumns= labelColumns,
+        featureColumn= "tf_idf",
+        methodValidation= methodValidation,
+        savePath= savePath)
+      classifierChains.run(trainTfIdf)
+    }
 
     // Test
     val test = new LoadDataSetTask(sourcePath = "data/parquet").run(spark, "test")
