@@ -107,5 +107,5 @@ class CrossValidationLogisticRegressionTask(val data: DataFrame,
   def setGridParameters(grid: Array[ParamMap]): CrossValidationLogisticRegressionTask = {
      paramGrid = grid
      this
-   }
+  }
 }
