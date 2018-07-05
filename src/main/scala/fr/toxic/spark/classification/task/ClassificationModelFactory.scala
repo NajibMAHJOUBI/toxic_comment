@@ -8,7 +8,7 @@ trait ClassificationModelFactory {
 
   def fit(data: DataFrame): ClassificationModelFactory
 
-  def transform(data: DataFrame): ClassificationModelFactory
+  def transform(data: DataFrame): DataFrame
 
   def saveModel(path: String): ClassificationModelFactory
 
