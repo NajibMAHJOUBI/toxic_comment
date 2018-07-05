@@ -28,7 +28,7 @@ class GbtClassifierTaskTest extends AssertionsForJUnit  {
     val gbtClassifier = new GbtClassifierTask(labelColumn = "toxic",
                                              featureColumn = "tf_idf",
                                              predictionColumn = "prediction")
-    gbtClassifier.defineModel()
+    gbtClassifier.defineModel
     gbtClassifier.fit(data)
     gbtClassifier.transform(data)
     val transform = gbtClassifier.getTransform
@@ -42,7 +42,7 @@ class GbtClassifierTaskTest extends AssertionsForJUnit  {
   @Test def testMaxDepth(): Unit = {
     val maxDepth = 5
     val gbtClassifier = new GbtClassifierTask()
-    gbtClassifier.defineModel()
+    gbtClassifier.defineModel
     gbtClassifier.setMaxDepth(maxDepth)
     assert(gbtClassifier.getMaxDepth == maxDepth)
   }

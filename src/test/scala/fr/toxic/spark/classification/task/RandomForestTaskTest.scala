@@ -28,7 +28,7 @@ class RandomForestTaskTest extends AssertionsForJUnit  {
     val randomForest = new RandomForestTask(labelColumn = "toxic",
                                             featureColumn = "tf_idf",
                                             predictionColumn = "prediction")
-    randomForest.defineModel()
+    randomForest.defineModel
     randomForest.fit(data)
     randomForest.transform(data)
     val transform = randomForest.getTransform
@@ -42,7 +42,7 @@ class RandomForestTaskTest extends AssertionsForJUnit  {
   @Test def testMaxDepth(): Unit = {
     val maxDepth = 5
     val randomForest = new RandomForestTask()
-    randomForest.defineModel()
+    randomForest.defineModel
     randomForest.setMaxDepth(maxDepth)
     assert(randomForest.getMaxDepth == maxDepth)
   }
@@ -50,7 +50,7 @@ class RandomForestTaskTest extends AssertionsForJUnit  {
   @Test def testMaxBins(): Unit = {
     val maxBins = 5
     val randomForest = new RandomForestTask()
-    randomForest.defineModel()
+    randomForest.defineModel
     randomForest.setMaxBins(maxBins)
     assert(randomForest.getMaxDepth == maxBins)
   }

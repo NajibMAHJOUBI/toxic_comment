@@ -28,7 +28,7 @@ class DecisionTreeTaskTest extends AssertionsForJUnit  {
     val decisionTree = new DecisionTreeTask(labelColumn = "toxic",
                                              featureColumn = "tf_idf",
                                              predictionColumn = "prediction")
-    decisionTree.defineModel()
+    decisionTree.defineModel
     decisionTree.fit(data)
     decisionTree.transform(data)
     val transform = decisionTree.getTransform
@@ -42,7 +42,7 @@ class DecisionTreeTaskTest extends AssertionsForJUnit  {
   @Test def testMaxDepth(): Unit = {
     val maxDepth = 5
     val decisionTree = new DecisionTreeTask()
-    decisionTree.defineModel()
+    decisionTree.defineModel
     decisionTree.setMaxDepth(maxDepth)
     assert(decisionTree.getMaxDepth == maxDepth)
   }
@@ -50,7 +50,7 @@ class DecisionTreeTaskTest extends AssertionsForJUnit  {
   @Test def testMaxBins(): Unit = {
     val maxBins = 5
     val decisionTree = new DecisionTreeTask()
-    decisionTree.defineModel()
+    decisionTree.defineModel
     decisionTree.setMaxBins(maxBins)
     assert(decisionTree.getMaxDepth == maxBins)
   }

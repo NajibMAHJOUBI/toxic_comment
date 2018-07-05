@@ -1,7 +1,6 @@
 package fr.toxic.spark.classification.task
 
 import fr.toxic.spark.utils.LoadDataSetTask
-import fr.toxic.spark.classification.task.LogisticRegressionTask
 import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.junit.{After, Before, Test}
@@ -29,7 +28,7 @@ class LogisticRegressionTaskTest extends AssertionsForJUnit  {
     val logisticRegression = new LogisticRegressionTask(labelColumn = "toxic",
                                                         featureColumn = "tf_idf",
                                                         predictionColumn = "prediction")
-    logisticRegression.defineModel()
+    logisticRegression.defineModel
     logisticRegression.fit(data)
     logisticRegression.transform(data)
     val prediction = logisticRegression.getTransform
@@ -43,7 +42,7 @@ class LogisticRegressionTaskTest extends AssertionsForJUnit  {
   @Test def testRegParam(): Unit = {
     val regParam = 0.5
     val logisticRegression = new LogisticRegressionTask()
-    logisticRegression.defineModel()
+    logisticRegression.defineModel
     logisticRegression.setRegParam(regParam)
     assert(logisticRegression.getRegParam == regParam)
   }
