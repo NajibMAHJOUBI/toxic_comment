@@ -11,10 +11,10 @@ import org.scalatest.junit.AssertionsForJUnit
   */
 class BinaryRelevanceDecisionTreeTaskTest extends AssertionsForJUnit {
 
-  private var spark: SparkSession = _
-  private var data: DataFrame = _
   private val savePath: String = "target/model/binaryRelevance"
   private val sourcePath: String = "src/test/resources/data"
+  private var spark: SparkSession = _
+  private var data: DataFrame = _
 
   @Before def beforeAll() {
     spark = SparkSession
