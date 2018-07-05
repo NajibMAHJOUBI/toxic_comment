@@ -23,7 +23,7 @@ class BinaryRelevanceLogisticRegressionTask(val columns: Array[String], val save
   def run(data: DataFrame): Unit = {
     prediction = data
     columns.map(column => {
-      val labelFeatures = createLabel(prediction, column)
+      val labelFeatures = BinaryRelevanceObject.createLabel(prediction, column)
       val model = computeModel(labelFeatures, column)
       saveModel(column)
       if (probability) {
@@ -34,10 +34,6 @@ class BinaryRelevanceLogisticRegressionTask(val columns: Array[String], val save
     })
     savePrediction(prediction)
     multiLabelPrecision(prediction)
-  }
-
-  def createLabel(data: DataFrame, column: String): DataFrame = {
-    data.withColumnRenamed(column, s"label_$column")
   }
 
   def computeModel(data: DataFrame, column: String): Unit = {
