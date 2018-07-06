@@ -22,7 +22,7 @@ class CrossValidationDecisionTreeTaskTest extends AssertionsForJUnit {
 
   private val label = "toxic"
   private val feature = "tf"
-  private val prediction = s"prediction_${label}"
+  private val prediction = s"prediction_$label"
   private var spark: SparkSession = _
 
   @Before def beforeAll() {
