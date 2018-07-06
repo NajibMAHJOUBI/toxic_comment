@@ -41,25 +41,24 @@ object KaggleSubmissionBinaryRelevanceExample {
     val trainTfIdf = tfIdfModel.getTransform()
 
     if (classifierMethod == "linear_svc") {
-      val binaryRelevance = new BinaryRelevanceLinearSvcTask(data= trainTfIdf, columns = columns,
+      val binaryRelevance = new BinaryRelevanceLinearSvcTask(columns = columns,
                                                              savePath = savePath, featureColumn = "tf_idf",
                                                              methodValidation = methodValidation)
-      binaryRelevance.run()
+      binaryRelevance.run(trainTfIdf)
     } else if (classifierMethod == "decision_tree"){
-      val binaryRelevance = new BinaryRelevanceDecisionTreeTask(data= trainTfIdf, columns = columns,
+      val binaryRelevance = new BinaryRelevanceDecisionTreeTask(columns = columns,
                                                                 savePath = savePath, featureColumn = "tf_idf",
                                                                 methodValidation = methodValidation)
-      binaryRelevance.run()
+      binaryRelevance.run(trainTfIdf)
     } else if (classifierMethod == "random_forest"){
-      val binaryRelevance = new BinaryRelevanceRandomForestTask(data= trainTfIdf, columns = columns,
+      val binaryRelevance = new BinaryRelevanceRandomForestTask(columns = columns,
                                                                 savePath = savePath, featureColumn = "tf_idf",
                                                                 methodValidation = methodValidation)
-      binaryRelevance.run()
+      binaryRelevance.run(trainTfIdf)
     } else {
       val binaryRelevance = new BinaryRelevanceLogisticRegressionTask(columns = columns,
                                                                       savePath = savePath, featureColumn = "tf_idf",
-                                                                      methodValidation = methodValidation,
-                                                                      probability = probabilityPrediction)
+                                                                      methodValidation = methodValidation)
       binaryRelevance.run(trainTfIdf)
     }
 
@@ -71,43 +70,37 @@ object KaggleSubmissionBinaryRelevanceExample {
     val testTf = countVectorizerModel.transform(testStopWordsRemoved).getTransform()
     var testTfIdf = tfIdfModel.transform(testTf).getTransform()
 
-//    val logisticRegression = new LogisticRegressionTask(featureColumn = "tf_idf")
-//    val linearSvc = new LinearSvcTask(featureColumn = "tf_idf")
-//    val decisionTree = new DecisionTreeTask(featureColumn = "tf_idf")
-//    val randomForest = new RandomForestTask(featureColumn = "tf_idf")
-
     for (column <- columns) {
       if (classifierMethod == "linear_svc") {
-        // TODO
+        val binaryRelevance = new BinaryRelevanceLinearSvcTask(columns = columns,
+                                                               savePath = savePath,
+                                                               featureColumn = "tf_idf",
+                                                               methodValidation = methodValidation)
+        binaryRelevance.loadModel(s"$savePath/model/$column")
+        testTfIdf = binaryRelevance.computePrediction(testTfIdf)
       } else if (classifierMethod == "decision_tree"){
-        // TODO
+        val binaryRelevance = new BinaryRelevanceDecisionTreeTask(columns = columns,
+                                                                  savePath = savePath,
+                                                                  featureColumn = "tf_idf",
+                                                                  methodValidation = methodValidation)
+        binaryRelevance.loadModel(s"$savePath/model/$column")
+        testTfIdf = binaryRelevance.computePrediction(testTfIdf)
       } else if (classifierMethod == "random_forest") {
-        // TODO
+        val binaryRelevance = new BinaryRelevanceRandomForestTask(columns = Array(""),
+                                                                  savePath = savePath,
+                                                                  featureColumn = "tf_idf",
+                                                                  methodValidation = "")
+        binaryRelevance.loadModel(s"$savePath/model/$column")
+        testTfIdf = binaryRelevance.computePrediction(testTfIdf)
       } else {
-        val binaryRelevance = new BinaryRelevanceLogisticRegressionTask(columns = columns,
-                                                                        savePath = savePath, featureColumn = "tf_idf",
-                                                                        methodValidation = methodValidation,
-                                                                        probability = probabilityPrediction)
+        val binaryRelevance = new BinaryRelevanceLogisticRegressionTask(columns = Array(""),
+                                                                        savePath = savePath,
+                                                                        featureColumn = "tf_idf",
+                                                                        methodValidation = "")
         binaryRelevance.loadModel(s"$savePath/model/$column")
         testTfIdf = binaryRelevance.computeProbability(testTfIdf, column)
       }
     }
-
-//    columns.map(column => {
-//      if (classifierMethod == "linear_svc") {
-//        testTfIdf = linearSvc.loadModel(s"$savePath/model/$column")
-//                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
-//      } else if (classifierMethod == "decision_tree"){
-//        testTfIdf = decisionTree.loadModel(s"$savePath/model/$column")
-//                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
-//      } else if (classifierMethod == "random_forest") {
-//        testTfIdf = randomForest.loadModel(s"$savePath/model/$column")
-//                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
-//      } else {
-//        testTfIdf = logisticRegression.loadModel(s"$savePath/model/$column")
-//                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
-//      }
-//    })
 
     // testTfIdf.show(5)
     new WriteKaggleSubmission().run(testTfIdf, savePath)
