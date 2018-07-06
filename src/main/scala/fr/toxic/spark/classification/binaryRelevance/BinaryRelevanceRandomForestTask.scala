@@ -12,20 +12,20 @@ import org.apache.spark.sql.{Column, DataFrame}
 /**
   * Created by mahjoubi on 13/06/18.
   */
-class BinaryRelevanceRandomForestTask(val data: DataFrame,
-                                      val columns: Array[String], val savePath: String,
+class BinaryRelevanceRandomForestTask(val columns: Array[String], val savePath: String,
                                       val featureColumn: String = "tf_idf",
                                       val methodValidation: String = "simple") {
 
-  var prediction: DataFrame = data
+  var prediction: DataFrame = _
   var model: RandomForestClassificationModel = _
 
-  def run(): Unit = {
+  def run(data: DataFrame): Unit = {
+    prediction = data
     columns.map(column => {
       val labelFeatures = createLabel(prediction, column)
-      val model = computeModel(labelFeatures, column)
+      model = computeModel(labelFeatures, column)
       saveModel(column)
-      prediction = computePrediction(labelFeatures, model)
+      prediction = computePrediction(labelFeatures)
     })
     savePrediction(prediction)
     multiLabelPrecision(prediction)
@@ -53,7 +53,7 @@ class BinaryRelevanceRandomForestTask(val data: DataFrame,
     model
   }
 
-  def computePrediction(data: DataFrame, model: RandomForestClassificationModel): DataFrame = {
+  def computePrediction(data: DataFrame): DataFrame = {
     model.transform(data).drop(Seq("rawPrediction", "probability"): _*)
   }
 
@@ -82,6 +82,12 @@ class BinaryRelevanceRandomForestTask(val data: DataFrame,
       .select(columnsToKeep.toSeq: _*)
       .write.option("header", "true").mode("overwrite")
       .csv(s"$savePath/prediction")
+  }
+
+  def loadModel(path: String): BinaryRelevanceRandomForestTask = {
+    val logisticRegression = new RandomForestTask(featureColumn = "tf_idf")
+    model = logisticRegression.loadModel(path).getModelFit
+    this
   }
 
   def saveModel(column: String): Unit = {

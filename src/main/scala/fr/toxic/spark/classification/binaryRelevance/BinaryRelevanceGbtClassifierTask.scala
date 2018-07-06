@@ -16,15 +16,16 @@ class BinaryRelevanceGbtClassifierTask(val data: DataFrame,
                                       val featureColumn: String = "tf_idf",
                                       val methodValidation: String = "simple") {
 
-  var prediction: DataFrame = data
+  var prediction: DataFrame = _
   var model: GBTClassificationModel = _
 
   def run(): Unit = {
+    prediction = data
     columns.map(column => {
       val labelFeatures = createLabel(prediction, column)
-      val model = computeModel(labelFeatures, column)
+      model = computeModel(labelFeatures, column)
       saveModel(column)
-      prediction = computePrediction(labelFeatures, model)
+      prediction = computePrediction(labelFeatures)
     })
     savePrediction(prediction)
     multiLabelPrecision(prediction)
@@ -52,7 +53,7 @@ class BinaryRelevanceGbtClassifierTask(val data: DataFrame,
     model
   }
 
-  def computePrediction(data: DataFrame, model: GBTClassificationModel): DataFrame = {
+  def computePrediction(data: DataFrame): DataFrame = {
     model.transform(data).drop(Seq("rawPrediction", "probability"): _*)
   }
 
@@ -87,7 +88,7 @@ class BinaryRelevanceGbtClassifierTask(val data: DataFrame,
     model.write.overwrite().save(s"$savePath/model/$column")
   }
 
-  def getPrediction(): DataFrame = {
+  def getPrediction: DataFrame = {
     prediction
   }
 
