@@ -31,9 +31,10 @@ class BinaryRelevanceDecisionTreeTaskTest extends AssertionsForJUnit {
 
   @Test def testBrOneColumnSimpleValidationTest(): Unit = {
     val columns = Array("toxic")
-    new BinaryRelevanceDecisionTreeTask(data = data, columns = columns,
+    new BinaryRelevanceDecisionTreeTask(columns = columns,
                                         savePath = s"$savePath/oneColumn/simpleValidation",
-                                        featureColumn = "tf_idf", methodValidation = "simple").run()
+                                        featureColumn = "tf_idf",
+                                        methodValidation = "simple").run(data)
     val prediction = spark.read.option("header", "true").csv(s"$savePath/oneColumn/simpleValidation/prediction")
     assert(prediction.isInstanceOf[DataFrame])
     columns.map(column => assert(prediction.columns.contains(s"label_$column")))
@@ -42,9 +43,10 @@ class BinaryRelevanceDecisionTreeTaskTest extends AssertionsForJUnit {
 
   @Test def testBrOneColumnCrossValidationTest(): Unit = {
     val columns = Array("toxic")
-    new BinaryRelevanceDecisionTreeTask(data= data, columns = columns,
+    new BinaryRelevanceDecisionTreeTask(columns = columns,
                                         savePath = s"$savePath/oneColumn/crossValidation",
-                                        featureColumn = "tf_idf", methodValidation = "cross_validation").run()
+                                        featureColumn = "tf_idf",
+                                        methodValidation = "cross_validation").run(data)
     val prediction = spark.read.option("header", "true").csv(s"$savePath/oneColumn/crossValidation/prediction")
     assert(prediction.isInstanceOf[DataFrame])
     columns.map(column => assert(prediction.columns.contains(s"label_$column")))
@@ -53,9 +55,10 @@ class BinaryRelevanceDecisionTreeTaskTest extends AssertionsForJUnit {
 
   @Test def testBrTwoColumnSimpleValidationTest(): Unit = {
     val columns = Array("toxic", "severe_toxic")
-    new BinaryRelevanceDecisionTreeTask(data= data, columns = columns,
+    new BinaryRelevanceDecisionTreeTask(columns = columns,
                                         savePath = s"$savePath/twoColumn/simpleValidation",
-                                        featureColumn = "tf_idf", methodValidation = "simple").run()
+                                        featureColumn = "tf_idf",
+                                        methodValidation = "simple").run(data)
     val prediction = spark.read.option("header", "true").csv(s"$savePath/twoColumn/simpleValidation/prediction")
     assert(prediction.isInstanceOf[DataFrame])
     columns.map(column => assert(prediction.columns.contains(s"prediction_$column")))
@@ -64,9 +67,10 @@ class BinaryRelevanceDecisionTreeTaskTest extends AssertionsForJUnit {
 
   @Test def testBrSixColumnSimpleValidationTest(): Unit = {
     val columns =  Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
-    new BinaryRelevanceDecisionTreeTask(data= data, columns = columns,
+    new BinaryRelevanceDecisionTreeTask(columns = columns,
                                         savePath = s"$savePath/twoColumn/simpleValidation",
-                                        featureColumn = "tf_idf", methodValidation = "simple").run()
+                                        featureColumn = "tf_idf",
+                                        methodValidation = "simple").run(data)
     val prediction = spark.read.option("header", "true").csv(s"$savePath/twoColumn/simpleValidation/prediction")
     assert(prediction.isInstanceOf[DataFrame])
     columns.map(column => assert(prediction.columns.contains(s"prediction_$column")))

@@ -31,57 +31,67 @@ class BinaryRelevanceLogisticRegressionTaskTest extends AssertionsForJUnit {
   @Test def testBrOneColumnSimpleValidationPredictionTest(): Unit = {
     val columns = Array("toxic")
     val savePath = "target/model/binaryRelevance/oneColumn/simpleValidation/prediction"
-    new BinaryRelevanceLogisticRegressionTask(columns = columns, savePath = savePath,
-                                              featureColumn = "tf_idf", methodValidation = "simple").run(data)
-    val prediction = spark.read.option("header", "true").csv(s"${savePath}/prediction")
+    new BinaryRelevanceLogisticRegressionTask(columns = columns,
+                                              savePath = savePath,
+                                              featureColumn = "tf_idf",
+                                               methodValidation = "simple").run(data)
+    val prediction = spark.read.option("header", "true").csv(s"$savePath/prediction")
     assert(prediction.isInstanceOf[DataFrame])
-    columns.map(column => assert(prediction.columns.contains(s"label_${column}")))
-    columns.map(column => assert(prediction.columns.contains(s"prediction_${column}")))
+    columns.map(column => assert(prediction.columns.contains(s"label_$column")))
+    columns.map(column => assert(prediction.columns.contains(s"prediction_$column")))
     }
 
   @Test def testBrOneColumnSimpleValidationProbabilityTest(): Unit = {
     val columns = Array("toxic")
     val savePath = "target/model/binaryRelevance/oneColumn/simpleValidation/probability"
-    new BinaryRelevanceLogisticRegressionTask(columns = columns, savePath = savePath,
-                                              featureColumn = "tf_idf", methodValidation = "simple",
+    new BinaryRelevanceLogisticRegressionTask(columns = columns,
+                                              savePath = savePath,
+                                              featureColumn = "tf_idf",
+                                              methodValidation = "simple",
                                               probability = true).run(data)
-    val prediction = spark.read.option("header", "true").csv(s"${savePath}/prediction")
+    val prediction = spark.read.option("header", "true").csv(s"$savePath/prediction")
     assert(prediction.isInstanceOf[DataFrame])
-    columns.map(column => assert(prediction.columns.contains(s"label_${column}")))
-    columns.map(column => assert(prediction.columns.contains(s"prediction_${column}")))
+    columns.map(column => assert(prediction.columns.contains(s"label_$column")))
+    columns.map(column => assert(prediction.columns.contains(s"prediction_$column")))
     }
 
   @Test def testBrOneColumnCrossValidationTest(): Unit = {
     val columns = Array("toxic")
     val savePath = "target/model/binaryRelevance/oneColumn/crossValidation"
-    new BinaryRelevanceLogisticRegressionTask(columns = columns, savePath = savePath,
-      featureColumn = "tf_idf", methodValidation = "cross_validation").run(data)
-    val prediction = spark.read.option("header", "true").csv(s"${savePath}/prediction")
+    new BinaryRelevanceLogisticRegressionTask(columns = columns,
+                                              savePath = savePath,
+                                              featureColumn = "tf_idf",
+                                              methodValidation = "cross_validation").run(data)
+    val prediction = spark.read.option("header", "true").csv(s"$savePath/prediction")
     assert(prediction.isInstanceOf[DataFrame])
-    columns.map(column => assert(prediction.columns.contains(s"label_${column}")))
-    columns.map(column => assert(prediction.columns.contains(s"prediction_${column}")))
+    columns.map(column => assert(prediction.columns.contains(s"label_$column")))
+    columns.map(column => assert(prediction.columns.contains(s"prediction_$column")))
   }
 
   @Test def testBrTwoColumnSimpleValidationTest(): Unit = {
     val columns = Array("toxic", "severe_toxic")
     val savePath = "target/model/binaryRelevance/twoColumn/simpleValidation"
-    new BinaryRelevanceLogisticRegressionTask(columns = columns, savePath = savePath,
-                                              featureColumn = "tf_idf", methodValidation = "simple").run(data)
-    val prediction = spark.read.option("header", "true").csv(s"${savePath}/prediction")
+    new BinaryRelevanceLogisticRegressionTask(columns = columns,
+                                              savePath = savePath,
+                                              featureColumn = "tf_idf",
+                                              methodValidation = "simple").run(data)
+    val prediction = spark.read.option("header", "true").csv(s"$savePath/prediction")
     assert(prediction.isInstanceOf[DataFrame])
-    columns.map(column => assert(prediction.columns.contains(s"prediction_${column}")))
-    columns.map(column => assert(prediction.columns.contains(s"prediction_${column}")))
+    columns.map(column => assert(prediction.columns.contains(s"label_$column")))
+    columns.map(column => assert(prediction.columns.contains(s"prediction_$column")))
   }
 
   @Test def testBrSixColumnSimpleValidationTest(): Unit = {
     val columns =  Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
     val savePath = "target/model/binaryRelevance/twoColumn/simpleValidation"
-    new BinaryRelevanceLogisticRegressionTask(columns = columns, savePath = savePath,
-                                              featureColumn = "tf_idf", methodValidation = "simple").run(data)
-    val prediction = spark.read.option("header", "true").csv(s"${savePath}/prediction")
+    new BinaryRelevanceLogisticRegressionTask(columns = columns,
+                                              savePath = savePath,
+                                              featureColumn = "tf_idf",
+                                              methodValidation = "simple").run(data)
+    val prediction = spark.read.option("header", "true").csv(s"$savePath/prediction")
     assert(prediction.isInstanceOf[DataFrame])
-    columns.map(column => assert(prediction.columns.contains(s"prediction_${column}")))
-    columns.map(column => assert(prediction.columns.contains(s"prediction_${column}")))
+    columns.map(column => assert(prediction.columns.contains(s"label_$column")))
+    columns.map(column => assert(prediction.columns.contains(s"prediction_$column")))
   }
 
   @After def afterAll() {
