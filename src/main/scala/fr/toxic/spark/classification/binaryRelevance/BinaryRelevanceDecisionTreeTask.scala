@@ -3,10 +3,7 @@ package fr.toxic.spark.classification.binaryRelevance
 import fr.toxic.spark.classification.crossValidation.CrossValidationDecisionTreeTask
 import fr.toxic.spark.classification.task.DecisionTreeTask
 import org.apache.spark.ml.classification.DecisionTreeClassificationModel
-import org.apache.spark.mllib.evaluation.MultilabelMetrics
-import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.functions.col
-import org.apache.spark.sql.{Column, DataFrame}
+import org.apache.spark.sql.DataFrame
 
 /**
   * Created by mahjoubi on 13/06/18.
@@ -21,67 +18,39 @@ class BinaryRelevanceDecisionTreeTask(val columns: Array[String],
 
   def run(data: DataFrame): Unit = {
     prediction = data
-    columns.map(column => {
-      val labelFeatures = createLabel(prediction, column)
-      model = computeModel(labelFeatures, column)
+    columns.foreach(column => {
+      val labelFeatures = BinaryRelevanceObject.createLabel(prediction, column)
+      computeModel(labelFeatures, column)
       saveModel(column)
       prediction = computePrediction(labelFeatures)
     })
-    savePrediction(prediction)
-    multiLabelPrecision(prediction)
+    BinaryRelevanceObject.savePrediction(prediction, columns, s"$savePath/prediction")
+    BinaryRelevanceObject.multiLabelPrecision(prediction, columns)
   }
 
-  def createLabel(data: DataFrame, column: String): DataFrame = {
-    data.withColumnRenamed(column, s"label_$column")
-  }
-
-  def computeModel(data: DataFrame, column: String): DecisionTreeClassificationModel = {
-    if (methodValidation == "cross_validation") {
+  def computeModel(data: DataFrame, column: String): Unit = {
+    model = if (methodValidation == "cross_validation") {
       val cv = new CrossValidationDecisionTreeTask(data = data, labelColumn = s"label_$column",
                                                    featureColumn = featureColumn,
                                                    predictionColumn = s"prediction_$column", pathModel = "",
                                                    pathPrediction = "")
       cv.run()
-      model = cv.getBestModel
+      cv.getBestModel
     } else{
       val decisionTree = new DecisionTreeTask(labelColumn = s"label_$column", featureColumn=featureColumn,
         predictionColumn = s"prediction_$column")
       decisionTree.defineModel
       decisionTree.fit(data)
-      model = decisionTree.getModelFit
+      decisionTree.getModelFit
     }
-    model
   }
 
   def computePrediction(data: DataFrame): DataFrame = {
     model.transform(data).drop(Seq("rawPrediction", "probability"): _*)
   }
 
-  def multiLabelPrecision(data: DataFrame): Unit= {
-    val predictionColumns = columns.map(column => s"prediction_$column")
-    val labelColumns = columns.map(column => s"label_$column")
-    val predictionAndLabels: RDD[(Array[Double], Array[Double])] =
-      data.rdd.map(p => (predictionColumns.map(column => p.getDouble(p.fieldIndex(column))),
-                         labelColumns.map(column => p.getLong(p.fieldIndex(column)).toDouble)))
-
-    val metrics = new MultilabelMetrics(predictionAndLabels)
-//    println(s"Recall = ${metrics.recall}")
-//    println(s"Precision = ${metrics.precision}")
-//    println(s"F1 measure = ${metrics.f1Measure}")
-    println(s"Accuracy = ${metrics.accuracy}")
-  }
-
-  def savePrediction(data: DataFrame): Unit = {
-    val columnsToKeep: Set[Column] = (Set("id")
-      ++ columns.map(name => s"label_$name").toSet
-      ++ columns.map(name => s"prediction_$name").toSet
-      )
-      .map(name => col(name))
-
-    data
-      .select(columnsToKeep.toSeq: _*)
-      .write.option("header", "true").mode("overwrite")
-      .csv(s"$savePath/prediction")
+  def saveModel(column: String): Unit = {
+    model.write.overwrite().save(s"$savePath/model/$column")
   }
 
   def loadModel(path: String): BinaryRelevanceDecisionTreeTask = {
@@ -90,12 +59,8 @@ class BinaryRelevanceDecisionTreeTask(val columns: Array[String],
     this
   }
 
-  def saveModel(column: String): Unit = {
-    model.write.overwrite().save(s"$savePath/model/$column")
-  }
-
-  def getPrediction(): DataFrame = {
-    prediction
-  }
+//  def getPrediction: DataFrame = {
+//    prediction
+//  }
 
 }
