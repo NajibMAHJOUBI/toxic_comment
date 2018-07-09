@@ -1,36 +1,39 @@
 package fr.toxic.spark.classification.task.binaryRelevance
 
-import fr.toxic.spark.classification.binaryRelevance.BinaryRelevanceObject
+import fr.toxic.spark.classification.binaryRelevance.{BinaryRelevanceFactory, BinaryRelevanceObject, BinaryRelevanceTask}
 import fr.toxic.spark.classification.crossValidation.CrossValidationLogisticRegressionTask
 import fr.toxic.spark.classification.task.LogisticRegressionTask
 import org.apache.spark.ml.classification.LogisticRegressionModel
-import org.apache.spark.ml.linalg.Vector
 import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.functions.{col, udf}
 
 /**
   * Created by mahjoubi on 13/06/18.
+  *
+  * Binary relevance method based on random forest classifier
+  *
   */
-class BinaryRelevanceLogisticRegressionTask(val columns: Array[String], val savePath: String,
-                                            val featureColumn: String = "tf_idf",
-                                            val methodValidation: String = "simple",
-                                            val probability: Boolean = false) {
-  var prediction: DataFrame = _
+class BinaryRelevanceLogisticRegressionTask(override val columns: Array[String],
+                                            override val savePath: String,
+                                            override val featureColumn: String,
+                                            override val methodValidation: String) extends
+  BinaryRelevanceTask(columns, savePath, featureColumn, methodValidation) with BinaryRelevanceFactory {
+
   var model: LogisticRegressionModel = _
 
-  def run(data: DataFrame): Unit = {
+  override def run(data: DataFrame): BinaryRelevanceLogisticRegressionTask = {
     prediction = data
     columns.foreach(column => {
       val labelFeatures = BinaryRelevanceObject.createLabel(prediction, column)
       computeModel(labelFeatures, column)
       saveModel(column)
-      prediction = if (probability) {computeProbability(labelFeatures, column)} else {computePrediction(labelFeatures)}
+      computePrediction(labelFeatures)
     })
     BinaryRelevanceObject.savePrediction(prediction, columns, s"$savePath/prediction")
     BinaryRelevanceObject.multiLabelPrecision(prediction, columns)
+    this
   }
 
-  def computeModel(data: DataFrame, column: String): Unit = {
+  override def computeModel(data: DataFrame, column: String): BinaryRelevanceLogisticRegressionTask = {
     model = if (methodValidation == "cross_validation") {
       val cv = new CrossValidationLogisticRegressionTask(data = data, labelColumn = s"label_$column",
                                                          featureColumn = featureColumn,
@@ -45,30 +48,22 @@ class BinaryRelevanceLogisticRegressionTask(val columns: Array[String], val save
       logisticRegression.fit(data)
       logisticRegression.getModelFit
     }
-  }
-
-  def computePrediction(data: DataFrame): DataFrame = {
-    model.transform(data).drop(Seq("rawPrediction", "probability"): _*)
-  }
-
-  def computeProbability(data: DataFrame, label: String): DataFrame = {
-    val getProbability = udf((probability: Vector, prediction: Double) => BinaryRelevanceObject.getPredictionProbability(probability, prediction))
-    val transform = model.transform(data).withColumn("predictionProbability", getProbability(col("probability"), col(s"prediction_$label")))
-    transform.drop(Seq("rawPrediction", "probability", s"prediction_$label"): _*).withColumnRenamed("predictionProbability", s"prediction_$label")
-  }
-
-  def loadModel(path: String): BinaryRelevanceLogisticRegressionTask = {
-    val logisticRegression = new LogisticRegressionTask(featureColumn = "tf_idf")
-    model = logisticRegression.loadModel(path).getModelFit
     this
   }
 
-  def saveModel(column: String): Unit = {
-    model.write.overwrite().save(s"$savePath/model/$column")
+  override def computePrediction(data: DataFrame): BinaryRelevanceLogisticRegressionTask = {
+    prediction = model.transform(data).drop(Seq("rawPrediction", "probability"): _*)
+    this
   }
 
-  def getPrediction: DataFrame = {
-    prediction
+  override def loadModel(path: String): BinaryRelevanceLogisticRegressionTask = {
+    model = new LogisticRegressionTask(featureColumn = "tf_idf").loadModel(path).getModelFit
+    this
+  }
+
+  override def saveModel(column: String): BinaryRelevanceLogisticRegressionTask = {
+    model.write.overwrite().save(s"$savePath/model/$column")
+    this
   }
 
 }

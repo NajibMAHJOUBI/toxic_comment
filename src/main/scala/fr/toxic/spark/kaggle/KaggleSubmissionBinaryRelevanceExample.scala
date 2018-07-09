@@ -73,7 +73,8 @@ object KaggleSubmissionBinaryRelevanceExample {
         var prediction: DataFrame = testTfIdf
         labels.foreach(label => {
               binaryRelevance.loadModel(s"$pathMethod/model/$label")
-              prediction = binaryRelevance.computePrediction(prediction)})
+              binaryRelevance.computePrediction(prediction)
+              prediction = binaryRelevance.getPrediction})
         new WriteKaggleSubmission().run(prediction, pathMethod)
       } else if (classifierMethod == "gbt_classifier"){
         val pathMethod = s"$rootPath/$methodValidation/$classifierMethod"

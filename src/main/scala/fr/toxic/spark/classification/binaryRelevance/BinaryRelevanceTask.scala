@@ -1,8 +1,11 @@
 package fr.toxic.spark.classification.binaryRelevance
-l
+
 import org.apache.spark.sql.DataFrame
 
-class BinaryRelevanceTask {
+class BinaryRelevanceTask(val columns: Array[String],
+                          val savePath: String,
+                          val featureColumn: String,
+                          val methodValidation: String) {
 
   var prediction: DataFrame = _
 
@@ -10,5 +13,15 @@ class BinaryRelevanceTask {
     prediction
   }
 
+  def getColumns: Array[String] = {
+    columns
+  }
 
+  def getFeatureColumn: String = {
+    featureColumn
+  }
+
+  def getMethodValidation: String = {
+    methodValidation
+  }
 }
