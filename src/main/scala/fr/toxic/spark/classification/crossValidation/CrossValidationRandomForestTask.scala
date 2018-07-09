@@ -2,24 +2,18 @@ package fr.toxic.spark.classification.crossValidation
 
 import fr.toxic.spark.classification.task.{CrossValidationModelFactory, RandomForestTask}
 import org.apache.spark.ml.classification.{RandomForestClassificationModel, RandomForestClassifier}
-import org.apache.spark.ml.evaluation.{BinaryClassificationEvaluator, Evaluator}
-import org.apache.spark.ml.param.ParamMap
-import org.apache.spark.ml.tuning.{CrossValidator, CrossValidatorModel, ParamGridBuilder}
+import org.apache.spark.ml.tuning.{CrossValidator, ParamGridBuilder}
 import org.apache.spark.sql.DataFrame
 
 
-class CrossValidationRandomForestTask(val data: DataFrame,
-                                      val labelColumn: String,
-                                      val featureColumn: String,
-                                      val predictionColumn: String,
-                                      val pathModel: String,
-                                      val pathPrediction: String) extends CrossValidationModelFactory {
+class CrossValidationRandomForestTask(override val data: DataFrame,
+                                      override val labelColumn: String,
+                                      override val featureColumn: String,
+                                      override val predictionColumn: String,
+                                      override val pathModel: String,
+                                      override val pathPrediction: String) extends CrossValidationTask(data, labelColumn, featureColumn, predictionColumn, pathModel, pathPrediction) with CrossValidationModelFactory {
 
   var estimator: RandomForestClassifier = _
-  var evaluator: BinaryClassificationEvaluator = _
-  var paramGrid: Array[ParamMap] = _
-  var crossValidator: CrossValidator = _
-  var crossValidatorModel: CrossValidatorModel = _
 
   override def run(): CrossValidationRandomForestTask = {
     defineEstimator()
@@ -27,6 +21,7 @@ class CrossValidationRandomForestTask(val data: DataFrame,
     defineEvaluator()
     defineCrossValidatorModel()
     fit()
+    this
   }
 
   override def defineEstimator(): CrossValidationRandomForestTask = {
@@ -44,13 +39,6 @@ class CrossValidationRandomForestTask(val data: DataFrame,
     this
   }
 
-  override def defineEvaluator(): CrossValidationRandomForestTask = {
-      evaluator = new BinaryClassificationEvaluator()
-        .setRawPredictionCol(predictionColumn)
-        .setLabelCol(labelColumn)
-        .setMetricName("areaUnderROC")
-    this}
-
   override def defineCrossValidatorModel(): CrossValidationRandomForestTask = {
     crossValidator = new CrossValidator()
       .setEvaluator(evaluator)
@@ -59,53 +47,12 @@ class CrossValidationRandomForestTask(val data: DataFrame,
     this
   }
 
-  override def fit(): CrossValidationRandomForestTask = {
-    crossValidatorModel = crossValidator.fit(data)
-    this
-  }
-
-  override def transform(data: DataFrame): DataFrame = {
-    crossValidatorModel.transform(data)
-  }
-
-  def getLabelColumn: String = {
-    labelColumn
-  }
-
-  def getFeatureColumn: String = {
-    featureColumn
-  }
-
-  def getPredictionColumn: String = {
-    predictionColumn
-  }
-
-  def getGridParameters: Array[ParamMap] = {
-    paramGrid
-  }
-
   def getEstimator: RandomForestClassifier = {
     estimator
-  }
-
-  def getEvaluator: Evaluator = {
-    evaluator
-  }
-
-  def getCrossValidator: CrossValidator = {
-    crossValidator
-  }
-
-  def getCrossValidatorModel: CrossValidatorModel = {
-    crossValidatorModel
   }
 
   def getBestModel: RandomForestClassificationModel = {
     crossValidatorModel.bestModel.asInstanceOf[RandomForestClassificationModel]
   }
 
-  def setGridParameters(grid: Array[ParamMap]): CrossValidationRandomForestTask = {
-     paramGrid = grid
-     this
-   }
 }
