@@ -21,7 +21,7 @@ class ClassifierChainsLogisticRegressionTaskTest extends AssertionsForJUnit  {
     spark = SparkSession
       .builder
       .master("local")
-      .appName("test classifier chains")
+      .appName("test classifier chains - logistic regression classifier")
       .getOrCreate()
 
     val log = LogManager.getRootLogger
