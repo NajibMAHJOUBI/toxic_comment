@@ -64,7 +64,7 @@ class BinaryRelevanceRandomForestTask(override val columns: Array[String],
   }
 
   def loadModel(path: String): BinaryRelevanceRandomForestTask = {
-    model = new RandomForestTask(featureColumn = "tf_idf").loadModel(path).getModelFit
+    model = new RandomForestTask(featureColumn = featureColumn).loadModel(path).getModelFit
     this
   }
 

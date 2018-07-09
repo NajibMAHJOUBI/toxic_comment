@@ -7,28 +7,32 @@ import org.apache.spark.sql.DataFrame
 
 /**
   * Created by mahjoubi on 13/06/18.
+  *
+  * Binary Relevance with Decision Tree Classifier
+  *
   */
-class BinaryRelevanceDecisionTreeTask(val columns: Array[String],
-                                      val savePath: String,
-                                      val featureColumn: String = "tf_idf",
-                                      val methodValidation: String = "simple") {
+class BinaryRelevanceDecisionTreeTask(override val columns: Array[String],
+                                      override val savePath: String,
+                                      override val featureColumn: String,
+                                      override val methodValidation: String) extends
+  BinaryRelevanceTask(columns, savePath, featureColumn, methodValidation) with BinaryRelevanceFactory {
 
-  var prediction: DataFrame = _
   var model: DecisionTreeClassificationModel = _
 
-  def run(data: DataFrame): Unit = {
+  override def run(data: DataFrame): BinaryRelevanceDecisionTreeTask = {
     prediction = data
     columns.foreach(column => {
       val labelFeatures = BinaryRelevanceObject.createLabel(prediction, column)
       computeModel(labelFeatures, column)
       saveModel(column)
-      prediction = computePrediction(labelFeatures)
+      computePrediction(labelFeatures)
     })
     BinaryRelevanceObject.savePrediction(prediction, columns, s"$savePath/prediction")
     BinaryRelevanceObject.multiLabelPrecision(prediction, columns)
+    this
   }
 
-  def computeModel(data: DataFrame, column: String): Unit = {
+  override def computeModel(data: DataFrame, column: String): BinaryRelevanceDecisionTreeTask = {
     model = if (methodValidation == "cross_validation") {
       val cv = new CrossValidationDecisionTreeTask(data = data, labelColumn = s"label_$column",
                                                    featureColumn = featureColumn,
@@ -43,24 +47,23 @@ class BinaryRelevanceDecisionTreeTask(val columns: Array[String],
       decisionTree.fit(data)
       decisionTree.getModelFit
     }
+    this
   }
 
-  def computePrediction(data: DataFrame): DataFrame = {
-    model.transform(data).drop(Seq("rawPrediction", "probability"): _*)
+  override def computePrediction(data: DataFrame): BinaryRelevanceDecisionTreeTask = {
+    prediction = model.transform(data).drop(Seq("rawPrediction", "probability"): _*)
+    this
   }
 
-  def saveModel(column: String): Unit = {
+  override def saveModel(column: String): BinaryRelevanceDecisionTreeTask = {
     model.write.overwrite().save(s"$savePath/model/$column")
+    this
   }
 
-  def loadModel(path: String): BinaryRelevanceDecisionTreeTask = {
+  override def loadModel(path: String): BinaryRelevanceDecisionTreeTask = {
     val decisionTree = new DecisionTreeTask(featureColumn = "tf_idf")
     model = decisionTree.loadModel(path).getModelFit
     this
   }
-
-//  def getPrediction: DataFrame = {
-//    prediction
-//  }
 
 }

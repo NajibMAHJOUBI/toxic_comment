@@ -41,20 +41,6 @@ class BinaryRelevanceLogisticRegressionTaskTest extends AssertionsForJUnit {
     columns.map(column => assert(prediction.columns.contains(s"prediction_$column")))
     }
 
-  @Test def testBrOneColumnSimpleValidationProbabilityTest(): Unit = {
-    val columns = Array("toxic")
-    val savePath = "target/model/binaryRelevance/oneColumn/simpleValidation/probability"
-    new BinaryRelevanceLogisticRegressionTask(columns = columns,
-                                              savePath = savePath,
-                                              featureColumn = "tf_idf",
-                                              methodValidation = "simple",
-                                              probability = true).run(data)
-    val prediction = spark.read.option("header", "true").csv(s"$savePath/prediction")
-    assert(prediction.isInstanceOf[DataFrame])
-    columns.map(column => assert(prediction.columns.contains(s"label_$column")))
-    columns.map(column => assert(prediction.columns.contains(s"prediction_$column")))
-    }
-
   @Test def testBrOneColumnCrossValidationTest(): Unit = {
     val columns = Array("toxic")
     val savePath = "target/model/binaryRelevance/oneColumn/crossValidation"

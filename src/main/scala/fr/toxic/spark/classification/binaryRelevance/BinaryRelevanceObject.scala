@@ -30,12 +30,15 @@ object BinaryRelevanceObject {
       .csv(s"$path")
   }
 
-  def multiLabelPrecision(data: DataFrame, labels: Array[String], criteria: String = "accuracy"): Unit= {
+  def formatDataToMultiLabelMetrics(data: DataFrame, labels: Array[String]): RDD[(Array[Double], Array[Double])] = {
     val predictionColumns = labels.map(column => s"prediction_$column")
     val labelColumns = labels.map(column => s"label_$column")
-    val predictionAndLabels: RDD[(Array[Double], Array[Double])] =
-      data.rdd.map(p => (predictionColumns.map(column => p.getDouble(p.fieldIndex(column))),
+    data.rdd.map(p => (predictionColumns.map(column => p.getDouble(p.fieldIndex(column))),
         labelColumns.map(column => p.getLong(p.fieldIndex(column)).toDouble)))
+  }
+
+  def multiLabelPrecision(data: DataFrame, labels: Array[String], criteria: String = "accuracy"): Unit= {
+    val predictionAndLabels: RDD[(Array[Double], Array[Double])] = formatDataToMultiLabelMetrics(data, labels)
 
     val metrics = new MultilabelMetrics(predictionAndLabels)
     if (criteria == "recall"){

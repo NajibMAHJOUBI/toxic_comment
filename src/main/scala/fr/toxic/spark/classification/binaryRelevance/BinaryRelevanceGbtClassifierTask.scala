@@ -7,33 +7,34 @@ import org.apache.spark.sql.DataFrame
 
 /**
   * Created by mahjoubi on 13/06/18.
+  *
+  * Binary Relevance with GBT Classifier
+  *
   */
 
-class BinaryRelevanceGbtClassifierTask(val columns: Array[String],
-                                       val savePath: String,
-                                       val featureColumn: String = "tf_idf",
-                                       val methodValidation: String = "simple") {
+class BinaryRelevanceGbtClassifierTask(override val columns: Array[String],
+                                       override val savePath: String,
+                                       override val featureColumn: String,
+                                       override val methodValidation: String) extends
+  BinaryRelevanceTask(columns, savePath, featureColumn, methodValidation) with BinaryRelevanceFactory {
 
-  var prediction: DataFrame = _
   var model: GBTClassificationModel = _
 
-  def run(data: DataFrame): Unit = {
+  override def run(data: DataFrame): BinaryRelevanceGbtClassifierTask = {
     prediction = data
     columns.foreach(column => {
       val labelFeatures = BinaryRelevanceObject.createLabel(prediction, column)
       computeModel(labelFeatures, column)
       saveModel(column)
-      prediction = computePrediction(labelFeatures)
+      computePrediction(labelFeatures)
     })
     BinaryRelevanceObject.savePrediction(prediction, columns,s"$savePath/prediction")
     BinaryRelevanceObject.multiLabelPrecision(prediction, columns)
+    this
   }
 
-  def createLabel(data: DataFrame, column: String): DataFrame = {
-    data.withColumnRenamed(column, s"label_$column")
-  }
 
-  def computeModel(data: DataFrame, column: String): Unit = {
+  override def computeModel(data: DataFrame, column: String): BinaryRelevanceGbtClassifierTask = {
     model = if (methodValidation == "cross_validation") {
       val cv = new CrossValidationGbtClassifierTask(data = data, labelColumn = s"label_$column",
                                                     featureColumn = featureColumn,
@@ -48,24 +49,22 @@ class BinaryRelevanceGbtClassifierTask(val columns: Array[String],
       gbtClassifier.fit(data)
       gbtClassifier.getModelFit
     }
-  }
-
-  def computePrediction(data: DataFrame): DataFrame = {
-    model.transform(data).drop(Seq("rawPrediction", "probability"): _*)
-  }
-
-  def loadModel(path: String): BinaryRelevanceGbtClassifierTask = {
-    val gbtClassifier = new GbtClassifierTask(featureColumn = "tf_idf")
-    model = gbtClassifier.loadModel(path).getModelFit
     this
   }
 
-  def saveModel(column: String): Unit = {
-    model.write.overwrite().save(s"$savePath/model/$column")
+  override def computePrediction(data: DataFrame): BinaryRelevanceGbtClassifierTask = {
+    prediction = model.transform(data).drop(Seq("rawPrediction", "probability"): _*)
+    this
   }
 
-  def getPrediction: DataFrame = {
-    prediction
+  override def loadModel(path: String): BinaryRelevanceGbtClassifierTask = {
+    model = new GbtClassifierTask(featureColumn = "tf_idf").loadModel(path).getModelFit
+    this
+  }
+
+  override def saveModel(column: String): BinaryRelevanceGbtClassifierTask = {
+    model.write.overwrite().save(s"$savePath/model/$column")
+    this
   }
 
 }
