@@ -1,7 +1,5 @@
 package fr.toxic.spark.classification.binaryRelevance
 
-import fr.toxic.spark.classification.crossValidation.CrossValidationRandomForestTask
-import fr.toxic.spark.classification.task.RandomForestTask
 import org.apache.spark.sql.DataFrame
 
 trait BinaryRelevanceFactory {
