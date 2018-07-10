@@ -12,7 +12,7 @@ import org.scalatest.junit.AssertionsForJUnit
   * Test for classifier chains task
   *
   */
-class ClassifierChainsLogisticRegressionTaskTest extends AssertionsForJUnit  {
+class ClassifierChainsDecisionTreeTaskTest extends AssertionsForJUnit  {
 
   private var spark: SparkSession = _
   private var data: DataFrame = _
@@ -21,7 +21,7 @@ class ClassifierChainsLogisticRegressionTaskTest extends AssertionsForJUnit  {
     spark = SparkSession
       .builder
       .master("local")
-      .appName("test classifier chains - logistic regression classifier")
+      .appName("test classifier chains - decision tree classifier")
       .getOrCreate()
 
     val log = LogManager.getRootLogger
@@ -34,11 +34,11 @@ class ClassifierChainsLogisticRegressionTaskTest extends AssertionsForJUnit  {
     val labelColumns: Array[String] = Array("toxic", "severe_toxic")
     val featureColumn = "tf_idf"
     val methodValidation = "simple"
-    val savePath = "target/model/classifierChains/simpleValidation/logisticRegression"
-    val classifierChains = new ClassifierChainsLogisticRegressionTask(labelColumns= labelColumns,
-                                                                      featureColumn= featureColumn,
-                                                                      methodValidation= methodValidation,
-                                                                      savePath= savePath)
+    val savePath = "target/model/classifierChains/simpleValidation/decisionTree"
+    val classifierChains = new ClassifierChainsDecisionTreeTask(labelColumns= labelColumns,
+                                                                featureColumn= featureColumn,
+                                                                methodValidation= methodValidation,
+                                                                savePath= savePath)
     classifierChains.run(data)
   }
 
@@ -46,11 +46,11 @@ class ClassifierChainsLogisticRegressionTaskTest extends AssertionsForJUnit  {
     val labelColumns: Array[String] = Array("toxic", "severe_toxic", "obscene")
     val featureColumn = "tf_idf"
     val methodValidation = "cross_validation"
-    val savePath = "target/model/classifierChains/crossValidation/logisticRegression"
-    val classifierChains = new ClassifierChainsLogisticRegressionTask(labelColumns= labelColumns,
-                                                                      featureColumn= featureColumn,
-                                                                      methodValidation= methodValidation,
-                                                                      savePath= savePath)
+    val savePath = "target/model/classifierChains/crossValidation/decisionTree"
+    val classifierChains = new ClassifierChainsDecisionTreeTask(labelColumns= labelColumns,
+                                                                featureColumn= featureColumn,
+                                                                methodValidation= methodValidation,
+                                                                savePath= savePath)
     classifierChains.run(data)
   }
 
