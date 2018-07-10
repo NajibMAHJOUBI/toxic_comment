@@ -41,7 +41,7 @@ class GbtClassifierTask(val labelColumn: String = "label",
   }
 
   override def saveModel(path: String): GbtClassifierTask = {
-    model.save(path)
+    model.write.overwrite().save(path)
     this
   }
 

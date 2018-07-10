@@ -39,7 +39,7 @@ class DecisionTreeTask (val labelColumn: String = "label",
   }
 
   override def saveModel(path: String): DecisionTreeTask = {
-    model.save(path)
+    model.write.overwrite().save(path)
     this
   }
 

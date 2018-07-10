@@ -45,7 +45,7 @@ class LinearSvcTask(val labelColumn: String = "label",
   }
 
   override def saveModel(path: String): LinearSvcTask = {
-    model.save(path)
+    model.write.overwrite().save(path)
     this
   }
 

@@ -39,7 +39,7 @@ class RandomForestTask(val labelColumn: String = "label",
   }
 
   override def saveModel(path: String): RandomForestTask = {
-    model.save(path)
+    model.write.overwrite().save(path)
     this
   }
 
