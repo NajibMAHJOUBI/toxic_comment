@@ -6,4 +6,10 @@ trait ClassifierChainsFactory {
 
   def run(data: DataFrame): ClassifierChainsFactory
 
+  def computePrediction(data: DataFrame): ClassifierChainsFactory
+
+  def saveModel(column: String): ClassifierChainsFactory
+
+  def loadModel(path: String): ClassifierChainsFactory
+
 }

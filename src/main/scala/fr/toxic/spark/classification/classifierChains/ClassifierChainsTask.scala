@@ -9,6 +9,12 @@ class ClassifierChainsTask(val labelColumns: Array[String],
                            val methodValidation: String,
                            val savePath: String) {
 
+  var prediction: DataFrame = _
+
+  def getPrediction: DataFrame = {
+    prediction
+  }
+
   def modifyFeatures(data: DataFrame, label: String): DataFrame = {
     val udfNewFeatures = udf((vector: Vector, value: Long) => ClassifierChainsObject.createNewFeatures(vector, value))
     val dataSet = data.withColumn("newFeatures", udfNewFeatures(col(featureColumn), col(label))).drop(featureColumn)

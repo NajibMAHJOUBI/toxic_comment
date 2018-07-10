@@ -3,6 +3,7 @@ package fr.toxic.spark.classification.classifierChains
 import fr.toxic.spark.classification.binaryRelevance.ClassifierChainsFactory
 import fr.toxic.spark.classification.crossValidation.CrossValidationRandomForestTask
 import fr.toxic.spark.classification.task.RandomForestTask
+import org.apache.spark.ml.classification.RandomForestClassificationModel
 import org.apache.spark.sql.DataFrame
 
 
@@ -11,6 +12,8 @@ class ClassifierChainsRandomForestTask(override val labelColumns: Array[String],
                                        override val methodValidation: String,
                                        override val savePath: String) extends ClassifierChainsTask(labelColumns, featureColumn,
   methodValidation, savePath) with ClassifierChainsFactory {
+
+  var model: RandomForestClassificationModel = _
 
   override def run(data: DataFrame): ClassifierChainsRandomForestTask = {
     labelColumns.map(label => {
@@ -30,6 +33,21 @@ class ClassifierChainsRandomForestTask(override val labelColumns: Array[String],
         randomForest.saveModel(s"$savePath/$label")
       }
     })
+    this
+  }
+
+  override def computePrediction(data: DataFrame): ClassifierChainsRandomForestTask = {
+    prediction = model.transform(data).drop(Seq("rawPrediction", "probability"): _*)
+    this
+  }
+
+  override def saveModel(column: String): ClassifierChainsRandomForestTask = {
+    model.write.overwrite().save(s"$savePath/model/$column")
+    this
+  }
+
+  override def loadModel(path: String): ClassifierChainsRandomForestTask = {
+    model = new RandomForestTask(featureColumn = featureColumn).loadModel(path).getModelFit
     this
   }
 
