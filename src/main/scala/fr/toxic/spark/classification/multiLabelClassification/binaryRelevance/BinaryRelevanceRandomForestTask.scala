@@ -28,8 +28,8 @@ class BinaryRelevanceRandomForestTask(override val columns: Array[String],
       saveModel(column)
       computePrediction(labelFeatures)
     })
-    BinaryRelevanceObject.savePrediction(prediction, columns, s"$savePath/prediction")
-    BinaryRelevanceObject.multiLabelPrecision(prediction, columns)
+    MultiLabelObject.savePrediction(prediction, columns, s"$savePath/prediction")
+    MultiLabelObject.multiLabelPrecision(prediction, columns)
     this
   }
 
