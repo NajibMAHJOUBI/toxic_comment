@@ -1,6 +1,6 @@
 package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
-import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.ClassifierChainsFactory
+import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.{ClassifierChainsFactory, MultiLabelObject}
 import fr.toxic.spark.classification.crossValidation.CrossValidationRandomForestTask
 import fr.toxic.spark.classification.task.RandomForestTask
 import org.apache.spark.ml.classification.RandomForestClassificationModel
@@ -23,6 +23,8 @@ class ClassifierChainsRandomForestTask(override val labelColumns: Array[String],
       saveModel(label)
       computePrediction(newData)
     })
+    MultiLabelObject.savePrediction(prediction, labelColumns, s"$savePath/prediction")
+    MultiLabelObject.multiLabelPrecision(prediction, labelColumns)
     this
   }
 
