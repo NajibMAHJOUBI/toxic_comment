@@ -1,4 +1,4 @@
-package fr.toxic.spark.classification.binaryRelevance
+package fr.toxic.spark.classification.multiLabelClassification.binaryRelevance
 
 import fr.toxic.spark.classification.crossValidation.CrossValidationGbtClassifierTask
 import fr.toxic.spark.classification.task.GbtClassifierTask

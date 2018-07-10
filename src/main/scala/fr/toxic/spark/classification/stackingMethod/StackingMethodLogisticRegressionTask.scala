@@ -5,9 +5,9 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions.col
 import org.apache.spark.ml.linalg.{Vector, Vectors}
 
-class StackingMethodTask(labels: Array[String], classificationMethods: Array[String], pathLabel: String, pathPrediction: String) {
+class StackingMethodLogisticRegressionTask(labels: Array[String], classificationMethods: Array[String], pathLabel: String, pathPrediction: String) {
 
-  def run(spark: SparkSession): StackingMethodTask = {
+  def run(spark: SparkSession): StackingMethodLogisticRegressionTask = {
     labels.foreach(label => {
       val data = mergeData(spark, label)
 

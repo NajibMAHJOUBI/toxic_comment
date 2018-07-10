@@ -1,12 +1,11 @@
 
 package fr.toxic.spark.kaggle
 
-import fr.toxic.spark.classification.classifierChains.{ClassifierChainsDecisionTreeTask, ClassifierChainsLogisticRegressionTask}
-import fr.toxic.spark.classification.task.{DecisionTreeTask, LinearSvcTask, LogisticRegressionTask, RandomForestTask}
+import fr.toxic.spark.classification.multiLabelClassification.classifierChains._
 import fr.toxic.spark.text.featurization.{CountVectorizerTask, StopWordsRemoverTask, TfIdfTask, TokenizerTask}
 import fr.toxic.spark.utils.{LoadDataSetTask, WriteKaggleSubmission}
 import org.apache.log4j.{Level, LogManager}
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
 
 object KaggleSubmissionClassifierChainsExample {
@@ -21,10 +20,10 @@ object KaggleSubmissionClassifierChainsExample {
     val log = LogManager.getRootLogger
     log.setLevel(Level.WARN)
 
-    val classifierMethod = "decision_tree"
+    val classifierMethods = Array("logistic_regression", "decision_tree", "random_forest", "gbt_classifier")
     val methodValidation = "cross_validation"
-    val labelColumns = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
-    val savePath = s"target/kaggle/classifierChains/$methodValidation/$classifierMethod"
+    val labels = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
+    val rootPath = s"target/kaggle/classifierChains"
 
     // Train
     val train = new LoadDataSetTask(sourcePath = "data/parquet").run(spark, "train")
@@ -32,25 +31,9 @@ object KaggleSubmissionClassifierChainsExample {
     val trainStopWordsRemoved = new StopWordsRemoverTask().run(trainTokens)
     val countVectorizerModel = new CountVectorizerTask(minDF = 5, vocabSize = 1000)
     countVectorizerModel.run(trainStopWordsRemoved)
-
     val tfIdfModel = new TfIdfTask()
     tfIdfModel.run(countVectorizerModel.getTransform())
-
     val trainTfIdf = tfIdfModel.getTransform()
-
-    if (classifierMethod == "decision_tree"){
-      val classifierChains = new ClassifierChainsDecisionTreeTask(labelColumns= labelColumns,
-        featureColumn= "tf_idf",
-        methodValidation= methodValidation,
-        savePath= savePath)
-      classifierChains.run(trainTfIdf)
-    } else {
-      val classifierChains = new ClassifierChainsLogisticRegressionTask(labelColumns= labelColumns,
-        featureColumn= "tf_idf",
-        methodValidation= methodValidation,
-        savePath= savePath)
-      classifierChains.run(trainTfIdf)
-    }
 
     // Test
     val test = new LoadDataSetTask(sourcePath = "data/parquet").run(spark, "test")
@@ -59,31 +42,77 @@ object KaggleSubmissionClassifierChainsExample {
     val testTf = countVectorizerModel.transform(testStopWordsRemoved).getTransform()
     var testTfIdf = tfIdfModel.transform(testTf).getTransform()
 
-    val logisticRegression = new LogisticRegressionTask(featureColumn = "tf_idf")
-    val linearSvc = new LinearSvcTask(featureColumn = "tf_idf")
-    val decisionTree = new DecisionTreeTask(featureColumn = "tf_idf")
-    val randomForest = new RandomForestTask(featureColumn = "tf_idf")
 
-    labelColumns.map(column => {
-      if (classifierMethod == "linear_svc") {
-        testTfIdf = linearSvc.loadModel(s"$savePath/$column")
-                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
-      } else if (classifierMethod == "decision_tree"){
-        testTfIdf = decisionTree.loadModel(s"$savePath/$column")
-                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
+    // Classifier chains with various classification models
+    classifierMethods.foreach(classifierMethod =>{
+      if (classifierMethod == "decision_tree") {
+        val pathMethod = s"$rootPath/$methodValidation/$classifierMethod"
+        val classifierChains = new ClassifierChainsDecisionTreeTask(labelColumns= labels,
+                                                                    featureColumn= "tf_idf",
+                                                                    methodValidation= methodValidation,
+                                                                    savePath= pathMethod)
+        classifierChains.run(trainTfIdf)
+        var prediction: DataFrame = testTfIdf
+        labels.foreach(label => {
+          classifierChains.loadModel(s"$pathMethod/$label")
+          classifierChains.computePrediction(prediction)
+          prediction = classifierChains.getPrediction})
+        new WriteKaggleSubmission().run(prediction, pathMethod)
+      } else if (classifierMethod == "linear_svc") {
+        val pathMethod = s"$rootPath/$methodValidation/$classifierMethod"
+        val classifierChains = new ClassifierChainsLinearSvcTask(labelColumns= labels,
+          featureColumn= "tf_idf",
+          methodValidation= methodValidation,
+          savePath= pathMethod)
+        classifierChains.run(trainTfIdf)
+        var prediction: DataFrame = testTfIdf
+        labels.foreach(label => {
+          classifierChains.loadModel(s"$pathMethod/$label")
+          classifierChains.computePrediction(prediction)
+          prediction = classifierChains.getPrediction})
+        new WriteKaggleSubmission().run(prediction, pathMethod)
       } else if (classifierMethod == "random_forest") {
-        testTfIdf = randomForest.loadModel(s"$savePath/$column")
-                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
-      } else {
-        testTfIdf = logisticRegression.loadModel(s"$savePath/$column")
-                                      .transform(testTfIdf).getTransform.drop(Seq("rawPrediction", "probability"): _*)
+        val pathMethod = s"$rootPath/$methodValidation/$classifierMethod"
+        val classifierChains = new ClassifierChainsRandomForestTask(labelColumns= labels,
+          featureColumn= "tf_idf",
+          methodValidation= methodValidation,
+          savePath= pathMethod)
+        classifierChains.run(trainTfIdf)
+        var prediction: DataFrame = testTfIdf
+        labels.foreach(label => {
+          classifierChains.loadModel(s"$pathMethod/$label")
+          classifierChains.computePrediction(prediction)
+          prediction = classifierChains.getPrediction})
+        new WriteKaggleSubmission().run(prediction, pathMethod)
+      }  else if (classifierMethod == "gbt_classifier") {
+        val pathMethod = s"$rootPath/$methodValidation/$classifierMethod"
+        val classifierChains = new ClassifierChainsGbtClassifierTask(labelColumns= labels,
+          featureColumn= "tf_idf",
+          methodValidation= methodValidation,
+          savePath= pathMethod)
+        classifierChains.run(trainTfIdf)
+        var prediction: DataFrame = testTfIdf
+        labels.foreach(label => {
+          classifierChains.loadModel(s"$pathMethod/$label")
+          classifierChains.computePrediction(prediction)
+          prediction = classifierChains.getPrediction})
+        new WriteKaggleSubmission().run(prediction, pathMethod)
+      }  else {
+        val pathMethod = s"$rootPath/$methodValidation/$classifierMethod"
+        val classifierChains = new ClassifierChainsLogisticRegressionTask(labelColumns= labels,
+          featureColumn= "tf_idf",
+          methodValidation= methodValidation,
+          savePath= pathMethod)
+        classifierChains.run(trainTfIdf)
+        var prediction: DataFrame = testTfIdf
+        labels.foreach(label => {
+          classifierChains.loadModel(s"$pathMethod/$label")
+          classifierChains.computePrediction(prediction)
+          prediction = classifierChains.getPrediction})
+        new WriteKaggleSubmission().run(prediction, pathMethod)
       }
+
     })
-
-    // testTfIdf.show(5)
-    new WriteKaggleSubmission().run(testTfIdf, savePath)
-
-
   }
 }
 

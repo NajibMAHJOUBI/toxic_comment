@@ -1,6 +1,6 @@
-package fr.toxic.spark.classification.classifierChains
+package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
-import fr.toxic.spark.classification.binaryRelevance.ClassifierChainsFactory
+import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.ClassifierChainsFactory
 import fr.toxic.spark.classification.crossValidation.CrossValidationGbtClassifierTask
 import fr.toxic.spark.classification.task.GbtClassifierTask
 import org.apache.spark.ml.classification.GBTClassificationModel

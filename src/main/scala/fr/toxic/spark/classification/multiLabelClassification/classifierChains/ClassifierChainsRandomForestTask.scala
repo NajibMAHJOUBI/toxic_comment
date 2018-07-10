@@ -1,6 +1,6 @@
-package fr.toxic.spark.classification.classifierChains
+package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
-import fr.toxic.spark.classification.binaryRelevance.ClassifierChainsFactory
+import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.ClassifierChainsFactory
 import fr.toxic.spark.classification.crossValidation.CrossValidationRandomForestTask
 import fr.toxic.spark.classification.task.RandomForestTask
 import org.apache.spark.ml.classification.RandomForestClassificationModel
@@ -16,23 +16,31 @@ class ClassifierChainsRandomForestTask(override val labelColumns: Array[String],
   var model: RandomForestClassificationModel = _
 
   override def run(data: DataFrame): ClassifierChainsRandomForestTask = {
+    prediction = data
     labelColumns.map(label => {
-      val newData = createNewDataSet(data, label: String)
-      if (methodValidation == "cross_validation") {
-        val cv = new CrossValidationRandomForestTask(data = newData, labelColumn = label,
-          featureColumn = featureColumn,
-          predictionColumn = s"prediction_$label", pathModel = "",
-          pathPrediction = "")
-        cv.run()
-        cv.getBestModel.write.overwrite().save(s"$savePath/$label")
-      } else {
-        val randomForest = new RandomForestTask(labelColumn = label, featureColumn=featureColumn,
-          predictionColumn = s"prediction_$label")
-        randomForest.defineModel
-        randomForest.fit(newData)
-        randomForest.saveModel(s"$savePath/$label")
-      }
+      val newData = createNewDataSet(data, label)
+      computeModel(newData, label)
+      saveModel(label)
+      computePrediction(newData)
     })
+    this
+  }
+
+  override def computeModel(data: DataFrame, column: String): ClassifierChainsRandomForestTask = {
+    model = if (methodValidation == "cross_validation") {
+      val cv = new CrossValidationRandomForestTask(data = data, labelColumn = column,
+        featureColumn = featureColumn,
+        predictionColumn = s"prediction_$column", pathModel = "",
+        pathPrediction = "")
+      cv.run()
+      cv.getBestModel
+    } else {
+      val randomForest = new RandomForestTask(labelColumn = column, featureColumn=featureColumn,
+        predictionColumn = s"prediction_$column")
+      randomForest.defineModel
+      randomForest.fit(data)
+      randomForest.getModelFit
+    }
     this
   }
 

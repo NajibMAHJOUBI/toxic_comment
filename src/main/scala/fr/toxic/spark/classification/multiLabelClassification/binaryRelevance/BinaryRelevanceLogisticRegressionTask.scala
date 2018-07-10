@@ -1,6 +1,6 @@
 package fr.toxic.spark.classification.task.binaryRelevance
 
-import fr.toxic.spark.classification.binaryRelevance.{BinaryRelevanceFactory, BinaryRelevanceObject, BinaryRelevanceTask}
+import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.{BinaryRelevanceFactory, BinaryRelevanceObject, BinaryRelevanceTask}
 import fr.toxic.spark.classification.crossValidation.CrossValidationLogisticRegressionTask
 import fr.toxic.spark.classification.task.LogisticRegressionTask
 import org.apache.spark.ml.classification.LogisticRegressionModel

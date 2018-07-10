@@ -1,8 +1,11 @@
-package fr.toxic.spark.classification.classifierChains
+package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
 import org.apache.spark.ml.linalg.{Vector, Vectors}
+import org.apache.spark.sql.DataFrame
 
 object ClassifierChainsObject {
+
+  var prediction: DataFrame = _
 
   def getSize(vector: Vector): Int = {
     vector.size

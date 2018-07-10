@@ -1,4 +1,4 @@
-package fr.toxic.spark.classification.classifierChains
+package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
 import fr.toxic.spark.utils.LoadDataSetTask
 import org.apache.log4j.{Level, LogManager}
@@ -9,10 +9,10 @@ import org.scalatest.junit.AssertionsForJUnit
 /**
   * Created by mahjoubi on 12/06/18.
   *
-  * Test for classifier chains task - linear svc
+  * Test for classifier chains task
   *
   */
-class ClassifierChainsGbtClassifierTaskTest extends AssertionsForJUnit  {
+class ClassifierChainsDecisionTreeTaskTest extends AssertionsForJUnit  {
 
   private var spark: SparkSession = _
   private var data: DataFrame = _
@@ -21,7 +21,7 @@ class ClassifierChainsGbtClassifierTaskTest extends AssertionsForJUnit  {
     spark = SparkSession
       .builder
       .master("local")
-      .appName("test classifier chains - linear svc classifier")
+      .appName("test classifier chains - decision tree classifier")
       .getOrCreate()
 
     val log = LogManager.getRootLogger
@@ -34,8 +34,8 @@ class ClassifierChainsGbtClassifierTaskTest extends AssertionsForJUnit  {
     val labelColumns: Array[String] = Array("toxic", "severe_toxic")
     val featureColumn = "tf_idf"
     val methodValidation = "simple"
-    val savePath = "target/model/classifierChains/simpleValidation/gbtClassifier"
-    val classifierChains = new ClassifierChainsGbtClassifierTask(labelColumns= labelColumns,
+    val savePath = "target/model/classifierChains/simpleValidation/decisionTree"
+    val classifierChains = new ClassifierChainsDecisionTreeTask(labelColumns= labelColumns,
                                                                 featureColumn= featureColumn,
                                                                 methodValidation= methodValidation,
                                                                 savePath= savePath)
@@ -46,8 +46,8 @@ class ClassifierChainsGbtClassifierTaskTest extends AssertionsForJUnit  {
     val labelColumns: Array[String] = Array("toxic", "severe_toxic", "obscene")
     val featureColumn = "tf_idf"
     val methodValidation = "cross_validation"
-    val savePath = "target/model/classifierChains/crossValidation/gbtClassifier"
-    val classifierChains = new ClassifierChainsGbtClassifierTask(labelColumns= labelColumns,
+    val savePath = "target/model/classifierChains/crossValidation/decisionTree"
+    val classifierChains = new ClassifierChainsDecisionTreeTask(labelColumns= labelColumns,
                                                                 featureColumn= featureColumn,
                                                                 methodValidation= methodValidation,
                                                                 savePath= savePath)

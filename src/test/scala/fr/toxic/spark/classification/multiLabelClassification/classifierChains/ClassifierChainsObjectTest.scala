@@ -1,4 +1,4 @@
-package fr.toxic.spark.classification.classifierChains
+package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
 import fr.toxic.spark.utils.LoadDataSetTask
 import org.apache.log4j.{Level, LogManager}

@@ -1,4 +1,4 @@
-package fr.toxic.spark.classification.classifierChains
+package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
 import org.apache.spark.ml.linalg.Vector
 import org.apache.spark.sql.DataFrame
