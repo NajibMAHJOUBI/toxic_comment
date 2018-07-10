@@ -20,7 +20,7 @@ class BinaryRelevanceRandomForestTask(override val columns: Array[String],
 
   var model: RandomForestClassificationModel = _
 
-  def run(data: DataFrame): BinaryRelevanceRandomForestTask = {
+  override def run(data: DataFrame): BinaryRelevanceRandomForestTask = {
     prediction = data
     columns.foreach(column => {
       val labelFeatures = BinaryRelevanceObject.createLabel(prediction, column)
@@ -33,7 +33,7 @@ class BinaryRelevanceRandomForestTask(override val columns: Array[String],
     this
   }
 
-  def computeModel(data: DataFrame, column: String): BinaryRelevanceRandomForestTask = {
+  override def computeModel(data: DataFrame, column: String): BinaryRelevanceRandomForestTask = {
     model = if (methodValidation == "cross_validation") {
       val cv = new CrossValidationRandomForestTask(data = data,
                                                    labelColumn = s"label_$column",
@@ -53,17 +53,17 @@ class BinaryRelevanceRandomForestTask(override val columns: Array[String],
     this
   }
 
-  def computePrediction(data: DataFrame): BinaryRelevanceRandomForestTask = {
+  override def computePrediction(data: DataFrame): BinaryRelevanceRandomForestTask = {
     prediction = model.transform(data).drop(Seq("rawPrediction", "probability"): _*)
     this
   }
 
-  def saveModel(column: String): BinaryRelevanceRandomForestTask = {
+  override def saveModel(column: String): BinaryRelevanceRandomForestTask = {
     model.write.overwrite().save(s"$savePath/model/$column")
     this
   }
 
-  def loadModel(path: String): BinaryRelevanceRandomForestTask = {
+  override def loadModel(path: String): BinaryRelevanceRandomForestTask = {
     model = new RandomForestTask(featureColumn = featureColumn).loadModel(path).getModelFit
     this
   }
