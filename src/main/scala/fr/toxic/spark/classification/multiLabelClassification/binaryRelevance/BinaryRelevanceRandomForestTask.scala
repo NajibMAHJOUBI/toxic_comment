@@ -1,6 +1,7 @@
 package fr.toxic.spark.classification.multiLabelClassification.binaryRelevance
 
 import fr.toxic.spark.classification.crossValidation.CrossValidationRandomForestTask
+import fr.toxic.spark.classification.multiLabelClassification.MultiLabelObject
 import fr.toxic.spark.classification.task.RandomForestTask
 import org.apache.spark.ml.classification.RandomForestClassificationModel
 import org.apache.spark.sql.DataFrame
