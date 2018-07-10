@@ -1,4 +1,4 @@
-package fr.toxic.spark.classification.multiLabelClassification.binaryRelevance
+package fr.toxic.spark.classification.multiLabelClassification
 
 import org.apache.spark.mllib.evaluation.MultilabelMetrics
 import org.apache.spark.rdd.RDD

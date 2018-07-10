@@ -2,6 +2,7 @@ package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
 import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.ClassifierChainsFactory
 import fr.toxic.spark.classification.crossValidation.CrossValidationGbtClassifierTask
+import fr.toxic.spark.classification.multiLabelClassification.MultiLabelObject
 import fr.toxic.spark.classification.task.GbtClassifierTask
 import org.apache.spark.ml.classification.GBTClassificationModel
 import org.apache.spark.sql.DataFrame
@@ -16,23 +17,33 @@ class ClassifierChainsGbtClassifierTask(override val labelColumns: Array[String]
   var model: GBTClassificationModel = _
 
   override def run(data: DataFrame): ClassifierChainsGbtClassifierTask = {
+    prediction = data
     labelColumns.map(label => {
-      val newData = createNewDataSet(data, label: String)
-      if (methodValidation == "cross_validation") {
-        val cv = new CrossValidationGbtClassifierTask(data = newData, labelColumn = label,
-          featureColumn = featureColumn,
-          predictionColumn = s"prediction_$label", pathModel = "",
-          pathPrediction = "")
-        cv.run()
-        cv.getBestModel.write.overwrite().save(s"$savePath/$label")
-      } else {
-        val gbtClassifier = new GbtClassifierTask(labelColumn = label, featureColumn = featureColumn,
-          predictionColumn = s"prediction_$label")
-        gbtClassifier.defineModel
-        gbtClassifier.fit(newData)
-        gbtClassifier.saveModel(s"$savePath/$label")
-      }
+      val newData = createNewDataSet(data, label)
+      computeModel(newData, label)
+      saveModel(label)
+      computePrediction(newData)
     })
+    MultiLabelObject.savePrediction(prediction, labelColumns, s"$savePath/prediction")
+    MultiLabelObject.multiLabelPrecision(prediction, labelColumns)
+    this
+  }
+
+  override def computeModel(data: DataFrame, column: String): ClassifierChainsGbtClassifierTask = {
+    model = if (methodValidation == "cross_validation") {
+      val cv = new CrossValidationGbtClassifierTask(data = data, labelColumn = column,
+        featureColumn = featureColumn,
+        predictionColumn = s"prediction_$column", pathModel = "",
+        pathPrediction = "")
+      cv.run()
+      cv.getBestModel
+    } else {
+      val gbtClassifier = new GbtClassifierTask(labelColumn = column, featureColumn=featureColumn,
+        predictionColumn = s"prediction_$column")
+      gbtClassifier.defineModel
+      gbtClassifier.fit(data)
+      gbtClassifier.getModelFit
+    }
     this
   }
 

@@ -2,6 +2,7 @@ package fr.toxic.spark.classification.task.binaryRelevance
 
 import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.{BinaryRelevanceFactory, BinaryRelevanceObject, BinaryRelevanceTask}
 import fr.toxic.spark.classification.crossValidation.CrossValidationLinearSvcTask
+import fr.toxic.spark.classification.multiLabelClassification.MultiLabelObject
 import fr.toxic.spark.classification.task.LinearSvcTask
 import org.apache.spark.ml.classification.LinearSVCModel
 import org.apache.spark.sql.DataFrame
@@ -25,8 +26,8 @@ class BinaryRelevanceLinearSvcTask(override val columns: Array[String],
       saveModel(column)
       computePrediction(labelFeatures)
     })
-    BinaryRelevanceObject.savePrediction(prediction, columns, s"$savePath/prediction")
-    BinaryRelevanceObject.multiLabelPrecision(prediction, columns)
+    MultiLabelObject.savePrediction(prediction, columns, s"$savePath/prediction")
+    MultiLabelObject.multiLabelPrecision(prediction, columns)
     this
   }
 

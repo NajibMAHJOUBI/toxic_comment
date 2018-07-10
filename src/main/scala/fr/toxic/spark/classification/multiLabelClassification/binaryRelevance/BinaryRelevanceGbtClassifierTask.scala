@@ -1,6 +1,7 @@
 package fr.toxic.spark.classification.multiLabelClassification.binaryRelevance
 
 import fr.toxic.spark.classification.crossValidation.CrossValidationGbtClassifierTask
+import fr.toxic.spark.classification.multiLabelClassification.MultiLabelObject
 import fr.toxic.spark.classification.task.GbtClassifierTask
 import org.apache.spark.ml.classification.GBTClassificationModel
 import org.apache.spark.sql.DataFrame
@@ -28,11 +29,10 @@ class BinaryRelevanceGbtClassifierTask(override val columns: Array[String],
       saveModel(column)
       computePrediction(labelFeatures)
     })
-    BinaryRelevanceObject.savePrediction(prediction, columns,s"$savePath/prediction")
-    BinaryRelevanceObject.multiLabelPrecision(prediction, columns)
+    MultiLabelObject.savePrediction(prediction, columns,s"$savePath/prediction")
+    MultiLabelObject.multiLabelPrecision(prediction, columns)
     this
   }
-
 
   override def computeModel(data: DataFrame, column: String): BinaryRelevanceGbtClassifierTask = {
     model = if (methodValidation == "cross_validation") {

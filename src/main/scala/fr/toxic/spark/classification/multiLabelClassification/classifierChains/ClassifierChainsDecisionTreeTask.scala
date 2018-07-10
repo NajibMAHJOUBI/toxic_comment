@@ -2,6 +2,7 @@ package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
 import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.ClassifierChainsFactory
 import fr.toxic.spark.classification.crossValidation.CrossValidationDecisionTreeTask
+import fr.toxic.spark.classification.multiLabelClassification.MultiLabelObject
 import fr.toxic.spark.classification.task.DecisionTreeTask
 import org.apache.spark.ml.classification.DecisionTreeClassificationModel
 import org.apache.spark.sql.DataFrame
@@ -16,23 +17,33 @@ class ClassifierChainsDecisionTreeTask(override val labelColumns: Array[String],
   var model: DecisionTreeClassificationModel = _
 
   override def run(data: DataFrame): ClassifierChainsDecisionTreeTask = {
-    labelColumns.map(label => {
-      val newData = createNewDataSet(data, label: String)
-      if (methodValidation == "cross_validation") {
-        val cv = new CrossValidationDecisionTreeTask(data = newData, labelColumn = label,
-          featureColumn = featureColumn,
-          predictionColumn = s"prediction_$label", pathModel = "",
-          pathPrediction = "")
-        cv.run()
-        cv.getBestModel.write.overwrite().save(s"$savePath/$label")
-      } else {
-        val decisionTree = new DecisionTreeTask(labelColumn = label, featureColumn = featureColumn,
-          predictionColumn = s"prediction_$label")
-        decisionTree.defineModel
-        decisionTree.fit(newData)
-        decisionTree.saveModel(s"$savePath/$label")
-      }
-    })
+      prediction = data
+      labelColumns.map(label => {
+        val newData = createNewDataSet(data, label)
+        computeModel(newData, label)
+        saveModel(label)
+        computePrediction(newData)
+      })
+      MultiLabelObject.savePrediction(prediction, labelColumns, s"$savePath/prediction")
+      MultiLabelObject.multiLabelPrecision(prediction, labelColumns)
+      this
+    }
+
+  override def computeModel(data: DataFrame, column: String): ClassifierChainsDecisionTreeTask = {
+    model = if (methodValidation == "cross_validation") {
+      val cv = new CrossValidationDecisionTreeTask(data = data, labelColumn = column,
+        featureColumn = featureColumn,
+        predictionColumn = s"prediction_$column", pathModel = "",
+        pathPrediction = "")
+      cv.run()
+      cv.getBestModel
+    } else {
+      val decisionTree = new DecisionTreeTask(labelColumn = column, featureColumn=featureColumn,
+        predictionColumn = s"prediction_$column")
+      decisionTree.defineModel
+      decisionTree.fit(data)
+      decisionTree.getModelFit
+    }
     this
   }
 

@@ -2,6 +2,7 @@ package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
 import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.ClassifierChainsFactory
 import fr.toxic.spark.classification.crossValidation.CrossValidationLinearSvcTask
+import fr.toxic.spark.classification.multiLabelClassification.MultiLabelObject
 import fr.toxic.spark.classification.task.LinearSvcTask
 import org.apache.spark.ml.classification.LinearSVCModel
 import org.apache.spark.sql.DataFrame
@@ -16,23 +17,33 @@ class ClassifierChainsLinearSvcTask(override val labelColumns: Array[String],
   var model: LinearSVCModel = _
 
   override def run(data: DataFrame): ClassifierChainsLinearSvcTask = {
+    prediction = data
     labelColumns.map(label => {
-      val newData = createNewDataSet(data, label: String)
-      if (methodValidation == "cross_validation") {
-        val cv = new CrossValidationLinearSvcTask(data = newData, labelColumn = label,
-          featureColumn = featureColumn,
-          predictionColumn = s"prediction_$label", pathModel = "",
-          pathPrediction = "")
-        cv.run()
-        cv.getBestModel.write.overwrite().save(s"$savePath/$label")
-      } else {
-        val linearSvc = new LinearSvcTask(labelColumn = label, featureColumn = featureColumn,
-          predictionColumn = s"prediction_$label")
-        linearSvc.defineModel
-        linearSvc.fit(newData)
-        linearSvc.saveModel(s"$savePath/$label")
-      }
+      val newData = createNewDataSet(data, label)
+      computeModel(newData, label)
+      saveModel(label)
+      computePrediction(newData)
     })
+    MultiLabelObject.savePrediction(prediction, labelColumns, s"$savePath/prediction")
+    MultiLabelObject.multiLabelPrecision(prediction, labelColumns)
+    this
+  }
+
+  override def computeModel(data: DataFrame, column: String): ClassifierChainsLinearSvcTask = {
+    model = if (methodValidation == "cross_validation") {
+      val cv = new CrossValidationLinearSvcTask(data = data, labelColumn = s"label_$column",
+        featureColumn = featureColumn,
+        predictionColumn = s"prediction_$column", pathModel = "",
+        pathPrediction = "")
+      cv.run()
+      cv.getBestModel
+    } else{
+      val gbtClassifier = new LinearSvcTask(labelColumn = s"label_$column", featureColumn=featureColumn,
+        predictionColumn = s"prediction_$column")
+      gbtClassifier.defineModel
+      gbtClassifier.fit(data)
+      gbtClassifier.getModelFit
+    }
     this
   }
 
