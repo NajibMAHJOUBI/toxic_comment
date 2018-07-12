@@ -1,9 +1,8 @@
 package fr.toxic.spark.classification.stackingMethod
 
 import fr.toxic.spark.utils.LoadDataSetTask
-import org.apache.spark.ml.linalg.{Vector, Vectors}
-import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 
 class StackingMethodTask(val labels: Array[String],
                          val classificationMethods: Array[String],
@@ -38,10 +37,11 @@ class StackingMethodTask(val labels: Array[String],
     this
   }
 
-  def createLabelFeatures(dataFrame: DataFrame): Vector = {
-    val u = Vectors.dense(Array(1.0, 2.0, 3.3))
-    print(u)
-    u
+  def createDfLabelFeatures(spark: SparkSession, dataFrame: DataFrame): DataFrame = {
+    val classificationMethodsBroadcast = spark.sparkContext.broadcast(classificationMethods)
+    val features = (p: Row) => {StackingMethodObject.extractVector(p, classificationMethodsBroadcast.value)}
+    val rdd = data.rdd.map(p => (p.getLong(p.fieldIndex("label")), features(p)))
+    spark.createDataFrame(rdd).toDF("label", "features")
   }
 
 }
