@@ -34,15 +34,15 @@ object KaggleSubmissionBinaryRelevanceExample {
     val countVectorizerModel = new CountVectorizerTask(minDF = 5, vocabSize = 1000)
     countVectorizerModel.run(trainStopWordsRemoved)
     val tfIdfModel = new TfIdfTask()
-    tfIdfModel.run(countVectorizerModel.getTransform())
-    val trainTfIdf = tfIdfModel.getTransform()
+    tfIdfModel.run(countVectorizerModel.getPrediction)
+    val trainTfIdf = tfIdfModel.getPrediction
 
     // Test
     val test = new LoadDataSetTask(sourcePath = "data/parquet").run(spark, "test")
     val testTokens = new TokenizerTask().run(test)
     val testStopWordsRemoved = new StopWordsRemoverTask().run(testTokens)
-    val testTf = countVectorizerModel.transform(testStopWordsRemoved).getTransform()
-    val testTfIdf = tfIdfModel.transform(testTf).getTransform()
+    val testTf = countVectorizerModel.transform(testStopWordsRemoved).getPrediction
+    val testTfIdf = tfIdfModel.transform(testTf).getPrediction
 
     classifierMethods.foreach(classifierMethod => {
       if (classifierMethod == "linear_svc") {
