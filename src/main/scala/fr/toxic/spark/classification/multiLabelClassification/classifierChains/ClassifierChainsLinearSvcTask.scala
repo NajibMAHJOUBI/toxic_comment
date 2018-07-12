@@ -1,6 +1,5 @@
 package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
-import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.ClassifierChainsFactory
 import fr.toxic.spark.classification.crossValidation.CrossValidationLinearSvcTask
 import fr.toxic.spark.classification.multiLabelClassification.MultiLabelObject
 import fr.toxic.spark.classification.task.LinearSvcTask
