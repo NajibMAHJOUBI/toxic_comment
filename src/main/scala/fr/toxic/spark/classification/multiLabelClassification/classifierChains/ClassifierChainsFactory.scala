@@ -1,4 +1,4 @@
-package fr.toxic.spark.classification.multiLabelClassification.binaryRelevance
+package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
 import org.apache.spark.sql.DataFrame
 
