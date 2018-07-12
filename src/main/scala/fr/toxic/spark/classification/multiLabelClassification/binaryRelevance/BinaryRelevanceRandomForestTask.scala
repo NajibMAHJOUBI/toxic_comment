@@ -23,10 +23,10 @@ class BinaryRelevanceRandomForestTask(override val columns: Array[String],
 
   override def run(data: DataFrame): BinaryRelevanceRandomForestTask = {
     prediction = data
-    columns.foreach(column => {
-      val labelFeatures = BinaryRelevanceObject.createLabel(prediction, column)
-      computeModel(labelFeatures, column)
-      saveModel(column)
+    columns.foreach(label => {
+      val labelFeatures = BinaryRelevanceObject.createLabel(prediction, label)
+      computeModel(labelFeatures, label)
+      saveModel(label)
       computePrediction(labelFeatures)
     })
     MultiLabelObject.savePrediction(prediction, columns, s"$savePath/prediction")
