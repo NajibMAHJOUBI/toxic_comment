@@ -1,10 +1,7 @@
 package fr.toxic.spark.classification.multiLabelClassification.binaryRelevance
 
 import org.apache.spark.ml.linalg.Vector
-import org.apache.spark.mllib.evaluation.MultilabelMetrics
-import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{Column, DataFrame}
-import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.DataFrame
 
 
 object BinaryRelevanceObject {
