@@ -1,10 +1,10 @@
 package fr.toxic.spark.stackingMethod
 
-import fr.toxic.spark.classification.stackingMethod.StackingMethodTask
+import fr.toxic.spark.classification.stackingMethod.{StackingMethodObject, StackingMethodTask}
 import fr.toxic.spark.utils.LoadDataSetTask
 import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.sql.functions.col
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 import org.junit.{After, Before, Test}
 
 
@@ -60,7 +60,17 @@ class StackingMethodTaskTest {
     methodClassification.foreach(method => assert(data.columns.contains(s"prediction_$method")))
     }
 
+  @Test def testCreateDfLabelFeatures(): Unit = {
+    val methodClassification = Array("logisticRegression", "randomForest")
+    val stackingMethod = new StackingMethodTask(Array(""), methodClassification, pathLabel, pathPrediction)
+    stackingMethod.mergeData(spark, "toxic")
+    val labelFeatures = stackingMethod.createDfLabelFeatures(spark, stackingMethod.getData)
 
+    assert(labelFeatures.isInstanceOf[DataFrame])
+    assert(labelFeatures.columns.length == 2)
+    assert(labelFeatures.columns.contains("label"))
+    assert(labelFeatures.columns.contains("features"))
+  }
 
   @After def afterAll() {
     spark.stop()
