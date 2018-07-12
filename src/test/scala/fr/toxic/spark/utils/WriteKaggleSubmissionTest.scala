@@ -22,8 +22,8 @@ class WriteKaggleSubmissionTest extends AssertionsForJUnit  {
   }
 
   @Test def testWriteKaggleSubmission(): Unit = {
-    val data = new LoadDataSetTask("src/test/resources/data", format = "parquet")
-      .run(spark, "binaryRelevance")
+    val data = new LoadDataSetTask("src/test/resources/data/binaryRelevance/logisticRegression", format = "csv")
+      .run(spark, "prediction")
     val writeKaggle = new WriteKaggleSubmission()
     writeKaggle.run(data, savePath)
 
