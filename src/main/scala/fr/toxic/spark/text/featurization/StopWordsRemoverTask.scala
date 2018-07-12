@@ -33,7 +33,7 @@ class StopWordsRemoverTask(val inputColumn: String = "words", val outputColumn: 
 
   def defineStopWordsList(): StopWordsRemoverTask = {
     stopWords = if (stopWordsOption == "lucene") {
-        new EnglishAnalyzer().getStopwordSet().toString.split(",")
+      new EnglishAnalyzer().getStopwordSet().toString.split(",")
     } else {
       StopWordsRemover.loadDefaultStopWords("english")
     }
