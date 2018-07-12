@@ -7,6 +7,9 @@ import org.apache.spark.sql.types.{ArrayType, StringType}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.junit.{After, Before, Test}
 import org.scalatest.junit.AssertionsForJUnit
+import org.apache.lucene.analysis.en.EnglishAnalyzer
+
+
 
 import scala.collection.mutable.WrappedArray
 
@@ -27,9 +30,9 @@ class StopWordsRemoverTaskTest extends AssertionsForJUnit  {
     log.setLevel(Level.WARN)
   }
 
-  @Test def testStopWordsRemover(): Unit = {
+  @Test def testStopWordsSparkRemover(): Unit = {
     val data = new LoadDataSetTask(sourcePath = "src/test/resources/data").run(spark, "tokenizer")
-    val removed = new StopWordsRemoverTask().run(data)
+    val removed = new StopWordsRemoverTask(stopWordsOption = "spark").run(data)
     // removed.write.parquet("src/test/resources/data/stopWordsRemover")
 
     assert(removed.isInstanceOf[DataFrame])
