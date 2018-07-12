@@ -1,8 +1,6 @@
 package fr.toxic.spark.classification.stackingMethod
 
 import fr.toxic.spark.classification.crossValidation.CrossValidationLogisticRegressionTask
-import fr.toxic.spark.classification.multiLabelClassification.classifierChains.ClassifierChainsLogisticRegressionTask
-import fr.toxic.spark.classification.task.LogisticRegressionTask
 import org.apache.spark.ml.classification.LogisticRegressionModel
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
@@ -19,7 +17,7 @@ class StackingMethodLogisticRegressionTask(override val labels: Array[String],
   override def run(spark: SparkSession): StackingMethodLogisticRegressionTask = {
     labels.foreach(label => {
       mergeData(spark, label)
-      val data = createDfLabelFeatures(spark: SparkSession, label: String)
+      val data = createDfLabelFeatures(spark, label)
       computeModel(data, label)
     })
 

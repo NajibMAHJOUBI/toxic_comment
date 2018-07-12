@@ -62,13 +62,14 @@ class StackingMethodTaskTest {
 
   @Test def testCreateDfLabelFeatures(): Unit = {
     val methodClassification = Array("logisticRegression", "randomForest")
+    val label = "toxic"
     val stackingMethod = new StackingMethodTask(Array(""), methodClassification, pathLabel, pathPrediction)
-    stackingMethod.mergeData(spark, "toxic")
-    val labelFeatures = stackingMethod.createDfLabelFeatures(spark, stackingMethod.getData)
+    stackingMethod.mergeData(spark, label)
+    val labelFeatures = stackingMethod.createDfLabelFeatures(spark, label)
 
     assert(labelFeatures.isInstanceOf[DataFrame])
     assert(labelFeatures.columns.length == 2)
-    assert(labelFeatures.columns.contains("label"))
+    assert(labelFeatures.columns.contains(label))
     assert(labelFeatures.columns.contains("features"))
   }
 
