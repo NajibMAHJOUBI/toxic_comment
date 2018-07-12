@@ -28,7 +28,7 @@ object KaggleSubmissionClassifierChainsExample {
     // Train
     val train = new LoadDataSetTask(sourcePath = "data/parquet").run(spark, "train")
     val trainTokens = new TokenizerTask().run(train)
-    val trainStopWordsRemoved = new StopWordsRemoverTask().run(trainTokens)
+    val trainStopWordsRemoved = new StopWordsRemoverTask(stopWordsOption = "spark").run(trainTokens)
     val countVectorizerModel = new CountVectorizerTask(minDF = 5, vocabSize = 1000)
     countVectorizerModel.run(trainStopWordsRemoved)
     val tfIdfModel = new TfIdfTask()
@@ -38,7 +38,7 @@ object KaggleSubmissionClassifierChainsExample {
     // Test
     val test = new LoadDataSetTask(sourcePath = "data/parquet").run(spark, "test")
     val testTokens = new TokenizerTask().run(test)
-    val testStopWordsRemoved = new StopWordsRemoverTask().run(testTokens)
+    val testStopWordsRemoved = new StopWordsRemoverTask(stopWordsOption = "spark").run(testTokens)
     val testTf = countVectorizerModel.transform(testStopWordsRemoved).getPrediction
     var testTfIdf = tfIdfModel.transform(testTf).getPrediction
 
