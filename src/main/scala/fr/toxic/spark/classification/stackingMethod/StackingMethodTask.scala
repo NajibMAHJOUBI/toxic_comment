@@ -1,15 +1,18 @@
 package fr.toxic.spark.classification.stackingMethod
 
 import fr.toxic.spark.utils.LoadDataSetTask
-import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.functions.{col, udf}
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
+
+import scala.collection.mutable.WrappedArray
+
 
 class StackingMethodTask(val labels: Array[String],
                          val classificationMethods: Array[String],
-                         val pathLabel: String,
-                         val pathPrediction: String) {
+                         val pathLabel: String, val pathPrediction: String, val pathSave: String) {
 
   var data: DataFrame = _
+  var prediction: DataFrame = _
 
   def getData: DataFrame = {
     data
@@ -37,11 +40,13 @@ class StackingMethodTask(val labels: Array[String],
     this
   }
 
-  def createDfLabelFeatures(spark: SparkSession, label: String): DataFrame = {
+  def createLabelFeatures(spark: SparkSession, label: String): DataFrame = {
     val classificationMethodsBroadcast = spark.sparkContext.broadcast(classificationMethods)
     val features = (p: Row) => {StackingMethodObject.extractVector(p, classificationMethodsBroadcast.value)}
     val rdd = data.rdd.map(p => (p.getLong(p.fieldIndex("label")), features(p)))
-    spark.createDataFrame(rdd).toDF(label, "features")
+    val labelFeatures = spark.createDataFrame(rdd).toDF(label, "features")
+    val vectorMl = udf((u: WrappedArray[Double]) => StackingMethodObject.getMlVector(u))
+    labelFeatures.withColumn("vector", vectorMl(col("features"))).select(col(label), col("vector").alias("features"))
   }
 
 }
