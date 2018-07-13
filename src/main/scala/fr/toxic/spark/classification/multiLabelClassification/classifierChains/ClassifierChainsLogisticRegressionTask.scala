@@ -2,7 +2,7 @@ package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
 import fr.toxic.spark.classification.crossValidation.CrossValidationLogisticRegressionTask
 import fr.toxic.spark.classification.multiLabelClassification.MultiLabelObject
-import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.ClassifierChainsFactory
+import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.{BinaryRelevanceObject}
 import fr.toxic.spark.classification.task.LogisticRegressionTask
 import org.apache.spark.ml.classification.LogisticRegressionModel
 import org.apache.spark.sql.DataFrame
@@ -19,11 +19,12 @@ class ClassifierChainsLogisticRegressionTask(override val labelColumns: Array[St
   override def run(data: DataFrame): ClassifierChainsLogisticRegressionTask = {
     prediction = data
     labelColumns.map(label => {
-      val newData = createNewDataSet(data, label)
-      computeModel(newData, label)
+      val labelFeatures = createNewDataSet(prediction, label)
+      computeModel(labelFeatures, label)
       saveModel(label)
-      computePrediction(newData)
+      computePrediction(labelFeatures)
     })
+    labelColumns.foreach(label => prediction = BinaryRelevanceObject.createLabel(prediction, label))
     MultiLabelObject.savePrediction(prediction, labelColumns, s"$savePath/prediction")
     MultiLabelObject.multiLabelPrecision(prediction, labelColumns)
     this

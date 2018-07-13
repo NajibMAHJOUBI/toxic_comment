@@ -31,7 +31,7 @@ class TfIdfTaskTest extends AssertionsForJUnit {
     tfIdf.run(data)
     // tfIdf.write.parquet("src/test/resources/data/tfIdf")
 
-    val transform = tfIdf.getTransform()
+    val transform = tfIdf.getPrediction
     assert(transform.isInstanceOf[DataFrame])
     assert(transform.count() == data.count())
     assert(transform.columns.contains("tf_idf"))

@@ -7,6 +7,9 @@ import org.apache.spark.sql.types.{ArrayType, StringType}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.junit.{After, Before, Test}
 import org.scalatest.junit.AssertionsForJUnit
+import org.apache.lucene.analysis.en.EnglishAnalyzer
+
+
 
 import scala.collection.mutable.WrappedArray
 
@@ -21,9 +24,8 @@ class StopWordsRemoverTaskTest extends AssertionsForJUnit  {
     spark = SparkSession
       .builder
       .master("local")
-      .appName("test stop words remover")
+      .appName("test load dataset")
       .getOrCreate()
-
     val log = LogManager.getRootLogger
     log.setLevel(Level.WARN)
   }
@@ -31,6 +33,7 @@ class StopWordsRemoverTaskTest extends AssertionsForJUnit  {
   @Test def testStopWordsSparkRemover(): Unit = {
     val data = new LoadDataSetTask(sourcePath = "src/test/resources/data").run(spark, "tokenizer")
     val removed = new StopWordsRemoverTask(stopWordsOption = "spark").run(data)
+    // removed.write.parquet("src/test/resources/data/stopWordsRemover")
 
     assert(removed.isInstanceOf[DataFrame])
     assert(removed.count() == data.count())
@@ -40,16 +43,6 @@ class StopWordsRemoverTaskTest extends AssertionsForJUnit  {
     val stopWordsRemover = StopWordsRemover.loadDefaultStopWords("english")
     val words = removed.rdd.map(x => x.getAs[WrappedArray[String]](x.fieldIndex("words"))).collect()
     assert(stopWordsRemover.intersect(words).length == 0)
-  }
-
-  @Test def testStopWordsLuceneRemover(): Unit = {
-    val data = new LoadDataSetTask(sourcePath = "src/test/resources/data").run(spark, "tokenizer")
-    val removed = new StopWordsRemoverTask(stopWordsOption = "lucene").run(data)
-
-    assert(removed.isInstanceOf[DataFrame])
-    assert(removed.count() == data.count())
-    assert(removed.columns.contains("words"))
-    assert(removed.schema.fields(removed.schema.fieldIndex("words")).dataType == ArrayType(StringType))
   }
 
   @After def afterAll() {

@@ -1,25 +1,24 @@
 package fr.toxic.spark.text.featurization
 
 import org.apache.spark.ml.feature.{CountVectorizer, CountVectorizerModel}
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.DataFrame
 
 /**
   * Created by mahjoubi on 12/06/18.
   */
 class CountVectorizerTask(val inputColumn: String = "words", val outputColumn: String = "tf",
-                          val minDF: Int = 2, val vocabSize: Int = 3) {
+                          val minDF: Int = 2, val vocabSize: Int = 3) extends TextFeaturizationTask with TextFeaturizationFactory {
 
   private var countVectorizer: CountVectorizer = _
   private var countVectorizerModel: CountVectorizerModel = _
-  private var transform: DataFrame = _
 
-  def run(data: DataFrame): Unit = {
+  override def run(data: DataFrame): CountVectorizerTask = {
     defineModel()
     fit(data)
     transform(data)
   }
 
-  def defineModel(): CountVectorizerTask = {
+  override def defineModel(): CountVectorizerTask = {
     countVectorizer =  new CountVectorizer()
       .setInputCol(inputColumn)
       .setOutputCol(outputColumn)
@@ -28,21 +27,17 @@ class CountVectorizerTask(val inputColumn: String = "words", val outputColumn: S
     this
   }
 
-  def fit(data: DataFrame): CountVectorizerTask = {
+  override def fit(data: DataFrame): CountVectorizerTask = {
     countVectorizerModel = countVectorizer.fit(data)
     this
   }
 
-  def transform(data: DataFrame): CountVectorizerTask = {
-    transform = countVectorizerModel.transform(data)
+  override def transform(data: DataFrame): CountVectorizerTask = {
+    prediction = countVectorizerModel.transform(data)
     this
   }
 
-  def getTransform(): DataFrame = {
-    transform
-  }
-
-  def loadCountVectorizerModel(spark: SparkSession, path: String): CountVectorizerTask = {
+  override def loadModel(path: String): CountVectorizerTask = {
     countVectorizerModel = CountVectorizerModel.load(path)
     this
   }

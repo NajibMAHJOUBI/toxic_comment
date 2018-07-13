@@ -1,6 +1,6 @@
 package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
-import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.ClassifierChainsFactory
+import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.{BinaryRelevanceObject}
 import fr.toxic.spark.classification.crossValidation.CrossValidationGbtClassifierTask
 import fr.toxic.spark.classification.multiLabelClassification.MultiLabelObject
 import fr.toxic.spark.classification.task.GbtClassifierTask
@@ -19,11 +19,12 @@ class ClassifierChainsGbtClassifierTask(override val labelColumns: Array[String]
   override def run(data: DataFrame): ClassifierChainsGbtClassifierTask = {
     prediction = data
     labelColumns.map(label => {
-      val newData = createNewDataSet(data, label)
-      computeModel(newData, label)
+      val labelFeatures = createNewDataSet(prediction, label)
+      computeModel(labelFeatures, label)
       saveModel(label)
-      computePrediction(newData)
+      computePrediction(labelFeatures)
     })
+    labelColumns.foreach(label => prediction = BinaryRelevanceObject.createLabel(prediction, label))
     MultiLabelObject.savePrediction(prediction, labelColumns, s"$savePath/prediction")
     MultiLabelObject.multiLabelPrecision(prediction, labelColumns)
     this

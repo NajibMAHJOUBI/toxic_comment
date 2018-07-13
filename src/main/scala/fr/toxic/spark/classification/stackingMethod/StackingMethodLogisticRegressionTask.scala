@@ -1,47 +1,39 @@
 package fr.toxic.spark.classification.stackingMethod
 
-import fr.toxic.spark.utils.LoadDataSetTask
+import fr.toxic.spark.classification.crossValidation.CrossValidationLogisticRegressionTask
+import fr.toxic.spark.classification.multiLabelClassification.classifierChains.ClassifierChainsLogisticRegressionTask
+import fr.toxic.spark.classification.task.LogisticRegressionTask
+import org.apache.spark.ml.classification.LogisticRegressionModel
 import org.apache.spark.sql.{DataFrame, SparkSession}
-import org.apache.spark.sql.functions.col
-import org.apache.spark.ml.linalg.{Vector, Vectors}
 
-class StackingMethodLogisticRegressionTask(labels: Array[String], classificationMethods: Array[String], pathLabel: String, pathPrediction: String) {
+class StackingMethodLogisticRegressionTask(override val labels: Array[String],
+                                           override val classificationMethods: Array[String],
+                                           override val pathLabel: String,
+                                           override val pathPrediction: String)
+  extends StackingMethodTask(labels, classificationMethods, pathLabel, pathPrediction) with StackingMethodFactory {
 
-  def run(spark: SparkSession): StackingMethodLogisticRegressionTask = {
+  val labelColumn: String = "label"
+  val featureColumn: String = "features"
+  var model: LogisticRegressionModel = _
+
+  override def run(spark: SparkSession): StackingMethodLogisticRegressionTask = {
     labels.foreach(label => {
-      val data = mergeData(spark, label)
-
-
-
-
-
+      mergeData(spark, label)
+      val data = createDfLabelFeatures(spark: SparkSession, label: String)
+      computeModel(data, label)
     })
+
     this
   }
 
-  def loadDataPredictionByLabel(spark: SparkSession, method: String, label: String): DataFrame = {
-    new LoadDataSetTask(s"$pathPrediction/$method", format= "csv")
-      .run(spark, "prediction")
-      .select(col("id"), col(s"prediction_$label"))
+  override def computeModel(data: DataFrame, label: String): StackingMethodLogisticRegressionTask = {
+    val cv = new CrossValidationLogisticRegressionTask(data = data, labelColumn = label,
+      featureColumn = featureColumn,
+      predictionColumn = s"prediction_$label", pathModel = "",
+      pathPrediction = "")
+    cv.run()
+    model = cv.getBestModel
+    this
   }
-
-  def loadDataLabel(spark: SparkSession, label: String): DataFrame = {
-    new LoadDataSetTask(sourcePath = pathLabel).run(spark, "train")
-      .select(col("id"), col(label).alias("label"))
-  }
-
-  def mergeData(spark: SparkSession, label: String): DataFrame = {
-    var data: DataFrame = loadDataLabel(spark, label)
-    classificationMethods.foreach(method => data = data.join(loadDataPredictionByLabel(spark, method, label), Seq("id")))
-    data.drop("id")
-  }
-
-  def createLabelFeatures(dataFrame: DataFrame): Vector = {
-    val u = Vectors.dense(Array(1.0, 2.0, 3.3))
-    print(u)
-    u
-  }
-
-
 
 }

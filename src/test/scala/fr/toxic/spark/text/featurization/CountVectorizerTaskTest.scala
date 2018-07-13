@@ -31,7 +31,7 @@ class CountVectorizerTaskTest extends AssertionsForJUnit  {
     countVectorizer.run(data)
     // count.write.parquet("src/test/resources/data/countVectorizer")
 
-    val transform = countVectorizer.getTransform()
+    val transform = countVectorizer.getPrediction
     assert(transform.isInstanceOf[DataFrame])
     assert(transform.count() == data.count())
     assert(transform.columns.contains("tf"))
