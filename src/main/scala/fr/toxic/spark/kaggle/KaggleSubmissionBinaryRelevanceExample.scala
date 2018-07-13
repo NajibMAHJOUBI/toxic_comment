@@ -2,7 +2,6 @@
 package fr.toxic.spark.kaggle
 
 import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.{BinaryRelevanceDecisionTreeTask, BinaryRelevanceGbtClassifierTask, BinaryRelevanceRandomForestTask}
-import fr.toxic.spark.classification.task.{DecisionTreeTask, LinearSvcTask, LogisticRegressionTask, RandomForestTask}
 import fr.toxic.spark.classification.task.binaryRelevance.{BinaryRelevanceLinearSvcTask, BinaryRelevanceLogisticRegressionTask}
 import fr.toxic.spark.text.featurization.{CountVectorizerTask, StopWordsRemoverTask, TfIdfTask, TokenizerTask}
 import fr.toxic.spark.utils.{LoadDataSetTask, WriteKaggleSubmission}

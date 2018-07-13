@@ -2,7 +2,7 @@ package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
 import fr.toxic.spark.classification.crossValidation.CrossValidationLogisticRegressionTask
 import fr.toxic.spark.classification.multiLabelClassification.MultiLabelObject
-import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.{BinaryRelevanceObject}
+import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.BinaryRelevanceObject
 import fr.toxic.spark.classification.task.LogisticRegressionTask
 import org.apache.spark.ml.classification.LogisticRegressionModel
 import org.apache.spark.sql.DataFrame

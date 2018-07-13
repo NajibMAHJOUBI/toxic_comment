@@ -1,8 +1,8 @@
 package fr.toxic.spark.text.featurization
 
+import org.apache.lucene.analysis.en.EnglishAnalyzer
 import org.apache.spark.ml.feature.StopWordsRemover
 import org.apache.spark.sql.DataFrame
-import org.apache.lucene.analysis.en.EnglishAnalyzer
 
 /**
   * Created by mahjoubi on 12/06/18.
@@ -28,7 +28,7 @@ class StopWordsRemoverTask(val inputColumn: String = "words", val outputColumn: 
       .setOutputCol("stop_words_removed")
       .setStopWords(stopWords)
 
-     removed.transform(data).drop(inputColumn).withColumnRenamed("stop_words_removed", outputColumn)
+    removed.transform(data).drop(inputColumn).withColumnRenamed("stop_words_removed", outputColumn)
   }
 
   def defineStopWordsList(): StopWordsRemoverTask = {

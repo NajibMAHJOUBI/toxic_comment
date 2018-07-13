@@ -1,18 +1,16 @@
 package fr.toxic.spark.stackingMethod
 
-import fr.toxic.spark.classification.stackingMethod.{StackingMethodObject, StackingMethodTask}
-import fr.toxic.spark.utils.LoadDataSetTask
+import fr.toxic.spark.classification.stackingMethod.StackingMethodTask
 import org.apache.log4j.{Level, LogManager}
-import org.apache.spark.sql.functions.col
-import org.apache.spark.sql.{DataFrame, Row, SparkSession}
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.junit.{After, Before, Test}
 
 
 class StackingMethodTaskTest {
 
+  private val pathLabel = "src/test/resources/data"
+  private val pathPrediction = "src/test/resources/data/binaryRelevance"
   private var spark: SparkSession = _
-  private val pathLabel = "/home/mahjoubi/Documents/github/toxic_comment/src/test/resources/data"
-  private val pathPrediction = "/home/mahjoubi/Documents/github/toxic_comment/src/test/resources/data/binaryRelevance"
 
   @Before def beforeAll() {
     spark = SparkSession
@@ -39,7 +37,7 @@ class StackingMethodTaskTest {
   @Test def testLoadDataLabel(): Unit = {
     val stackingMethod = new StackingMethodTask(Array(""), Array(""), pathLabel, "")
     val label = "toxic"
-    val data  = stackingMethod.loadDataLabel(spark, label)
+    val data = stackingMethod.loadDataLabel(spark, label)
 
     assert(data.isInstanceOf[DataFrame])
     assert(data.columns.length == 2)
@@ -58,17 +56,19 @@ class StackingMethodTaskTest {
     assert(data.columns.length == 3)
     assert(data.columns.contains("label"))
     methodClassification.foreach(method => assert(data.columns.contains(s"prediction_$method")))
-    }
+  }
 
   @Test def testCreateDfLabelFeatures(): Unit = {
     val methodClassification = Array("logisticRegression", "randomForest")
+    val label = "toxic"
     val stackingMethod = new StackingMethodTask(Array(""), methodClassification, pathLabel, pathPrediction)
-    stackingMethod.mergeData(spark, "toxic")
-    val labelFeatures = stackingMethod.createDfLabelFeatures(spark, stackingMethod.getData)
+    stackingMethod.mergeData(spark, label)
+    val labelFeatures = stackingMethod.createDfLabelFeatures(spark, label)
+    labelFeatures.show()
 
     assert(labelFeatures.isInstanceOf[DataFrame])
     assert(labelFeatures.columns.length == 2)
-    assert(labelFeatures.columns.contains("label"))
+    assert(labelFeatures.columns.contains(label))
     assert(labelFeatures.columns.contains("features"))
   }
 

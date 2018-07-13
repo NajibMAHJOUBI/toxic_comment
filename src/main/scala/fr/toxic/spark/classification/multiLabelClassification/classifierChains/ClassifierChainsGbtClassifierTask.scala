@@ -1,8 +1,8 @@
 package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
-import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.{BinaryRelevanceObject}
 import fr.toxic.spark.classification.crossValidation.CrossValidationGbtClassifierTask
 import fr.toxic.spark.classification.multiLabelClassification.MultiLabelObject
+import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.BinaryRelevanceObject
 import fr.toxic.spark.classification.task.GbtClassifierTask
 import org.apache.spark.ml.classification.GBTClassificationModel
 import org.apache.spark.sql.DataFrame

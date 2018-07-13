@@ -19,8 +19,15 @@ class StackingMethodTask(val labels: Array[String],
     labels
   }
 
+  def mergeData(spark: SparkSession, label: String): StackingMethodTask = {
+    data = loadDataLabel(spark, label)
+    classificationMethods.foreach(method => data = data.join(loadDataPredictionByLabel(spark, method, label), Seq("id")))
+    data = data.drop("id")
+    this
+  }
+
   def loadDataPredictionByLabel(spark: SparkSession, method: String, label: String): DataFrame = {
-    new LoadDataSetTask(s"$pathPrediction/$method", format= "csv")
+    new LoadDataSetTask(s"$pathPrediction/$method", format = "csv")
       .run(spark, "prediction")
       .select(col("id"), col(s"prediction_$label").alias(s"prediction_$method"))
   }
@@ -30,16 +37,11 @@ class StackingMethodTask(val labels: Array[String],
       .select(col("id"), col(label).alias("label"))
   }
 
-  def mergeData(spark: SparkSession, label: String): StackingMethodTask = {
-    data = loadDataLabel(spark, label)
-    classificationMethods.foreach(method => data = data.join(loadDataPredictionByLabel(spark, method, label), Seq("id")))
-    data = data.drop("id")
-    this
-  }
-
   def createDfLabelFeatures(spark: SparkSession, label: String): DataFrame = {
     val classificationMethodsBroadcast = spark.sparkContext.broadcast(classificationMethods)
-    val features = (p: Row) => {StackingMethodObject.extractVector(p, classificationMethodsBroadcast.value)}
+    val features = (p: Row) => {
+      StackingMethodObject.extractVector(p, classificationMethodsBroadcast.value)
+    }
     val rdd = data.rdd.map(p => (p.getLong(p.fieldIndex("label")), features(p)))
     spark.createDataFrame(rdd).toDF(label, "features")
   }

@@ -24,7 +24,7 @@ class ClassifierChainsDecisionTreeTask(override val labelColumns: Array[String],
         saveModel(label)
         computePrediction(labelFeatures)
       })
-      labelColumns.foreach(label => prediction = BinaryRelevanceObject.createLabel(prediction, label))
+    labelColumns.foreach(label => prediction = BinaryRelevanceObject.createLabel(prediction, label))
       MultiLabelObject.savePrediction(prediction, labelColumns, s"$savePath/prediction")
       MultiLabelObject.multiLabelPrecision(prediction, labelColumns)
       this
@@ -39,7 +39,7 @@ class ClassifierChainsDecisionTreeTask(override val labelColumns: Array[String],
       cv.run()
       cv.getBestModel
     } else {
-      val decisionTree = new DecisionTreeTask(labelColumn = label, featureColumn=featureColumn,
+      val decisionTree = new DecisionTreeTask(labelColumn = label, featureColumn = featureColumn,
         predictionColumn = s"prediction_$label")
       decisionTree.defineModel
       decisionTree.fit(data)

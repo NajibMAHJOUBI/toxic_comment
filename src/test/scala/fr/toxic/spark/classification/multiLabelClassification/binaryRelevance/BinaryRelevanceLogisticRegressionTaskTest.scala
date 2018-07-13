@@ -69,7 +69,7 @@ class BinaryRelevanceLogisticRegressionTaskTest extends AssertionsForJUnit {
 
   @Test def testBrSixColumnSimpleValidationTest(): Unit = {
     val columns =  Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
-    val savePath = "target/model/binaryRelevance/twoColumn/simpleValidation"
+    val savePath = "target/model/binaryRelevance/sixColumn/simpleValidation"
     new BinaryRelevanceLogisticRegressionTask(columns = columns,
                                               savePath = savePath,
                                               featureColumn = "tf_idf",

@@ -1,8 +1,6 @@
 package fr.toxic.spark.classification.stackingMethod
 
 import fr.toxic.spark.classification.crossValidation.CrossValidationLogisticRegressionTask
-import fr.toxic.spark.classification.multiLabelClassification.classifierChains.ClassifierChainsLogisticRegressionTask
-import fr.toxic.spark.classification.task.LogisticRegressionTask
 import org.apache.spark.ml.classification.LogisticRegressionModel
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
