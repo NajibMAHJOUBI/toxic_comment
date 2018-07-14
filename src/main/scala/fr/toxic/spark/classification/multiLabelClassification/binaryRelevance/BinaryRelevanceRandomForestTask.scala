@@ -1,7 +1,7 @@
 package fr.toxic.spark.classification.multiLabelClassification.binaryRelevance
 
 import fr.toxic.spark.classification.crossValidation.CrossValidationRandomForestTask
-import fr.toxic.spark.classification.multiLabelClassification.MultiLabelObject
+import fr.toxic.spark.classification.multiLabelClassification.{MultiLabelClassificationFactory, MultiLabelClassificationObject}
 import fr.toxic.spark.classification.task.RandomForestTask
 import org.apache.spark.ml.classification.RandomForestClassificationModel
 import org.apache.spark.sql.DataFrame
@@ -17,20 +17,20 @@ class BinaryRelevanceRandomForestTask(override val columns: Array[String],
                                       override val savePath: String,
                                       override val featureColumn: String,
                                       override val methodValidation: String) extends
-  BinaryRelevanceTask(columns, savePath, featureColumn, methodValidation) with BinaryRelevanceFactory {
+  BinaryRelevanceTask(columns, savePath, featureColumn, methodValidation) with MultiLabelClassificationFactory {
 
   var model: RandomForestClassificationModel = _
 
   override def run(data: DataFrame): BinaryRelevanceRandomForestTask = {
     prediction = data
     columns.foreach(label => {
-      val labelFeatures = BinaryRelevanceObject.createLabel(prediction, label)
+      val labelFeatures = MultiLabelClassificationObject.createLabel(prediction, label)
       computeModel(labelFeatures, label)
       saveModel(label)
       computePrediction(labelFeatures)
     })
-    MultiLabelObject.savePrediction(prediction, columns, s"$savePath/prediction")
-    MultiLabelObject.multiLabelPrecision(prediction, columns)
+    MultiLabelClassificationObject.savePrediction(prediction, columns, s"$savePath/prediction")
+    MultiLabelClassificationObject.multiLabelPrecision(prediction, columns)
     this
   }
 

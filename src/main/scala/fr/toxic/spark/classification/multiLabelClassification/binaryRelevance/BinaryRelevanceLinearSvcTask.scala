@@ -1,8 +1,8 @@
 package fr.toxic.spark.classification.task.binaryRelevance
 
-import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.{BinaryRelevanceFactory, BinaryRelevanceObject, BinaryRelevanceTask}
 import fr.toxic.spark.classification.crossValidation.CrossValidationLinearSvcTask
-import fr.toxic.spark.classification.multiLabelClassification.MultiLabelObject
+import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.BinaryRelevanceTask
+import fr.toxic.spark.classification.multiLabelClassification.{MultiLabelClassificationFactory, MultiLabelClassificationObject}
 import fr.toxic.spark.classification.task.LinearSvcTask
 import org.apache.spark.ml.classification.LinearSVCModel
 import org.apache.spark.sql.DataFrame
@@ -14,20 +14,20 @@ class BinaryRelevanceLinearSvcTask(override val columns: Array[String],
                                    override val savePath: String,
                                    override val featureColumn: String,
                                    override val methodValidation: String) extends
-  BinaryRelevanceTask(columns, savePath, featureColumn, methodValidation) with BinaryRelevanceFactory {
+  BinaryRelevanceTask(columns, savePath, featureColumn, methodValidation) with MultiLabelClassificationFactory {
 
   var model: LinearSVCModel = _
 
   override def run(data: DataFrame): BinaryRelevanceLinearSvcTask = {
     prediction = data
     columns.foreach(column => {
-      val labelFeatures = BinaryRelevanceObject.createLabel(prediction, column)
+      val labelFeatures = MultiLabelClassificationObject.createLabel(prediction, column)
       computeModel(labelFeatures, column)
       saveModel(column)
       computePrediction(labelFeatures)
     })
-    MultiLabelObject.savePrediction(prediction, columns, s"$savePath/prediction")
-    MultiLabelObject.multiLabelPrecision(prediction, columns)
+    MultiLabelClassificationObject.savePrediction(prediction, columns, s"$savePath/prediction")
+    MultiLabelClassificationObject.multiLabelPrecision(prediction, columns)
     this
   }
 
