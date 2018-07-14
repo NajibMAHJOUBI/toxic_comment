@@ -21,7 +21,8 @@ object KaggleSubmissionBinaryRelevanceExample {
     val log = LogManager.getRootLogger
     log.setLevel(Level.WARN)
 
-    val classifierMethods = Array("logistic_regression", "linear_svc", "decision_tree", "random_forest", "gbt_classifier")
+    //    val classifierMethods = Array("logistic_regression", "linear_svc", "decision_tree", "random_forest", "gbt_classifier")
+    val classifierMethods = Array("logistic_regression", "decision_tree")
     val methodValidation = "cross_validation"
     val labels = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
     val rootPath = s"target/kaggle/binaryRelevance"
@@ -30,7 +31,7 @@ object KaggleSubmissionBinaryRelevanceExample {
     val train = new LoadDataSetTask(sourcePath = "data/parquet").run(spark, "train")
     val trainTokens = new TokenizerTask().run(train)
     val trainStopWordsRemoved = new StopWordsRemoverTask(stopWordsOption = "spark").run(trainTokens)
-    val countVectorizerModel = new CountVectorizerTask(minDF = 5, vocabSize = 1000)
+    val countVectorizerModel = new CountVectorizerTask(minDF = 3, vocabSize = 2000)
     countVectorizerModel.run(trainStopWordsRemoved)
     val tfIdfModel = new TfIdfTask()
     tfIdfModel.run(countVectorizerModel.getPrediction)
