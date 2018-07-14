@@ -1,7 +1,7 @@
 package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
 import fr.toxic.spark.classification.crossValidation.CrossValidationLinearSvcTask
-import fr.toxic.spark.classification.multiLabelClassification.MultiLabelObject
+import fr.toxic.spark.classification.multiLabelClassification.{MultiLabelClassificationFactory, MultiLabelClassificationObject}
 import fr.toxic.spark.classification.task.LinearSvcTask
 import org.apache.spark.ml.classification.LinearSVCModel
 import org.apache.spark.sql.DataFrame
@@ -11,7 +11,7 @@ class ClassifierChainsLinearSvcTask(override val labelColumns: Array[String],
                                     override val featureColumn: String,
                                     override val methodValidation: String,
                                     override val savePath: String) extends ClassifierChainsTask(labelColumns, featureColumn,
-  methodValidation, savePath) with ClassifierChainsFactory {
+  methodValidation, savePath) with MultiLabelClassificationFactory {
 
   var model: LinearSVCModel = _
 
@@ -23,8 +23,9 @@ class ClassifierChainsLinearSvcTask(override val labelColumns: Array[String],
       saveModel(label)
       computePrediction(newData)
     })
-    MultiLabelObject.savePrediction(prediction, labelColumns, s"$savePath/prediction")
-    MultiLabelObject.multiLabelPrecision(prediction, labelColumns)
+    labelColumns.foreach(label => prediction = MultiLabelClassificationObject.createLabel(prediction, label))
+    MultiLabelClassificationObject.savePrediction(prediction, labelColumns, s"$savePath/prediction")
+    MultiLabelClassificationObject.multiLabelPrecision(prediction, labelColumns)
     this
   }
 

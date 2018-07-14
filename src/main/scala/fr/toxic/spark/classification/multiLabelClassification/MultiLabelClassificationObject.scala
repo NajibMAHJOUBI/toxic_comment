@@ -6,7 +6,11 @@ import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.{Column, DataFrame}
 
 
-object MultiLabelObject {
+object MultiLabelClassificationObject {
+
+  def createLabel(data: DataFrame, column: String): DataFrame = {
+    data.withColumnRenamed(column, s"label_$column")
+  }
 
   def savePrediction(data: DataFrame, labels: Array[String], path: String): Unit = {
     val columnsToKeep: Set[Column] = (Set("id")

@@ -1,13 +1,17 @@
 package fr.toxic.spark.classification.stackingMethod
 
 import fr.toxic.spark.utils.LoadDataSetTask
-import org.apache.spark.sql.functions.col
+import org.apache.spark.ml.linalg.Vectors
+import org.apache.spark.sql.functions.{col, udf}
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
+
+import scala.collection.mutable
 
 class StackingMethodTask(val labels: Array[String],
                          val classificationMethods: Array[String],
                          val pathLabel: String,
-                         val pathPrediction: String) {
+                         val pathPrediction: String,
+                         val pathSave: String) {
 
   var data: DataFrame = _
 
@@ -37,13 +41,17 @@ class StackingMethodTask(val labels: Array[String],
       .select(col("id"), col(label).alias("label"))
   }
 
-  def createDfLabelFeatures(spark: SparkSession, label: String): DataFrame = {
+  def createLabelFeatures(spark: SparkSession, label: String): DataFrame = {
     val classificationMethodsBroadcast = spark.sparkContext.broadcast(classificationMethods)
     val features = (p: Row) => {
-      StackingMethodObject.extractVector(p, classificationMethodsBroadcast.value)
+      StackingMethodObject.extractValues(p, classificationMethodsBroadcast.value)
     }
     val rdd = data.rdd.map(p => (p.getLong(p.fieldIndex("label")), features(p)))
-    spark.createDataFrame(rdd).toDF(label, "features")
+    val labelFeatures = spark.createDataFrame(rdd).toDF(label, "values")
+    val defineFeatures = udf((p: mutable.WrappedArray[Double]) => Vectors.dense(p.toArray[Double]))
+    labelFeatures
+      .withColumn("features", defineFeatures(col("values")))
+      .select(label, "features")
   }
 
 }

@@ -1,8 +1,7 @@
 package fr.toxic.spark.classification.multiLabelClassification.classifierChains
 
 import fr.toxic.spark.classification.crossValidation.CrossValidationDecisionTreeTask
-import fr.toxic.spark.classification.multiLabelClassification.MultiLabelObject
-import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.BinaryRelevanceObject
+import fr.toxic.spark.classification.multiLabelClassification.{MultiLabelClassificationFactory, MultiLabelClassificationObject}
 import fr.toxic.spark.classification.task.DecisionTreeTask
 import org.apache.spark.ml.classification.DecisionTreeClassificationModel
 import org.apache.spark.sql.DataFrame
@@ -12,7 +11,7 @@ class ClassifierChainsDecisionTreeTask(override val labelColumns: Array[String],
                                        override val featureColumn: String,
                                        override val methodValidation: String,
                                        override val savePath: String) extends ClassifierChainsTask(labelColumns, featureColumn,
-  methodValidation, savePath) with ClassifierChainsFactory {
+  methodValidation, savePath) with MultiLabelClassificationFactory {
 
   var model: DecisionTreeClassificationModel = _
 
@@ -24,9 +23,9 @@ class ClassifierChainsDecisionTreeTask(override val labelColumns: Array[String],
         saveModel(label)
         computePrediction(labelFeatures)
       })
-    labelColumns.foreach(label => prediction = BinaryRelevanceObject.createLabel(prediction, label))
-      MultiLabelObject.savePrediction(prediction, labelColumns, s"$savePath/prediction")
-      MultiLabelObject.multiLabelPrecision(prediction, labelColumns)
+    labelColumns.foreach(label => prediction = MultiLabelClassificationObject.createLabel(prediction, label))
+    MultiLabelClassificationObject.savePrediction(prediction, labelColumns, s"$savePath/prediction")
+    MultiLabelClassificationObject.multiLabelPrecision(prediction, labelColumns)
       this
     }
 

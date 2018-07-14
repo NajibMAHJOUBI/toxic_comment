@@ -7,18 +7,19 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 class StackingMethodLogisticRegressionTask(override val labels: Array[String],
                                            override val classificationMethods: Array[String],
                                            override val pathLabel: String,
-                                           override val pathPrediction: String)
-  extends StackingMethodTask(labels, classificationMethods, pathLabel, pathPrediction) with StackingMethodFactory {
+                                           override val pathPrediction: String,
+                                           override val pathSave: String)
+  extends StackingMethodTask(labels, classificationMethods, pathLabel, pathPrediction, pathSave) with StackingMethodFactory {
 
-  val labelColumn: String = "label"
   val featureColumn: String = "features"
   var model: LogisticRegressionModel = _
 
   override def run(spark: SparkSession): StackingMethodLogisticRegressionTask = {
     labels.foreach(label => {
       mergeData(spark, label)
-      val data = createDfLabelFeatures(spark: SparkSession, label: String)
+      val data = createLabelFeatures(spark: SparkSession, label: String)
       computeModel(data, label)
+      saveModel(label)
     })
 
     this
@@ -34,4 +35,16 @@ class StackingMethodLogisticRegressionTask(override val labels: Array[String],
     this
   }
 
+  override def saveModel(column: String): StackingMethodLogisticRegressionTask = {
+    model.write.overwrite().save(s"$pathSave/model/$column")
+    this
+  }
+
+  override def computePrediction(data: DataFrame): StackingMethodLogisticRegressionTask = {
+    this
+  }
+
+  def loadModel(path: String): StackingMethodLogisticRegressionTask = {
+    this
+  }
 }
