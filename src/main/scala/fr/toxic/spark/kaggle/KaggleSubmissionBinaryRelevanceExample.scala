@@ -22,7 +22,7 @@ object KaggleSubmissionBinaryRelevanceExample {
     log.setLevel(Level.WARN)
 
     //    val classifierMethods = Array("logistic_regression", "linear_svc", "decision_tree", "random_forest", "gbt_classifier")
-    val classifierMethods = Array("logistic_regression", "decision_tree")
+    val classifierMethods = Array("decision_tree")
     val methodValidation = "cross_validation"
     val labels = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
     val rootPath = s"target/kaggle/binaryRelevance"
@@ -58,7 +58,9 @@ object KaggleSubmissionBinaryRelevanceExample {
         new WriteKaggleSubmission().run(prediction, pathMethod)
       } else if (classifierMethod == "decision_tree"){
         val pathMethod = s"$rootPath/$methodValidation/$classifierMethod"
-        val binaryRelevance = new BinaryRelevanceDecisionTreeTask(columns = labels, savePath = pathMethod,
+        val binaryRelevance = new BinaryRelevanceDecisionTreeTask(
+          columns = Array("obscene", "threat", "insult", "identity_hate"),
+          savePath = pathMethod,
           featureColumn = "tf_idf", methodValidation = methodValidation)
         binaryRelevance.run(trainTfIdf)
         var prediction: DataFrame = testTfIdf
