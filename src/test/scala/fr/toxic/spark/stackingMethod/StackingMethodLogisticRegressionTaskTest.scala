@@ -29,6 +29,8 @@ class StackingMethodLogisticRegressionTaskTest {
     val labels = Array("toxic", "obscene")
     val stackingLogisticRegressionMethod = new StackingMethodLogisticRegressionTask(labels, methodClassifications, pathLabel, pathPrediction, pathSave)
     stackingLogisticRegressionMethod.run(spark)
+
+    // TODO : add test on compute model
   }
 
   @After def afterAll() {
