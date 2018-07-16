@@ -8,8 +8,8 @@ import org.apache.spark.sql.DataFrame
   */
 class CountVectorizerTask(val inputColumn: String = "words", val outputColumn: String = "tf", val minDF: Int = 2, val vocabSize: Int = 3) extends TextFeaturizationTask with TextFeaturizationFactory {
 
-  private var countVectorizer: CountVectorizer = _
-  private var countVectorizerModel: CountVectorizerModel = _
+  var countVectorizer: CountVectorizer = _
+  var countVectorizerModel: CountVectorizerModel = _
 
   override def run(data: DataFrame): CountVectorizerTask = {
     defineModel()
@@ -35,6 +35,7 @@ class CountVectorizerTask(val inputColumn: String = "words", val outputColumn: S
     prediction = countVectorizerModel.transform(data)
     this
   }
+
 
   override def loadModel(path: String): CountVectorizerTask = {
     countVectorizerModel = CountVectorizerModel.load(path)
