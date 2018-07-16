@@ -8,10 +8,9 @@ trait StackingMethodFactory {
 
   def computeModel(data: DataFrame, label: String): StackingMethodFactory
 
-  def saveModel(label: String): StackingMethodFactory
-
-  def loadModel(path: String): StackingMethodFactory
-
   def computePrediction(data: DataFrame): StackingMethodFactory
 
+  def saveModel(column: String): StackingMethodFactory
+
+  def loadModel(path: String): StackingMethodFactory
 }

@@ -8,10 +8,10 @@ import org.junit.{After, Before, Test}
 
 class StackingMethodLogisticRegressionTaskTest {
 
+  private val pathLabel: String = "src/test/resources/data"
+  private val pathPrediction: String = "src/test/resources/data/binaryRelevance"
+  private val pathSave: String = "target/model/stackingLogisticRegression"
   private var spark: SparkSession = _
-  private val pathLabel = "/home/mahjoubi/Documents/github/toxic_comment/src/test/resources/data"
-  private val pathPrediction = "/home/mahjoubi/Documents/github/toxic_comment/src/test/resources/data/binaryRelevance"
-  private val pathSave = "/home/mahjoubi/Documents/github/toxic_comment/target/model/stackingModel/logisticRegression"
 
   @Before def beforeAll() {
     spark = SparkSession
@@ -24,14 +24,13 @@ class StackingMethodLogisticRegressionTaskTest {
     log.setLevel(Level.WARN)
   }
 
-  @Test def testStackingMethodLogisticRegressionTask(): Unit = {
-    val methodClassification = Array("logisticRegression", "randomForest")
+  @Test def testStackingLogisticRegressionMethodTask(): Unit = {
+    val methodClassifications = Array("logisticRegression", "randomForest")
     val labels = Array("toxic", "obscene")
-    val label = "toxic"
-    val stackingMethod = new StackingMethodLogisticRegressionTask(labels, methodClassification, pathLabel, pathPrediction, pathSave)
-    stackingMethod.run(spark)
+    val stackingLogisticRegressionMethod = new StackingMethodLogisticRegressionTask(labels, methodClassifications, pathLabel, pathPrediction, pathSave)
+    stackingLogisticRegressionMethod.run(spark)
 
-    labels.foreach(label => new java.io.File(s"$pathSave/model/$label").exists)
+    // TODO : add test on compute model
   }
 
   @After def afterAll() {

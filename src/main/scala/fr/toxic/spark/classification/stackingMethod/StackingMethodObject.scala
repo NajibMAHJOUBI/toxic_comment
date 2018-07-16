@@ -7,10 +7,10 @@ import scala.collection.mutable.WrappedArray
 
 object StackingMethodObject {
 
-  def extractVector(p: Row, classificationMethods: Array[String]): Array[Double] = {
-    var value: Array[Double] = Array()
-    classificationMethods.foreach(method => value = value :+ p.getString(p.fieldIndex(s"prediction_$method")).toDouble)
-    value
+  def extractValues(p: Row, classificationMethods: Array[String]): Array[Double] = {
+    var values: Array[Double] = Array()
+    classificationMethods.foreach(method => values = values :+ p.getString(p.fieldIndex(s"prediction_$method")).toDouble)
+    values
   }
 
   def getMlVector(values: WrappedArray[Double]): Vector = {

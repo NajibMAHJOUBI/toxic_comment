@@ -1,7 +1,0 @@
-label_identity_hate,label_obscene,label_severe_toxic,prediction_obscene,prediction_severe_toxic,id,prediction_identity_hate,prediction_toxic,label_threat,label_insult,label_toxic,prediction_threat,prediction_insult
-0,0,0,0.0,0.0,9f14426bcd93c0f8,0.0,0.0,0,0,0,0.0,0.0
-0,0,0,0.0,0.0,9f15fa8011f1283e,0.0,0.0,0,0,0,0.0,0.0
-0,0,0,0.0,0.0,9f1624d262a42d8c,0.0,0.0,0,0,0,0.0,0.0
-0,0,0,0.0,0.0,9f163747e5cac904,0.0,0.0,0,0,0,0.0,0.0
-0,0,0,0.0,0.0,9f1638a5017abf77,0.0,1.0,0,0,0,0.0,1.0
-0,0,0,0.0,0.0,9f1651ae5c97daa2,0.0,1.0,0,1,1,0.0,1.0

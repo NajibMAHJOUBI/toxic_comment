@@ -4,9 +4,9 @@ import org.apache.spark.sql.DataFrame
 
 class TextFeaturizationTask {
 
-   var prediction: DataFrame = _
+  var prediction: DataFrame = _
 
-   def getPrediction: DataFrame = {
+  def getPrediction: DataFrame = {
     prediction
   }
 

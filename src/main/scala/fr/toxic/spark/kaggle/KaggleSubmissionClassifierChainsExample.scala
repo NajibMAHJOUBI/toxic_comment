@@ -42,7 +42,6 @@ object KaggleSubmissionClassifierChainsExample {
     val testTf = countVectorizerModel.transform(testStopWordsRemoved).getPrediction
     var testTfIdf = tfIdfModel.transform(testTf).getPrediction
 
-
     // Classifier chains with various classification models
     classifierMethods.foreach(classifierMethod =>{
       if (classifierMethod == "decision_tree") {

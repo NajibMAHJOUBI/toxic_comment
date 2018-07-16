@@ -1,0 +1,22 @@
+clean
+clean package
+package
+clean
+clean package
+package
+test
+clean
+package
+test
+clean
+package
+test
+clean
+package
+test
+clean
+package
+test
+clean package
+sbt clean package
+package

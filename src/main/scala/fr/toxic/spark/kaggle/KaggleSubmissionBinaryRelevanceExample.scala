@@ -2,7 +2,6 @@
 package fr.toxic.spark.kaggle
 
 import fr.toxic.spark.classification.multiLabelClassification.binaryRelevance.{BinaryRelevanceDecisionTreeTask, BinaryRelevanceGbtClassifierTask, BinaryRelevanceRandomForestTask}
-import fr.toxic.spark.classification.task.{DecisionTreeTask, LinearSvcTask, LogisticRegressionTask, RandomForestTask}
 import fr.toxic.spark.classification.task.binaryRelevance.{BinaryRelevanceLinearSvcTask, BinaryRelevanceLogisticRegressionTask}
 import fr.toxic.spark.text.featurization.{CountVectorizerTask, StopWordsRemoverTask, TfIdfTask, TokenizerTask}
 import fr.toxic.spark.utils.{LoadDataSetTask, WriteKaggleSubmission}
@@ -22,7 +21,8 @@ object KaggleSubmissionBinaryRelevanceExample {
     val log = LogManager.getRootLogger
     log.setLevel(Level.WARN)
 
-    val classifierMethods = Array("logistic_regression", "linear_svc", "decision_tree", "random_forest", "gbt_classifier")
+    //    val classifierMethods = Array("logistic_regression", "linear_svc", "decision_tree", "random_forest", "gbt_classifier")
+    val classifierMethods = Array("decision_tree")
     val methodValidation = "cross_validation"
     val labels = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
     val rootPath = s"target/kaggle/binaryRelevance"
@@ -31,7 +31,7 @@ object KaggleSubmissionBinaryRelevanceExample {
     val train = new LoadDataSetTask(sourcePath = "data/parquet").run(spark, "train")
     val trainTokens = new TokenizerTask().run(train)
     val trainStopWordsRemoved = new StopWordsRemoverTask(stopWordsOption = "spark").run(trainTokens)
-    val countVectorizerModel = new CountVectorizerTask(minDF = 5, vocabSize = 1000)
+    val countVectorizerModel = new CountVectorizerTask(minDF = 3, vocabSize = 2000)
     countVectorizerModel.run(trainStopWordsRemoved)
     val tfIdfModel = new TfIdfTask()
     tfIdfModel.run(countVectorizerModel.getPrediction)
@@ -58,7 +58,9 @@ object KaggleSubmissionBinaryRelevanceExample {
         new WriteKaggleSubmission().run(prediction, pathMethod)
       } else if (classifierMethod == "decision_tree"){
         val pathMethod = s"$rootPath/$methodValidation/$classifierMethod"
-        val binaryRelevance = new BinaryRelevanceDecisionTreeTask(columns = labels, savePath = pathMethod,
+        val binaryRelevance = new BinaryRelevanceDecisionTreeTask(
+          columns = Array("obscene", "threat", "insult", "identity_hate"),
+          savePath = pathMethod,
           featureColumn = "tf_idf", methodValidation = methodValidation)
         binaryRelevance.run(trainTfIdf)
         var prediction: DataFrame = testTfIdf
