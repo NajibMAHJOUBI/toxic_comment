@@ -72,9 +72,7 @@ class BinaryRelevanceRandomForestTaskTest extends AssertionsForJUnit {
                                         featureColumn = "tf_idf",
                                         methodValidation = "simple").run(data)
     val prediction = spark.read.option("header", "true").csv(s"$savePath/sixColumn/simpleValidation/prediction")
-    prediction.write.option("header", "true")
-      .mode("overwrite")
-      .csv("/home/ubuntu/Documents/toxic_comment/src/test/resources/data/binaryRelevance/randomForest/prediction")
+    prediction.write.option("header", "true").mode("overwrite").csv("/home/ubuntu/Documents/toxic_comment/src/test/resources/data/binaryRelevance/randomForest/prediction")
     assert(prediction.isInstanceOf[DataFrame])
     columns.map(column => assert(prediction.columns.contains(s"label_$column")))
     columns.map(column => assert(prediction.columns.contains(s"prediction_$column")))

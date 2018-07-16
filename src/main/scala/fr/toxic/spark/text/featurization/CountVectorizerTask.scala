@@ -6,11 +6,7 @@ import org.apache.spark.sql.DataFrame
 /**
   * Created by mahjoubi on 12/06/18.
   */
-class CountVectorizerTask(val inputColumn: String = "words",
-                          val outputColumn: String = "tf",
-                          val minDF: Int = 2,
-                          val vocabSize: Int = 3) extends TextFeaturizationTask
-  with TextFeaturizationFactory {
+class CountVectorizerTask(val inputColumn: String = "words", val outputColumn: String = "tf", val minDF: Int = 2, val vocabSize: Int = 3) extends TextFeaturizationTask with TextFeaturizationFactory {
 
   private var countVectorizer: CountVectorizer = _
   private var countVectorizerModel: CountVectorizerModel = _

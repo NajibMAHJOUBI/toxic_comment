@@ -14,9 +14,7 @@ import org.apache.spark.sql.DataFrame
   */
 class BinaryRelevanceDecisionTreeTask(override val columns: Array[String],
                                       override val savePath: String,
-                                      override val featureColumn: String,
-                                      override val methodValidation: String) extends
-  BinaryRelevanceTask(columns, savePath, featureColumn, methodValidation) with MultiLabelClassificationFactory {
+                                      override val featureColumn: String, override val methodValidation: String) extends BinaryRelevanceTask(columns, savePath, featureColumn, methodValidation) with MultiLabelClassificationFactory {
 
   var model: DecisionTreeClassificationModel = _
 

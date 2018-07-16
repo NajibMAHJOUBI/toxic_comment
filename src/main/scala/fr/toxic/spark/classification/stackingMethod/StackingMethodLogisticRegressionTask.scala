@@ -4,12 +4,7 @@ import fr.toxic.spark.classification.crossValidation.CrossValidationLogisticRegr
 import org.apache.spark.ml.classification.LogisticRegressionModel
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
-class StackingMethodLogisticRegressionTask(override val labels: Array[String],
-                                           override val classificationMethods: Array[String],
-                                           override val pathLabel: String,
-                                           override val pathPrediction: String,
-                                           override val pathSave: String)
-  extends StackingMethodTask(labels, classificationMethods, pathLabel, pathPrediction, pathSave) with StackingMethodFactory {
+class StackingMethodLogisticRegressionTask(override val labels: Array[String], override val classificationMethods: Array[String], override val pathLabel: String, override val pathPrediction: String, override val pathSave: String) extends StackingMethodTask(labels, classificationMethods, pathLabel, pathPrediction, pathSave) with StackingMethodFactory {
 
   val featureColumn: String = "features"
   var model: LogisticRegressionModel = _

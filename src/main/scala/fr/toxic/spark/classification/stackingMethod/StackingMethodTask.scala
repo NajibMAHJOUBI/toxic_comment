@@ -7,11 +7,7 @@ import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 
 import scala.collection.mutable
 
-class StackingMethodTask(val labels: Array[String],
-                         val classificationMethods: Array[String],
-                         val pathLabel: String,
-                         val pathPrediction: String,
-                         val pathSave: String) {
+class StackingMethodTask(val labels: Array[String], val classificationMethods: Array[String], val pathLabel: String, val pathPrediction: String, val pathSave: String) {
 
   var data: DataFrame = _
 
@@ -49,9 +45,7 @@ class StackingMethodTask(val labels: Array[String],
     val rdd = data.rdd.map(p => (p.getLong(p.fieldIndex("label")), features(p)))
     val labelFeatures = spark.createDataFrame(rdd).toDF(label, "values")
     val defineFeatures = udf((p: mutable.WrappedArray[Double]) => Vectors.dense(p.toArray[Double]))
-    labelFeatures
-      .withColumn("features", defineFeatures(col("values")))
-      .select(label, "features")
+    labelFeatures.withColumn("features", defineFeatures(col("values"))).select(label, "features")
   }
 
 }

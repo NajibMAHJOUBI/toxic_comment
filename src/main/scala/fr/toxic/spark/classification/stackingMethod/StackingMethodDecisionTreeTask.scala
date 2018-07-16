@@ -5,12 +5,7 @@ import org.apache.spark.ml.classification.DecisionTreeClassificationModel
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 
-class StackingMethodDecisionTreeTask(override val labels: Array[String],
-                                     override val classificationMethods: Array[String],
-                                     override val pathLabel: String,
-                                     override val pathPrediction: String,
-                                     override val pathSave: String)
-  extends StackingMethodTask(labels, classificationMethods, pathLabel, pathPrediction, pathSave) with StackingMethodFactory {
+class StackingMethodDecisionTreeTask(override val labels: Array[String], override val classificationMethods: Array[String], override val pathLabel: String, override val pathPrediction: String, override val pathSave: String) extends StackingMethodTask(labels, classificationMethods, pathLabel, pathPrediction, pathSave) with StackingMethodFactory {
 
   val featureColumn: String = "features"
   var model: DecisionTreeClassificationModel = _
@@ -26,10 +21,7 @@ class StackingMethodDecisionTreeTask(override val labels: Array[String],
   }
 
   override def computeModel(data: DataFrame, label: String): StackingMethodDecisionTreeTask = {
-    val cv = new CrossValidationDecisionTreeTask(data = data, labelColumn = label,
-      featureColumn = featureColumn,
-      predictionColumn = s"prediction_$label", pathModel = "",
-      pathPrediction = "")
+    val cv = new CrossValidationDecisionTreeTask(data = data, labelColumn = label, featureColumn = featureColumn, predictionColumn = s"prediction_$label", pathModel = "", pathPrediction = "")
     cv.run()
     model = cv.getBestModel
     this

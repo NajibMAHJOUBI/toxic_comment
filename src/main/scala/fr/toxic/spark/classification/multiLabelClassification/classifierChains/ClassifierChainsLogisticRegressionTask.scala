@@ -9,9 +9,7 @@ import org.apache.spark.sql.DataFrame
 
 class ClassifierChainsLogisticRegressionTask(override val labelColumns: Array[String],
                                              override val featureColumn: String,
-                                             override val methodValidation: String = "simple",
-                                             override val savePath: String) extends ClassifierChainsTask(labelColumns, featureColumn,
-  methodValidation, savePath) with MultiLabelClassificationFactory {
+                                             override val methodValidation: String = "simple", override val savePath: String) extends ClassifierChainsTask(labelColumns, featureColumn, methodValidation, savePath) with MultiLabelClassificationFactory {
 
   var model: LogisticRegressionModel = _
 

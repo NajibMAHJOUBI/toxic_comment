@@ -19,9 +19,7 @@ class StopWordsRemoverTaskTest extends AssertionsForJUnit  {
 
   @Before def beforeAll() {
     spark = SparkSession
-      .builder
-      .master("local")
-      .appName("test stop words remover")
+      .builder.master("local").appName("test stop words remover")
       .getOrCreate()
 
     val log = LogManager.getRootLogger

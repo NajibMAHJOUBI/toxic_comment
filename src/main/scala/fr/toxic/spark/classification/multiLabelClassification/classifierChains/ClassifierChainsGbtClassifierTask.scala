@@ -9,9 +9,7 @@ import org.apache.spark.sql.DataFrame
 
 class ClassifierChainsGbtClassifierTask(override val labelColumns: Array[String],
                                         override val featureColumn: String,
-                                        override val methodValidation: String,
-                                        override val savePath: String) extends ClassifierChainsTask(labelColumns, featureColumn,
-  methodValidation, savePath) with MultiLabelClassificationFactory {
+                                        override val methodValidation: String, override val savePath: String) extends ClassifierChainsTask(labelColumns, featureColumn, methodValidation, savePath) with MultiLabelClassificationFactory {
 
   var model: GBTClassificationModel = _
 
