@@ -22,7 +22,7 @@ object KaggleSubmissionBinaryRelevanceExample {
     log.setLevel(Level.WARN)
 
     //    val classifierMethods = Array("logistic_regression", "linear_svc", "decision_tree", "random_forest", "gbt_classifier")
-    val classifierMethods = Array("decision_tree")
+    val classifierMethods = Array("random_forest")
     val methodValidation = "cross_validation"
     val labels = Array("toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate")
     val rootPath = s"target/kaggle/binaryRelevance"
